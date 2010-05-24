@@ -1,0 +1,17 @@
+h3 {
+	margin:10px;
+	
+	float: left;
+}
+
+.button {
+	margin-top: 7px;
+	float: clear;
+	
+}
+
+.jxButtonEditCombo 
+ input {
+	font-size: 14px;
+}
+

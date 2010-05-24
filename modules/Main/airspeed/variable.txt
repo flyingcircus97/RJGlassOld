@@ -1,0 +1,8 @@
+#Variable.txt File
+   #Test
+#Speed
+0100,IAS,FLOAT
+0101,Mach,FLOAT
+0102,GS,FLOAT
+0103,IAS_Bug,FLOAT
+
