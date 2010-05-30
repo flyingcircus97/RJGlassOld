@@ -19,7 +19,10 @@ def freqtoBCD(freq):
     #freq is a float.
     #Returns BCD value as int. Needed for FSX Event to set it.
     #freq = 123.45
-    temp = int(round(freq * 100)) % 10000
+    temp = int(round(freq * 1000)) #round to 1/1000th place.
+    temp = temp / 10 #truncate to 1/100th place.
+    temp = temp % 10000 #nock off hundred place of freq
+       
     #temp = 2345
     bcd = 0
     for i in range(4):
@@ -100,4 +103,4 @@ def setup_events(sevent, variables):
         add_event('ADF2_COMPLETE_SET','ADF2_ACTIVE', adftoBCD)
         #COM2_STBY_RADIO_SET
         #print type(Nav1_Active.set_value)
-#Nav1_Active = data_obj(0)        
+#Nav1_Active = data_obj(0)      

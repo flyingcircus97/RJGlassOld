@@ -81,11 +81,11 @@ def NAV_COM_test():
     #list = [[0xA600, 120.0],[0xA601, 121.8],[0XA602, 122.5],[0xA603, 123.15] \
     #,[0XA604, 111.1],[0XA605, 111.20],[0XA606, 111.25],[0XA607, 111.3]]
     list = [[0x420, 110.0],[0x421, 108.6],[0x430, 113.1],[0x431, 114.2] \
-    ,[0x400, 127.8],[0x401, 123.4],[0x410, 125.9],[0x411, 132.35],[0x440, 305.5] \
+    ,[0x400, 128.375],[0x401, 123.4],[0x410, 125.9],[0x411, 132.35],[0x440, 305.5] \
     ,[0x441,1042.0]]
     
     #list = [[0xA604, 110.8],[0xA605, 109.9]]
-    for i in range(5):
+    for i in range(10):
         
         for i in list:
             if i[0] == 0x940: #Transponder
@@ -93,13 +93,13 @@ def NAV_COM_test():
                 i[1]+=1111
             else:
                 data = struct.pack("H", i[0]) + struct.pack("f", i[1])
-                i[1]+= 1.5
+                i[1]+= .025
             sock.send(form_data("SV", data))
             
         
         print "%r" %sock.recv(1024)    
         #list[0][1] += 1.05
-        time.sleep(1.01)
+        time.sleep(1.51)
     #sock.send(form_data("SE", data))
     time.sleep(5)    
     
