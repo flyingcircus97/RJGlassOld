@@ -249,7 +249,7 @@ class SimConnect_Client_c(threading.Thread):
             self.send(init_string, 0x01) #The initial connect attempt to FSX.
             succeed = True
         except socket.error:
-        	print "Could Not Connect"
+            print "Could Not Connect"
         
         return succeed    
 
