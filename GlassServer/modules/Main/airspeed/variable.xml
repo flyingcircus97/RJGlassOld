@@ -1,0 +1,34 @@
+<variables>
+  <var>
+	<addr>0100</addr>
+	<name>IAS</name>
+	<type>float</type>
+	<unit>Knots</unit>
+	<format>5.1f</format>
+	<desc>Indicated AirSpeed</desc>
+</var>
+  <var>
+	<addr>0101</addr>
+	<name>Mach</name>
+	<type>float</type>
+	<unit>Knots</unit>
+	<format>5.1f</format>
+	<desc>Indicated AirSpeed</desc>
+</var>
+  <var>
+	<addr>0102</addr>
+	<name>GS</name>
+	<type>float</type>
+	<unit>Knots</unit>
+	<format>5.1f</format>
+	<desc>Ground Speed</desc>
+</var>
+  <var>
+	<addr>0103</addr>
+	<name>IAS_Bug</name>
+	<type>float</type>
+	<unit>Knots</unit>
+	<format>5.1f</format>
+	<desc>Indicated AirSpeed Bug</desc>
+</var>
+</variables>

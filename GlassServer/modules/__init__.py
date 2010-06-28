@@ -11,7 +11,7 @@
 import os, sys
 
 extension = '_mod.py'
-variable_name = 'variable.txt'
+variable_name = 'variable.xml'
 
 def scan_folders(extension, variable_name):
     #Scan through all folders within modules looking for _mod.py files.
