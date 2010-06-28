@@ -26,7 +26,7 @@
 #This module is used for both the server and clinet.
 #import PySimConnect
 import struct
-import inspect, os
+import inspect, os, time
 
 class data_obj(object):
     #Used to make a object for Definition to link to
@@ -46,9 +46,12 @@ class data_obj(object):
 class var_obj(object):
     #This is the a Glass Protocol variable object, similar to data_obj that holds are information
     #about each variable. Used only to communicate between instances of RJGlass. Not FSX
-    def __init__(self, addr, name, pack_format): 
+    def __init__(self, addr, name, pack_format, desc, unit, format_s): 
         self.addr = addr #Address of variable
         self.name = name #Name of variable, used for lookup.
+        self.desc = desc #Description, used for Web interface.
+        self.unit = unit #Unit of variable, used for Web interface.
+        self.format_s = format_s #Format of variable, used for Web interface.
         self.writeable = True #Set to True, will be set to False if applicable.
         self.pack_format = pack_format #Either "f" - float, "i" - int, "I" - for unsigned int.
         self.pack_size = struct.calcsize(pack_format) #Calculates size in bytes.
@@ -95,7 +98,9 @@ class variable_c(object):
         #self.aircraft = aircraft
         #Creating dict containing all variables
         self.dict = {} #Holds all varibles keyed by address.
-        
+        #Get Element Tree setup for parsing of variable XML files.
+        from xml.etree.ElementTree import ElementTree
+        self.tree = ElementTree()
     
     def byName(self, name):
         '''
@@ -152,24 +157,39 @@ class variable_c(object):
         delimeter = ','
         columns = 3
         ret_list = []
-        #Open file
-        f = open(file_name, "r")
+        #Parse file
+        var_list =  self.tree.parse(file_name)
         #Loop thourgh lines
-        for line in f:
-            #Check for commnets '#'
-            line = line.rstrip()
-            i = line.find('#')
-            if i > -1:
-                line = line[:i]
-            data = line.split(delimeter)
-            if len(data) == columns: #Check to see if line is long enough
-                addr = int('0x'+data[0],16)
-                name = data[1]
-                format = data[2]
-                #create variable
-                ret_list.append(self.add_var(addr, name, format))
-                print addr, name, format
-        
+        for v in var_list:
+            #Get all children.
+            children = v.getchildren()
+            #Setup defaults
+            type = 'float'
+            unit = None
+            format = '5.2f'
+            desc = None
+            #Go through each child.
+            for c in children:
+                tag = c.tag
+                value = c.text
+                #If else
+                if tag == 'name':
+                    name = value
+                elif tag == 'addr':
+                    addr = int('0x'+value,16)
+                elif tag == 'type':
+                    type = value
+                elif tag == 'desc':
+                    desc = value
+                elif tag == 'unit':
+                    unit = value
+                elif tag == 'format':
+                    format = value
+                #addr = int('0x'+data[0],16)
+            #Add Variable to list
+            ret_list.append(self.add_var(addr, name, type, desc, unit, format))
+            print addr, name, type, desc, unit, format
+            #time.sleep(0.5)
         return ret_list
     
     def add_vargroup(self, var_file, var_list):
@@ -191,6 +211,13 @@ class variable_c(object):
         print self.var_groups
         
     def get_varAJAX(self, name):
+        
+        def check_none(value):
+            if value == None:
+                return ''
+            else:
+                return value
+        
         out_list = []
         
         name_list = name.split('.')
@@ -205,17 +232,16 @@ class variable_c(object):
         #Check to see if var_group found.
         if type(var_group) == list:
             for i in var_group:
-                if i.pack_format == 'f':
-                    value = "%8.3f" %i.data.value
-                    var_type = 'FLOAT'
-                else:
-                    value = "%11d" %i.data.value
-                    var_type = 'INT'
-                    
-                out_list.append([i.addr, i.name, var_type, value])
+                #Uppercase type F, I etc.
+                var_type = i.pack_format.upper()
+                #Format variable
+                format = "%" + i.format_s
+                value = format %i.data.value
+                              
+                out_list.append([i.addr, i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
                 #print "***I", i
         if len(out_list) > 0:
-					out_list.insert(0,[name])
+                out_list.insert(0,[name])
         return out_list
             
                 
@@ -230,11 +256,22 @@ class variable_c(object):
             
             
             
-    def add_var(self, address, name, type):
+    def add_var(self, address, name, type, desc, unit, format):
         '''
         Adds varible object to servers variable dictionary.
         -- Checks to make sure name and address are both unique.
         '''
+        def convert_type(type):
+            if type == 'FLOAT':
+                type_s = 'f'
+            elif type == 'INT':
+                type_s = 'i'
+            else:
+                type_s = 'f' #If not specifies just make float.
+            return type_s
+          
+        #Upper case type
+        type = type.upper()
         #Check for unique address.
         if self.exists(address):
             print "Warning: Address 0x%X already exists in Variable dict." %addr
@@ -242,14 +279,7 @@ class variable_c(object):
         elif self.byName(name) != None:
             print "Warning: Name %s already exists in Variable dict." %name
         else:
-            if type == 'FLOAT':
-                format = 'f'
-            elif type == 'INT':
-                format = 'i'
-            
-            else:
-                format = 'f' #If not specifies just make float.
-            self.dict[address] = var_obj(address, name, format)
+            self.dict[address] = var_obj(address, name, convert_type(type), desc, unit,format)
             
             return self.dict[address]
 #def __init__(self):

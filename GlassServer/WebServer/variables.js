@@ -5,7 +5,6 @@
 		method: 'get',
 		onSuccess: function(responseText, responseXML) {
 			j = JSON.decode(responseText);
-			//alert(j);
 			$('tree_container').tree.load({json: j});
 		
 		
@@ -37,18 +36,51 @@
 		j.each(function(item, index) {
 			if (item.length == 1) {
 				//alert('SPAN');
-				myTable.push([{ content: item[0], properties:{colspan:"4", class:"group_row"}}]);
+				myTable.push([{ content: item[0], properties:{colspan:"6", class:"group_row"}}]);
 			}
 			else {
 			myTable.push(item);
 			}
 			});
-		
-		}
-	});
-	
-	out_JSON = {};
-	out_JSON.eat = 5;
+		window.fireEvent('updatevar', null, 2500);
+		} // onSuccess
+	}); 
+	var updateRequest = new Request({
+		url: '/ajax/var_values',
+		method: 'get',
+		onSuccess: function(responseText, responseXML) {
+		var rows = $('var_table').getElements('tr');
+		//myTable.inject($('var_table'));
+		j = JSON.decode(responseText);
+		j.each(function(item, index) {
+			//Go through each line of table looking for changes.
+			var row = rows[index];
+			// Get current value
+			var value_td = row.getElements('td')[3];
+			if ($defined(value_td)) {
+				if (value_td.childNodes[0].nodeValue != item) {
+					value_td.childNodes[0].nodeValue = item;
+					row.addClass('delta'); // Add value changed class
+				}
+				else { // Remove class - value didn't class
+					row.removeClass('delta');
+				     }
+			}
+			
+			});
+		if (j.length > 0) {window.fireEvent('updatevar', null, 2500);} //Stop request if table is empty.
+		} // onSuccess
+	}); 
+
+
+
+	// Event called to update variables in table.
+	window.addEvent('updatevar', function() {
+		updateRequest.send('var='+checked.join(","));
+
+	 });
+
+
 	window.addEvent('domready', function() {
 	
 

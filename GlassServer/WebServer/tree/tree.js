@@ -24,7 +24,7 @@ window.addEvent('domready',function(){
 	});
 	$('tree_container').tree = tree;
 	var sendChecked = function() {
-		var checked = [];
+		checked = [];
 		$('tree_container').tree.getChecked().each(function(node) {
 			checked.include(node.key);
 			});

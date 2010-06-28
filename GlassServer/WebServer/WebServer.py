@@ -77,8 +77,8 @@ class GlassHandler(SimpleHTTPRequestHandler):
         return
         
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-	pass
-					
+    pass
+
 class GlassWebServer_c(object):
 
     
