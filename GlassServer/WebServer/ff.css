@@ -1,32 +1,7 @@
 body {
 
 	font-family: verdana;
-	font-size: 70%;
+	font-size: 75%;
 }
-
-#tree_container {
-	float: left;
-}
-
-#var_table table {
-	border: 2px solid;
-	border-collapse: collapse;
-	width: 60%;
-	
-}
-
-#var_table td {
-	border: 1px solid;
-	padding: 2px 4px 2px 4px;
-	
-	
-}
-.group_row {
-	background-color: lightblue;
-	font-weight: bold;
-	}
-.delta {
-	background-color: #adff44;
-	}
 
 

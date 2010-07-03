@@ -19,10 +19,9 @@ LINES = 1
 # TEST = run test routine (will not recieve any data from Flight Sim program)
 # FSXSP0 or FSXSP1 or FSXSP2 = Recieve data from FSX Using PySimConnect.py
 #mode = ESP #Note: case sensitive
-#mode = TEST
+mode = TEST
 #mode = CLIENT
 #mode = FSXSP2
-mode = ESP
 #FSX Sim Connect (Config) See README on how to configure SimConnect.xml file.
 #server_only if set to true, no guages will be drawn (no graphics)
 # use this when running on the same computer as FSX.

@@ -17,6 +17,7 @@ class AJAX_c(object):
         self.func_dict['var_tree'] = self.var_tree
         self.func_dict['get_var'] = self.get_var
         self.func_dict['var_values'] = self.get_var_values
+        self.func_dict['set_var'] = self.set_var_value
         
     def process_AJAX(self, method, body):
         out = None
@@ -63,7 +64,9 @@ class AJAX_c(object):
                 for i in self.variables.get_varAJAX(key):
                     list.append(i)
                 
-            print list
+            #Check to see if list is empty, if so, put Empty table up.
+            if len(list) == 0:
+                list = [['  No Variable Groups Selected']]
             return  json.dumps(list)
         
     def get_var_values(self,body):
@@ -79,7 +82,21 @@ class AJAX_c(object):
                         list.append('None')
                 
             print list
-            return  json.dumps(list)    
+            return  json.dumps(list)   
+        
+    def set_var_value(self, body):
+        #Called to set variable from Website.
+            print body
+            addr = int(body['addr'][0])
+            try:
+                value = float(body['value'][0])
+                r = self.variables.set(addr,value)
+            except:
+                r = False 
+            
+            return json.dumps([r,self.variables.get_string(addr)])
+            
+            
     
 AJAX = AJAX_c()
 def process_AJAX(method, body):

@@ -1,0 +1,62 @@
+
+
+#tree_container {
+	float: left;
+}
+
+#var_table table {
+	border: 2px solid;
+	border-collapse: collapse;
+	width: 60%;
+	
+}
+
+#var_table .value {
+	width: 100px;
+	}
+
+#var_table td {
+	border: 1px solid;
+	padding: 2px 4px 2px 4px;
+	//width: 100px;
+	
+}
+#var_table td.group_row {
+	background-color: lightblue;
+	font-weight: bold;
+	}
+#var_table tr.delta {
+	background-color: #adff44;
+	}
+#var_table tr.submit {
+	background-color: yellow;
+	}
+#refresh {
+			cursor:default;
+			}
+	
+#refresh span {
+	padding: 5px;
+	text-align: center;
+	}
+#refresh span.duce {
+		padding-left: 2px;
+		padding-right: 2px;
+		}
+#refresh .hover {
+	background-color: gainsboro;
+	}
+#refresh .selected {
+	background-color: yellow;
+	font-weight: bold;
+	}
+#var_input {
+	  font-family: verdana;
+	  margin: -4px;
+	  margin-left: -1px;
+	  margin-right: -35px;
+	  width: 85px;
+	  border: none;
+	  background-color: yellow;
+	}
+	

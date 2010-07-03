@@ -1,0 +1,25 @@
+#tablist {
+	margin-left: 0px;
+	margin-bottom: 0px;
+	padding: 3px;
+	border-bottom: 1px solid gray;
+	
+}
+
+#tablist li {
+	list-style: none;
+	display: inline;
+	margin: 5px;
+	padding: 3px;
+	font: bold 15px Verdana;
+	border: 1px solid gray;
+	}
+
+
+#tablist .hover {
+	background-color: gainsboro;
+	}
+#tablist .selected {
+	background-color: yellow;
+	}
+

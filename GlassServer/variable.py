@@ -53,6 +53,7 @@ class var_obj(object):
         self.unit = unit #Unit of variable, used for Web interface.
         self.format_s = format_s #Format of variable, used for Web interface.
         self.writeable = True #Set to True, will be set to False if applicable.
+        self.valid = False #Where valid check func goes if desired.
         self.pack_format = pack_format #Either "f" - float, "i" - int, "I" - for unsigned int.
         self.pack_size = struct.calcsize(pack_format) #Calculates size in bytes.
         self.change_count = 0 #This is incremented everytime value changed. Used for change detect.
@@ -70,24 +71,37 @@ class var_obj(object):
         print self.pack_format, "%r" %value
         return struct.unpack(self.pack_format, value)[0]
     
+    
+    
     def set_writeable(self, func):
         self.writeable = func
         
-        
+    def set_valid_check(self, func):
+        self.valid = func
+    
     def setvalue(self, value):
+        #Check for valid number.
+        result = True
+        if inspect.ismethod(self.valid): #Check if valid check exists.
+            result = self.valid(value)
+            if ((result != True) or (result != False)): #If not true or flase then change value to result (different value)
+                value = result 
+        if result != False: #If valid check return False (Don't write)
         #Check for custom write function in self.writable.
         #If write_func is True, means variable is writable but no write_func
         #If write_func is False, means variable not writeable.
-        if inspect.ismethod(self.writeable):
-            #self.writeable(self.unpack(value))
-            print "WRITEABLE FUNC"
-            self.writeable(value)
-        elif self.writeable == True:
-            #self.data.set_value(self.unpack(value))
-            self.data.set_value(value)
-        else:
-            print "Variable %04X not WRITEABLE" %self.addr
-        
+            if inspect.ismethod(self.writeable):
+                #self.writeable(self.unpack(value))
+                print "WRITEABLE FUNC"
+                self.writeable(value)
+            elif self.writeable == True:
+                #self.data.set_value(self.unpack(value))
+                self.data.set_value(value)
+            else:
+                print "Variable %04X not WRITEABLE" %self.addr
+        else: #if result == False
+            print "Value %r - Failed valid check for Variable %04X" %(value, self.addr)
+            
     def client_setvalue(self, value):
         self.data.value = self.unpack(value)
     
@@ -137,16 +151,27 @@ class variable_c(object):
         else:
             print "Error: Variable Addr %04X Not valid" %addr
             return None
-        
+    
+    def get_string(self,addr):
+        v = self.get(addr)
+        if v == None:
+            return None
+        else:
+            format = "%" + v.format_s
+            s = format %v.data.value
+            return s
+    
     def set(self, addr, value):
         #Sets variable, if settible.
         if addr in self.dict.keys():
             v = self.dict[addr]
             
             v.setvalue(value)
+            return v.data.value
         else:
             print "Error: Variable Addr %04X Not valid Can Not Write to" %addr    
-            
+            return False
+        
     def change_check(self):#Is called when SV is recieved.
         #Go through all variables and check to see if they have changed.
         dict = self.dict
