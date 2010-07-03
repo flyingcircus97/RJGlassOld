@@ -26,98 +26,21 @@
 
 import time
 
-class airspeed_c(object):
+class radio_c(object):
 	
-	def set_disp(self, Vspeed):
-		#This sets what is displayed below speed tape. (Goes blank after a few seconds)
-		self.Vspeed_disp = Vspeed
-
 		
-		
-	def cycle_Vspeed_input(self):
-		temp = self.Vspeed_input
-		if temp == self.V1:
-			out = self.VR
-		elif temp == self.VR:
-			out = self.V2
-		else:
-			out = self.V1
-		self.Vspeed_input = out
-		self.set_disp(out)
-					
-	def inc_Vspeed_input(self):
-		self.Vspeed_input.inc()
-		self.set_disp(self.Vspeed_input)
-		
-	def dec_Vspeed_input(self):
-		self.Vspeed_input.dec()
-		self.set_disp(self.Vspeed_input)
-		
-	def visible_Vspeed_input(self):
-		self.Vspeed_input.onoff()
-		self.set_disp(self.Vspeed_input)
-		
-	def inc_VT(self):
-		self.VT.inc()
-		self.set_disp(self.VT)
-	def dec_VT(self):
-		self.VT.dec()
-		self.set_disp(self.VT)
-		
-	def visible_VT(self):
-		self.VT.onoff()
-		self.set_disp(self.VT)
-	
-	def set_bug(self, value):
-		self.bug.set_value(value)
-		
-	
 	def __init__(self,variable):
 		self.IAS = variable.byName('IAS').data #self.IAS.value is value read from FSX
-		self.IAS_guage = 40.0
-		self.IAS_diff = 10.0 #Pink Line to show accel or decell
-		self.trend_visible = False #Speed trend turns on  H> 20ft, turns off speed <105kts
-		self.IAS_prev = self.IAS.value
-		self.IAS_list = [0] * 40 # This is used to compute IAS accelertation for airspped tape
-		self.TAS = 0.0
-		self.Mach = variable.byName('Mach').data
-		self.Mach.active = False
-		self.GS = variable.byName('GS').data
-		#self.V1 = V_speed_c("V1 ", 135)
-		#self.V2 = V_speed_c("V2 ", 144)
-		#self.VR = V_speed_c("VR ", 137)
-		#self.VT = V_speed_c("VT ", 110)
-		#self.Vspeed_input = self.V1  #Currently selected one to be changed by knob
-		#self.Vspeed_disp = self.V1 #The one that is displayed below speed tape
-		#self.Vspeed_disp_timer = 0 #Used for delay of timer
-		self.bug = variable.byName('IAS_Bug').data
-		self.maxspeed = 260 #Never Exceed speed Red line
-		self.minspeed = 220 #Stall speed
-		self.lowspeed = 140
+	
 		
 	def test(self):
-		self.IAS_guage += 0.2
+		pass
 		
 	def comp(self):
-		#Comput the data for airspeed
-		#self.IAS.
-		if self.IAS.value <=40:
-			self.IAS_guage = 40
-		else: 
-			self.IAS_guage = self.IAS.value
+		#Computations per frame
+		pass
 
-	def comp_IAS_accel(self, airspeed, frame_rate):
-		#Computes forcastes IAS in 10 seconds for the IAS tape IAS_diff
-		#Find difference between new_IAS and last reading
-		diff = self.IAS.value - self.IAS_prev
-		self.IAS_prev = self.IAS.value
-		#Add diff reading to list pop oldest one
-		self.IAS_list.append(diff)
-		self.IAS_list.pop(0)
-		a= self.IAS_list
-		self.IAS_diff = (sum(a) / len(a)) / frame_rate * 10
-
-
+	
 class data(object):
 
 	
@@ -125,7 +48,7 @@ class data(object):
 		
 		self.variable = variable
 				
-		self.airspeed = airspeed_c(variable)
+		self.radio = radio_c(variable)
 			
 			
 	def comp(self):
@@ -133,7 +56,7 @@ class data(object):
 		#global_time = globaltime.value
 		#Computer delta_t = Time between last comp and this one
 					
-		self.airspeed.comp()
+		self.radio.comp()
 		
 			
 	def comp_second(self):
@@ -144,6 +67,6 @@ class data(object):
 	def test(self):
 
 		#time.sleep(0.01)
-		self.airspeed.IAS.value += 1
-		
+		#self.airspeed.IAS.value += 1
+		pass
 		
