@@ -99,7 +99,7 @@
 	<addr>0460</addr>
 	<name>XPDR</name>
 	<type>int</type>
-	<format>4d</format>
+	<format>04d</format>
 	<desc>Transpoder Code</desc>
 </var>
 
