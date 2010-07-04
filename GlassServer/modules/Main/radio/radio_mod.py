@@ -25,14 +25,48 @@
 
 
 import time
+import variables.valid_check as valid_check
+
+
+class xpdr_check(object):
+	#XPDR specific valid check. Digit from 0000 to 7777
+	def test(self, value):
+		valid = True
+		temp_v = int(value) #Make sure int postitive
+		if ((7778 < temp_v) or (temp_v < 0)):
+			valid = False
+		digits = [temp_v / pow(10,i) %10 for i in range(4)]
+				
+		for i in digits:
+			#If any digit >7 then not valid Transponder Code
+			if (i>7):
+				valid = False
+		
+		if valid:
+			return value
+		else:
+			return None
 
 class radio_c(object):
 	
 		
 	def __init__(self,variable):
-		self.IAS = variable.byName('IAS').data #self.IAS.value is value read from FSX
-	
+		self.NAV1_ACTIVE = variable.byName('NAV1_ACTIVE') #self.IAS.value is value read from FSX
+		#variable.add_check(valid_check.within(118.000,135.000), ['NAV1_ACTIVE'])
 		
+		#Set up Valid Checks
+		navs = ['NAV1_ACTIVE','NAV1_STANDBY','NAV2_ACTIVE','NAV2_STANDBY']
+		variable.add_test(valid_check.within(108.000,117.990), navs)
+		variable.add_test(valid_check.roundto(0.05), navs)
+		coms = ['COM1_ACTIVE','COM1_STANDBY','COM2_ACTIVE','COM2_STANDBY']
+		variable.add_test(valid_check.within(118.000,136.990), coms)
+		variable.add_test(valid_check.roundto(0.025), coms)
+		adfs = ['ADF1_ACTIVE','ADF1_STANDBY','ADF2_ACTIVE','ADF2_STANDBY']
+		variable.add_test(valid_check.within(100.0,1799.99), adfs)
+		variable.add_test(valid_check.roundto(0.1), adfs)
+		variable.add_test(xpdr_check(),['XPDR'])
+		#self.NAV1_ACTIVE.add_test(valid_check.within(118.000,135.000))	
+		#self.NAV1_ACTIVE.add_test(valid_check.roundto(0.05))	
 	def test(self):
 		pass
 		

@@ -27,7 +27,7 @@
 #import PySimConnect
 import struct
 import inspect, os, time
-import variable.valid as valid
+import variables.valid_check as valid_check #classes to check validity of variables.
 
 class data_obj(object):
     #Used to make a object for Definition to link to
@@ -54,7 +54,7 @@ class var_obj(object):
         self.unit = unit #Unit of variable, used for Web interface.
         self.format_s = format_s #Format of variable, used for Web interface.
         self.writeable = True #Set to True, will be set to False if applicable.
-        self.valid = lambda x:x #Valid check set to return value, (can be changed if desired.)
+        self.valid_check = valid_check.check_c() #Valid check set to return value, (can be changed if desired.)
         self.pack_format = pack_format #Either "f" - float, "i" - int, "I" - for unsigned int.
         self.pack_size = struct.calcsize(pack_format) #Calculates size in bytes.
         self.change_count = 0 #This is incremented everytime value changed. Used for change detect.
@@ -78,27 +78,32 @@ class var_obj(object):
         self.writeable = func
         
     def set_valid_check(self, func):
-        self.valid = func
+        self.valid_check = func
+    
+    def add_test(self, obj):
+        self.valid_check.add_test(obj)
     
     def setvalue(self, value):
         #Check for valid number and correct it if needed.
-        result = self.valid(value)
+        result = self.valid_check.test(value)
                     
-        if result != False: #If valid check return False (Don't write)
+        if result != None: #If valid check return False (Don't write)
         #Check for custom write function in self.writable.
         #If write_func is True, means variable is writable but no write_func
         #If write_func is False, means variable not writeable.
             if inspect.ismethod(self.writeable):
                 #self.writeable(self.unpack(value))
                 print "WRITEABLE FUNC"
-                self.writeable(value)
+                self.writeable(result)
             elif self.writeable == True:
                 #self.data.set_value(self.unpack(value))
-                self.data.set_value(value)
+                self.data.set_value(result)
             else:
                 print "Variable %04X not WRITEABLE" %self.addr
+            
         else: #if result == False
             print "Value %r - Failed valid check for Variable %04X" %(value, self.addr)
+        return result
             
     def client_setvalue(self, value):
         self.data.value = self.unpack(value)
@@ -110,7 +115,7 @@ class variable_c(object):
         #self.aircraft = aircraft
         #Creating dict containing all variables
         self.dict = {} #Holds all varibles keyed by address.
-        self.valid = 5
+        self.valid_check = valid_check
         #Get Element Tree setup for parsing of variable XML files.
         from xml.etree.ElementTree import ElementTree
         self.tree = ElementTree()
@@ -160,16 +165,24 @@ class variable_c(object):
             s = format %v.data.value
             return s
     
+    def add_test(self, test, var):
+        #Add validity check / test to list of var byName.
+        for v in var:
+            i = self.byName(v)
+            if i != None:
+                i.add_test(test)
+                
+    
     def set(self, addr, value):
         #Sets variable, if settible.
         if addr in self.dict.keys():
             v = self.dict[addr]
             
-            v.setvalue(value)
-            return v.data.value
+            ok = v.setvalue(value)
+            return ok
         else:
             print "Error: Variable Addr %04X Not valid Can Not Write to" %addr    
-            return False
+            return None
         
     def change_check(self):#Is called when SV is recieved.
         #Go through all variables and check to see if they have changed.
@@ -212,7 +225,7 @@ class variable_c(object):
                 #addr = int('0x'+data[0],16)
             #Add Variable to list
             ret_list.append(self.add_var(addr, name, type, desc, unit, format))
-            print addr, name, type, desc, unit, format
+            #print addr, name, type, desc, unit, format
             #time.sleep(0.5)
         return ret_list
     
@@ -223,7 +236,7 @@ class variable_c(object):
         l.pop(0)  #Take out first (modules)
         l.pop()   #Take out last 'variable.txt'
         group = self.var_groups
-        print l
+        #print l
         for name in l:
             last_group = group
             if name not in group:
@@ -232,7 +245,7 @@ class variable_c(object):
         last_group[name] = var_list
             
         
-        print self.var_groups
+        #print self.var_groups
         
     def get_varAJAX(self, name):
         
@@ -252,7 +265,7 @@ class variable_c(object):
                 var_group = var_group[n]
             else:
                 var_group = []
-        print name
+        #print name
         #Check to see if var_group found.
         if type(var_group) == list:
             for i in var_group:
@@ -262,7 +275,7 @@ class variable_c(object):
                 format = "%" + i.format_s
                 value = format %i.data.value
                               
-                out_list.append([i.addr, i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
+                out_list.append([hex(i.addr), i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
                 #print "***I", i
         if len(out_list) > 0:
                 out_list.insert(0,[name])
