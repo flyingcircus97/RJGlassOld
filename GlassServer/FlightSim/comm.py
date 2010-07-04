@@ -2,7 +2,7 @@
 # ----------------------------------------------------------
 # FlightSim Comm 
 # ----------------------------------------------------------
-import variable
+import variables.variable as variable
 import config
 class FS_Comm_c(object):
     #Common class to read and write data to Flight Sim app.

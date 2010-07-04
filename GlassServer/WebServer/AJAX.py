@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import variable
+import variables.variable as variable
 try:
     import json
 except ImportError:
@@ -30,7 +30,8 @@ class AJAX_c(object):
     
         def get_children(var_group, name):
             children = []
-            for i in var_group:
+            #Sort children alphabetically
+            for i in sorted(var_group.keys()):
                 if name == None:
                     full_name = i
                 else:
@@ -44,20 +45,20 @@ class AJAX_c(object):
             return children	
         #Create Tree Directory, JSON.
         var_groups = self.variables.var_groups
-        print "*******"
+        #print "*******"
         var_d = {}
         var_d["property"] = {"name": "All", "key" : "All"}
         var_d["children"] = get_children(var_groups, None)
-        print var_d
+        #print var_d
         #m = json.dumps([{"property": {"name": "root"}}])
         m = json.dumps([var_d])
         #print variable.variables.var_groups
-        print m
+        #print m
         return m
         
     def get_var(self,body):
             list = []
-            print body
+            #print body
             #print json.loads(body)
             keys = body['var'][0].split(',')
             for key in keys:
@@ -71,7 +72,7 @@ class AJAX_c(object):
         
     def get_var_values(self,body):
             list = []
-            print body
+            #print body
             #print json.loads(body)
             keys = body['var'][0].split(',')
             for key in keys:
@@ -81,18 +82,32 @@ class AJAX_c(object):
                     else:
                         list.append('None')
                 
-            print list
+            #print list
             return  json.dumps(list)   
         
     def set_var_value(self, body):
         #Called to set variable from Website.
-            print body
-            addr = int(body['addr'][0])
-            try:
-                value = float(body['value'][0])
+            
+            addr = int(body['addr'][0],16)
+            pack_format = self.variables.get(addr).pack_format
+            
+            if pack_format == 'f':
+                try:
+                    value = float(body['value'][0])
+                except ValueError:
+                    value = None
+                #If integer, then make integer
+            elif pack_format == 'i':
+                try:
+                    value = int(body['value'][0])
+                except ValueError:
+                    value = None
+                
+            if value != None:
                 r = self.variables.set(addr,value)
-            except:
-                r = False 
+            else:
+                r = None
+            # if r == None then variable rejects invalid data.
             
             return json.dumps([r,self.variables.get_string(addr)])
             

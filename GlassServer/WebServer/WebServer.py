@@ -6,7 +6,7 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import cgi, time
 import threading
-import variable
+import variables.variable as variable
 import FlightSim.comm
 import AJAX
 try:
@@ -25,6 +25,10 @@ class GlassHandler(SimpleHTTPRequestHandler):
         #self.aircraft = aircraft_data #This is so the handler can access the aircraft data.
     #    self.variables = variables
 
+    #This overides logging of requests to screen
+    def log_message(self, format, *args): 
+        pass
+    
     def do_GET(self):
         #print 'Get', self.client_address
         path_split = self.path.split('/')
@@ -79,6 +83,7 @@ class GlassHandler(SimpleHTTPRequestHandler):
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
+        
 class GlassWebServer_c(object):
 
     

@@ -317,7 +317,7 @@ class Glass_Controller_c(object):
     
         
     def setup_Modules(self):    
-        import variable
+        import variables.variable as variable
         import modules
 #        try:
 #            import modules
