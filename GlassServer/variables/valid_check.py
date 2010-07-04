@@ -39,7 +39,7 @@ class roundto(object):
     def __init__(self, nearest):
         self.nearest = nearest
     def test(self, value):
-        print "VALUE" , value
+        #print "VALUE" , value
         #temp = round(1.0 * value / self.nearest) * self.nearest
         
         return round(1.0 * value / self.nearest) * self.nearest
@@ -63,6 +63,6 @@ class check_c(object):
             if (temp_v != None):
                 temp_v = obj.test(temp_v)
                 
-        print "RETURN", temp_v
+        #print "RETURN", temp_v
         return temp_v
 
