@@ -65,10 +65,12 @@ init_tree = function() {
 		} // updatedExpanded
 
 	var sendChecked = function() {
+		edit_row = null; //Reset edit row.
 		checked = [];
 		$('tree_container').tree.getChecked().each(function(node) {
-			checked.include(node.key); });
-		
+			checked.include(node.key);
+			//node.toggle(true);
+			 });
 		
 		//alert(JSON.encode(checked));
 		//varRequest.get('var='+checked);

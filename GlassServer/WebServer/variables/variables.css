@@ -4,6 +4,10 @@
 	float: left;
 }
 
+#var_table {
+	margin-left: 220px;
+	}
+
 #var_table table {
 	border: 2px solid;
 	border-collapse: collapse;

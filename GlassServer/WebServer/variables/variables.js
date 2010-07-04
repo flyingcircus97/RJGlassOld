@@ -7,15 +7,16 @@
 		method: 'get',
 		onSuccess: function(responseText, responseXML) {
 			var h = JSON.decode(responseText);
-			
-			if (h[0] == false) { // Error in setting value.
+			//alert(h);
+			if (h[0] == null) { // Error in setting value.
 				redFx.set('background-color', '#f00'); // fade to red
 				redFx.start('background-color', '#f00', '#fff'); // then fade to white
 				
 				
 				}
 			else {
-				greenFx.start('background-color', '#ff0', '#adff44'); // fade to green
+				//greenFx.start('background-color', '#ff0', '#adff44'); // fade to green
+				greenFx.set('background-color', '#adff44'); // fade to green
 				greenFx.start('background-color', '#adff44', '#fff'); // then fade to white
 				
 		  		} // end else
@@ -36,6 +37,13 @@
 		}
 	
 	
+	function reset_var_timer() {
+		//Resets timer. Clears timeout to make sure not multiple timers are going at once.
+		if (typeof(var_timer) != "undefined") {
+					clearTimeout(var_timer); }  // end if typeof(var_time)
+				var_timer = setTimeout("window.fireEvent('updatevar');", var_refresh_rate.value* 1000); //Stop request
+		}
+
 	function reset_value_td(value_td) {
 	//	value_td.addEvent('click', function(event) {
 	//		 edit_td_click(event.target);});
@@ -108,16 +116,22 @@
 		return main_div;
 		}
 	
-	function edit_td_click(target) {
-		
-		td_parent = target.getParent();
-		td_parent.setStyle('background-color','yellow');
-		if ((edit_row != null) && (edit_row != target)) { //If other row being edited. Restore that one back to normal.
+	function reset_edit_row() {
+		if (edit_row != null) { //If other row being edited. Restore that one back to normal.
 			reset_value_td(old_target);
 			old_target.childNodes[0].nodeValue = current_value; // reset it to most up to date value.
 			old_target.replaces(edit_row);
 			old_target.getParent().setStyle('background-color','white');
 	
+		}
+	}
+
+	function edit_td_click(target) {
+		
+		td_parent = target.getParent();
+		td_parent.setStyle('background-color','yellow');
+		if (edit_row != target) {
+			reset_edit_row();
 		}
 		// Get current value
 		current_value = target.childNodes[0].nodeValue;
@@ -167,7 +181,7 @@
 		url: '/ajax/get_var',
 		method: 'get',
 		onSuccess: function(responseText, responseXML) {
-		
+			reset_edit_row();
 			$('the_table').destroy();	
 			var myTable = new HtmlTable({
 				properties: {
@@ -195,6 +209,7 @@
 			value_td.addClass('value');
 			reset_value_td(value_td);
 			reset_row(last_row);
+
 			//value_td.addEvent('click', function(event) {
 			// edit_td_click(event.target);});
 			//value_td.editing = false;
@@ -205,9 +220,13 @@
 			});
 		
 		//window.fireEvent('updatevar', null, var_refresh_rate.value* 1000);
-		var_timer = setTimeout("window.fireEvent('updatevar');", var_refresh_rate.value* 1000); //Stop request if table is
-		//var_timer = setTimeout("alert('EATRSHIT')", var_refresh_rate.value* 1000); 
-		//alert('WHAT');
+	
+	if (j.length > 1) {
+		//Don't call for refresh if table has no data in it. (Other than "No Variable Group Selected row")
+		//var_timer = setTimeout("window.fireEvent('updatevar');", var_refresh_rate.value* 1000); //Stop request if table is
+		reset_var_timer();
+		} // if j.length>1
+		
 		} // onSuccess
 	}); 
 	var updateRequest = new Request({
@@ -221,6 +240,8 @@
 		j.each(function(item, index) {
 			//Go through each line of table looking for changes.
 			var row = rows[index];
+			//Check to make sure row still exists.
+			if ($defined(row)) {
 			// Get current value
 			var value_td = row.getElements('td')[3];
 			if ($defined(value_td)) {
@@ -249,12 +270,11 @@
 
 				
 			} // if($defined(value_td)
-			
+			} // if($defined(row)
 			});
 		if (j.length > 0) {
 //			var_timer = setTimeout("alert('EARSHIT')", var_refresh_rate.value* 1000); //Stop request if table 
-			var_timer = setTimeout("window.fireEvent('updatevar');", var_refresh_rate.value* 1000); //Stop request if table is
-			//window.fireEvent('updatevar');
+			reset_var_timer();
 			} // if j.length
 		} // if $defined('var_table')
 		} // onSuccess
