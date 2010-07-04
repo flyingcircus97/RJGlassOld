@@ -1,0 +1,10 @@
+<variables>
+<var>
+	<addr>0460</addr>
+	<name>XPDR</name>
+	<type>int</type>
+	<format>04d</format>
+	<desc>Transpoder Code</desc>
+	<initial>1200</initial>
+</var>
+</variables>

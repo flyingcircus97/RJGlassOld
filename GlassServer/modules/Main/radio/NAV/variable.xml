@@ -1,0 +1,38 @@
+<variables>
+<var>
+	<addr>0420</addr>
+	<name>NAV1_ACTIVE</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Nav Radio 1 Active Freq</desc>
+	<initial>109.90</initial>
+</var>
+<var>
+	<addr>0421</addr>
+	<name>NAV1_STANDBY</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Nav Radio 1 Standby Freq</desc>
+	<initial>112.45</initial>
+</var>
+<var>
+	<addr>0430</addr>
+	<name>NAV2_ACTIVE</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Nav Radio 2 Active Freq</desc>
+	<initial>113.60</initial>
+</var>
+<var>
+	<addr>0431</addr>
+	<name>NAV2_STANDBY</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Nav Radio 2 Standby Freq</desc>
+	<initial>115.75</initial>
+</var>
+</variables>

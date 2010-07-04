@@ -1,0 +1,38 @@
+<variables>
+<var>
+	<addr>0400</addr>
+	<name>COM1_ACTIVE</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Com Radio 1 Active Freq</desc>
+	<initial>122.800</initial>
+</var>
+<var>
+	<addr>0401</addr>
+	<name>COM1_STANDBY</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Com Radio 1 Standby Freq</desc>
+	<initial>119.900</initial>
+</var>
+<var>
+	<addr>0410</addr>
+	<name>COM2_ACTIVE</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Com Radio 2 Active Freq</desc>
+	<initial>135.350</initial>
+</var>
+<var>
+	<addr>0411</addr>
+	<name>COM2_STANDBY</name>
+	<type>float</type>
+	<unit>MHZ</unit>
+	<format>6.3f</format>
+	<desc>Com Radio 2 Standby Freq</desc>
+	<initial>132.875</initial>
+</var>
+</variables>

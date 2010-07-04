@@ -1,0 +1,38 @@
+<variables>
+<var>
+	<addr>0440</addr>
+	<name>ADF1_ACTIVE</name>
+	<type>float</type>
+	<unit>KHZ</unit>
+	<format>5.1f</format>
+	<initial>256.0</initial>
+	<desc>ADF Radio 1 Active Freq</desc>
+</var>
+<var>
+	<addr>0441</addr>
+	<name>ADF1_STANDBY</name>
+	<type>float</type>
+	<unit>KHZ</unit>
+	<format>5.1f</format>
+	<initial>323.0</initial>
+	<desc>ADF Radio 1 Standby Freq</desc>
+</var>
+<var>
+	<addr>0450</addr>
+	<name>ADF2_ACTIVE</name>
+	<type>float</type>
+	<unit>KHZ</unit>
+	<format>5.1f</format>
+	<initial>456.0</initial>
+	<desc>ADF Radio 2 Active Freq</desc>
+</var>
+<var>
+	<addr>0451</addr>
+	<name>ADF2_STANDBY</name>
+	<type>float</type>
+	<unit>KHZ</unit>
+	<format>5.1f</format>
+	<initial>700.0</initial>
+	<desc>ADF Radio 2 Standby Freq</desc>
+</var>
+</variables>
