@@ -89,25 +89,8 @@ class AJAX_c(object):
         #Called to set variable from Website.
             
             addr = int(body['addr'][0],16)
-            pack_format = self.variables.get(addr).pack_format
+            r = self.variables.set_string(addr,body['value'][0])
             
-            if pack_format == 'f':
-                try:
-                    value = float(body['value'][0])
-                except ValueError:
-                    value = None
-                #If integer, then make integer
-            elif pack_format == 'i':
-                try:
-                    value = int(body['value'][0])
-                except ValueError:
-                    value = None
-                
-            if value != None:
-                r = self.variables.set(addr,value)
-            else:
-                r = None
-            # if r == None then variable rejects invalid data.
             
             return json.dumps([r,self.variables.get_string(addr)])
             

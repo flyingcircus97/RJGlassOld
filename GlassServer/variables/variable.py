@@ -83,6 +83,26 @@ class var_obj(object):
     def add_test(self, obj):
         self.valid_check.add_test(obj)
     
+    def setvalue_string(self, value):
+        #Set value by passing in string.
+        #Used for Webserver and variable XML parsing.
+        pack_format = self.pack_format
+        if pack_format == 'f':
+            try:
+                value = float(value)
+            except ValueError:
+                value = None
+            #If integer, then make integer
+        elif pack_format == 'i':
+            try:
+                value = int(value)
+            except ValueError:
+                value = None
+        if value!=None:
+            return self.setvalue(value)
+        else:
+            return None
+    
     def setvalue(self, value):
         #Check for valid number and correct it if needed.
         result = self.valid_check.test(value)
@@ -183,7 +203,18 @@ class variable_c(object):
         else:
             print "Error: Variable Addr %04X Not valid Can Not Write to" %addr    
             return None
-        
+    
+    def set_string(self, addr, value):
+        #Sets variable, if settible. (By convert string to correct type.)
+        if addr in self.dict.keys():
+            v = self.dict[addr]
+            
+            ok = v.setvalue_string(value)
+            return ok
+        else:
+            print "Error: Variable Addr %04X Not valid Can Not Write to" %addr    
+            return None
+    
     def change_check(self):#Is called when SV is recieved.
         #Go through all variables and check to see if they have changed.
         dict = self.dict
@@ -205,6 +236,7 @@ class variable_c(object):
             unit = None
             format = '5.2f'
             desc = None
+            initial = None
             #Go through each child.
             for c in children:
                 tag = c.tag
@@ -222,9 +254,16 @@ class variable_c(object):
                     unit = value
                 elif tag == 'format':
                     format = value
+                elif tag == 'initial':
+                    initial = value
                 #addr = int('0x'+data[0],16)
             #Add Variable to list
-            ret_list.append(self.add_var(addr, name, type, desc, unit, format))
+            new_var = self.add_var(addr, name, type, desc, unit, format)
+            if initial != None:
+                new_var.setvalue_string(initial)
+            ret_list.append(new_var)
+            
+                
             #print addr, name, type, desc, unit, format
             #time.sleep(0.5)
         return ret_list
@@ -236,7 +275,7 @@ class variable_c(object):
         l.pop(0)  #Take out first (modules)
         l.pop()   #Take out last 'variable.txt'
         group = self.var_groups
-        #print l
+        
         for name in l:
             last_group = group
             if name not in group:
