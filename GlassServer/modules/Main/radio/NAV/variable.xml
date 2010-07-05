@@ -35,4 +35,198 @@
 	<desc>Nav Radio 2 Standby Freq</desc>
 	<initial>115.75</initial>
 </var>
+<var>
+	<addr>0422</addr>
+	<name>NAV1_OBS</name>
+	<type>int</type>
+	<unit>deg</unit>
+	<format>03d</format>
+	<desc>Nav Radio 1 OBS heading</desc>
+	<initial>100</initial>
+</var>
+<var>
+	<addr>0432</addr>
+	<name>NAV2_OBS</name>
+	<type>int</type>
+	<unit>deg</unit>
+	<format>03d</format>
+	<desc>Nav Radio 2 OBS heading</desc>
+	<initial>222</initial>
+</var>
+<var>
+	<addr>0423</addr>
+	<name>NAV1_RADIAL</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>04.1f</format>
+	<desc>Nav Radio 1 Radial</desc>
+	<initial>245.2</initial>
+</var>
+<var>
+	<addr>0433</addr>
+	<name>NAV2_RADIAL</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>04.1f</format>
+	<desc>Nav Radio 2 Radial</desc>
+	<initial>030</initial>
+</var>
+<var>
+	<addr>0424</addr>
+	<name>NAV1_CDI</name>
+	<type>int</type>
+	<format>4d</format>
+	<desc>Nav Radio 1 CDI (ILS Localizer)</desc>
+	<initial>1</initial>
+</var>
+<var>
+	<addr>0434</addr>
+	<name>NAV2_CDI</name>
+	<type>int</type>
+	<format>4d</format>
+	<desc>Nav Radio 2 CDI (ILS Localizer)</desc>
+	<initial>-2</initial>
+</var>
+<var>
+	<addr>0425</addr>
+	<name>NAV1_GSI</name>
+	<type>int</type>
+	<format>4d</format>
+	<desc>Nav Radio 1 GSI (ILS GlideSlope)</desc>
+	<initial>10</initial>
+</var>
+<var>
+	<addr>0435</addr>
+	<name>NAV2_GSI</name>
+	<type>int</type>
+	<format>4d</format>
+	<desc>Nav Radio 2 GSI (ILS GlideSlope)</desc>
+	<initial>-10</initial>
+</var>
+<var>
+	<addr>0426</addr>
+	<name>NAV1_hasNAV</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>Nav Radio 1 is receieving Navaid</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0436</addr>
+	<name>NAV2_hasNAV</name>
+	<unit>1=True</unit>
+	<type>int</type>
+	<format>d</format>
+	<desc>Nav Radio 2 is receiving Navaid</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0427</addr>
+	<name>NAV1_hasLOC</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>Nav Radio 1 is receieving ILS Localizer</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0437</addr>
+	<name>NAV2_hasLOC</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>Nav Radio 2 is receiving ILS Localizer</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0428</addr>
+	<name>NAV1_hasGS</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>Nav Radio 1 is receieving ILS GlideSlope</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0438</addr>
+	<name>NAV2_hasGS</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>1=True</unit>
+	<desc>Nav Radio 2 is receiving ILS GlideSlope</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0429</addr>
+	<name>NAV1_TOFROM</name>
+	<type>int</type>
+	<unit>1=To</unit>
+	<format>d</format>
+	<desc>Nav Radio 1 TO/FROM</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>0439</addr>
+	<name>NAV2_TOFROM</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>1=To</unit>
+	<desc>Nav Radio 2 TO/FROM</desc>
+	<initial>0</initial>
+</var>
+<var>
+	<addr>042A</addr>
+	<name>NAV1_DME</name>
+	<type>float</type>
+	<unit>NM</unit>
+	<format>4.1f</format>
+	<desc>Nav Radio 1 TO/FROM</desc>
+	<initial>0.0</initial>
+</var>
+<var>
+	<addr>043A</addr>
+	<name>NAV2_DME</name>
+	<type>float</type>
+	<format>4.1f</format>
+	<unit>NM</unit>
+	<desc>Nav Radio 2 DME</desc>
+	<initial>0.0</initial>
+</var>
+<var>
+	<addr>042B</addr>
+	<name>NAV1_ID</name>
+	<type>string</type>
+	<format>s</format>
+	<desc>Nav Radio 1 ID</desc>
+<var>
+	<addr>042A</addr>
+	<name>NAV1_DME</name>
+	<type>float</type>
+	<unit>NM</unit>
+	<format>4.1f</format>
+	<desc>Nav Radio 1 TO/FROM</desc>
+	<initial></initial>
+</var>
+<var>
+	<addr>043A</addr>
+	<name>NAV2_DME</name>
+	<type>float</type>
+	<format>4.1f</format>
+	<unit>NM</unit>
+	<desc>Nav Radio 2 DME</desc>
+	<initial></initial>
+</var>
+</var>
+<var>
+	<addr>043B</addr>
+	<name>NAV2_ID</name>
+	<type>string</type>
+	<format>s</format>
+	<desc>Nav Radio 2 ID</desc>
+</var>
+
+
+
+
 </variables>
