@@ -1,0 +1,44 @@
+<variables>
+<var>
+	<addr>0110</addr>
+	<name>IND_ALT</name>
+	<type>int</type>
+	<unit>Feet</unit>
+	<format>d</format>
+	<desc>Indicated Altitude</desc>
+</var>
+<var>
+	<addr>0111</addr>
+	<name>PRESSURE_ALT</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>Feet</unit>
+	<desc>Pressure Altitude</desc>
+</var>
+<var>
+	<addr>0112</addr>
+	<name>RADAR_ALT</name>
+	<type>int</type>
+	<unit>Feet</unit>
+	<format>d</format>
+	<desc>Radar Altitude (Altitude Above Ground)</desc>
+</var>
+<var>
+	<addr>0113</addr>
+	<name>ON_GROUND</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>Aircraft on the ground</desc>
+</var>
+<var>
+	<addr>0114</addr>
+	<name>ALT_SETTING</name>
+	<type>float</type>
+	<unit>inHg</unit>
+	<format>5.2f</format>
+	<desc>Altimeter Setting (Kohlsmann Setting)</desc>
+</var>
+
+
+</variables>

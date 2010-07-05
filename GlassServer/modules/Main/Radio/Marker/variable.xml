@@ -1,0 +1,14 @@
+<variables>
+<var>
+	<addr>0470</addr>
+	<name>MARKERS</name>
+	<type>int</type>
+	<unit>Enum</unit>
+	<format>d</format>
+	<desc>Markers (1=IM,2=MM,3=OM)</desc>
+</var>
+
+
+
+
+</variables>

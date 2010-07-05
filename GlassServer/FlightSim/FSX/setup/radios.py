@@ -2,19 +2,7 @@
 # ----------------------------------------------------------
 # FSX Definitions 
 # ----------------------------------------------------------
-#Constants
-#from PySimConnect import event_obj, data_obj
-import radios
-#DataTypes
-INT32 = 1
-INT64 = 2
-FLOAT32 = 3
-FLOAT64 = 4
-STRING8 = 5
-STRING32 = 6
-STRING64 = 7
-STRING128 = 8
-STRING256 = 9
+from common import *#DataTypes
 
 def freqtoBCD(freq):
     #freq is a float.
@@ -55,12 +43,6 @@ def adftoBCD(freq):
     #return 50679808
     return bcd * 16**3
 
-def converttoBool(value):
-    if value == 0:
-        return 0
-    else:
-        return 1
-    
 
 def setup(add_var):
         #Radios freq
@@ -105,7 +87,9 @@ def setup(add_var):
         add_var("ADF Radial:2", "degrees", INT32,  'ADF2_RADIAL')
         add_var("ADF Signal:1", "number", INT32,  'ADF1_hasNAV', converttoBool)
         add_var("ADF Signal:2", "number", INT32,  'ADF2_hasNAV', converttoBool)
-
+        #Markers
+        add_var("MARKER BEACON STATE", "", INT32,  'MARKERS')
+        
 def setup_events(add_event):        
     
         

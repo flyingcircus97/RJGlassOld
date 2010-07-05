@@ -5,18 +5,9 @@
 #Constants
 from PySimConnect import event_obj, data_obj
 import setup.radios as radios
-#DataTypes
-INT32 = 1
-INT64 = 2
-FLOAT32 = 3
-FLOAT64 = 4
-STRING8 = 5
-STRING32 = 6
-STRING64 = 7
-STRING128 = 8
-STRING256 = 9
-
-   
+import setup.airspeed as airspeed
+import setup.altitude as altitude
+ 
 
 def setup(s, variables):
     
@@ -27,8 +18,11 @@ def setup(s, variables):
         s.definition_0 = s.create_DataDefinition(2)
         #Data definition ID 2, is the high priority data, that needs to have no delay.
        
-        add_var("Airspeed Indicated", "knots", FLOAT32, 'IAS')
-        add_var("GROUND VELOCITY", "knots", FLOAT32, 'GS')
+        
+        #Airspeed
+        airspeed.setup(add_var)
+        #Altitude
+        altitude.setup(add_var)
         #Radios
         radios.setup(add_var)
 
@@ -48,3 +42,5 @@ def setup_events(sevent, variables):
         #Setup Events, (For FSX variables that can only be written this way.)
         #Radio Events
         radios.setup_events(add_event)
+        #Altitude Events
+        altitude.setup_events(add_event)
