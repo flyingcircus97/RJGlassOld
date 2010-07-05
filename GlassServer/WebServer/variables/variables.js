@@ -20,7 +20,7 @@
 				greenFx.start('background-color', '#adff44', '#fff'); // then fade to white
 				
 		  		} // end else
-			td_parent.getElements('td')[3].childNodes[0].nodeValue = h[1]; //set td value to response.
+			td_parent.getElements('td')[td_value_col].childNodes[0].nodeValue = h[1]; //set td value to response.
 			}
 		});
 		//td_parent.addClass('submit');
@@ -32,7 +32,7 @@
 		//myFx.start('background-color', '#ff0', '#fff');
 		//Send addr and value
 		// - Get address
-		var addr = td_parent.getElements('td')[0].childNodes[0].nodeValue;
+		var addr = td_parent.getElements('td')[td_addr_col].childNodes[0].nodeValue;
 		sendvarRequest.send('addr='+addr+';value='+value_td.value);
 		}
 	
@@ -54,7 +54,7 @@
 	function reset_row(row) {
 		row.addEvent('click', function(event) {
 			
-			edit_td_click(this.getElements('td')[3]);
+			edit_td_click(this.getElements('td')[td_value_col]);
 //			alert(event.target.getElements('td'));
 //			alert(this);
 			});
@@ -198,17 +198,27 @@
 		j.each(function(item, index) {
 			if (item.length == 1) {
 				//alert('SPAN');
-				myTable.push([{ content: item[0], properties:{colspan:"6", class:"group_row"}}]);
+				myTable.push([{ content: item[0], properties:{colspan:"7", class:"group_row"}}]);
 			}
 			else {
+			var first_item = item[0];
+			item[0] = ' '
 			myTable.push(item);
+			
+			//alert(first_item);
 			// if writeable add code for td to make it editable.
 			var rows = $('var_table').getElements('tr');
 			var last_row = rows[rows.length-1]
-			var value_td = last_row.getElements('td')[3];
+			var value_td = last_row.getElements('td')[td_value_col];
 			value_td.addClass('value');
 			reset_value_td(value_td);
-			reset_row(last_row);
+			var img_td = last_row.getElements('td')[img_td_col];
+			if (first_item == true) {
+				var img = new Element('img', {'src' : 'images/edit.png'});
+				img.inject(img_td);
+				reset_row(last_row); // only reset row click if variable is editable.
+				}
+
 
 			//value_td.addEvent('click', function(event) {
 			// edit_td_click(event.target);});
@@ -243,7 +253,7 @@
 			//Check to make sure row still exists.
 			if ($defined(row)) {
 			// Get current value
-			var value_td = row.getElements('td')[3];
+			var value_td = row.getElements('td')[td_value_col];
 			if ($defined(value_td)) {
 				if (value_td.editing == false) { 
 					if (value_td.childNodes[0].nodeValue != item) {
@@ -320,6 +330,9 @@
 	
 	//Globals
 	edit_row = null; //The row that is being edited.
+	td_value_col = 4;
+	td_addr_col = 1;
+	img_td_col = 0;
 	var_refresh_rate = new Object();
 	var_refresh_rate.value = 5;
 	});
