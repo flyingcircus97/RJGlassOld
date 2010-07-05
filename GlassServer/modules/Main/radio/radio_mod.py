@@ -65,6 +65,9 @@ class radio_c(object):
 		variable.add_test(valid_check.within(100.0,1799.99), adfs)
 		variable.add_test(valid_check.roundto(0.1), adfs)
 		variable.add_test(xpdr_check(),['XPDR'])
+		obs = ['NAV1_OBS','NAV2_OBS']
+		variable.add_test(valid_check.within(0,360), obs)
+		
 		#self.NAV1_ACTIVE.add_test(valid_check.within(118.000,135.000))	
 		#self.NAV1_ACTIVE.add_test(valid_check.roundto(0.05))	
 	def test(self):
