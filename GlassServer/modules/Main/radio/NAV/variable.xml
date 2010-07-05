@@ -145,7 +145,7 @@
 	<type>int</type>
 	<unit>1=True</unit>
 	<format>d</format>
-	<desc>Nav Radio 1 is receieving ILS GlideSlope</desc>
+	<desc>Nav Radio 1 is receiving ILS GlideSlope</desc>
 	<initial>0</initial>
 </var>
 <var>
@@ -205,7 +205,7 @@
 	<type>float</type>
 	<unit>NM</unit>
 	<format>4.1f</format>
-	<desc>Nav Radio 1 TO/FROM</desc>
+	<desc>Nav Radio 1 DME</desc>
 	<initial></initial>
 </var>
 <var>
