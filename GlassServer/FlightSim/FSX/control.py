@@ -7,14 +7,14 @@ import FSXdef
 import time
 #This is code to import config file (config.py)
 try:
-	import config
+    import config
 except ImportError:
-	# We're in a py2exe, so we'll append an element to the (one element) 
-	# sys.path which points to Library.zip, to the directory that contains 
-	# Library.zip, allowing us to import config.py
-	# Adds one level up from the Library.zip directory to the path, so import will go forward
-	sys.path.append(os.path.split(sys.path[0])[0])
-	import config
+    # We're in a py2exe, so we'll append an element to the (one element) 
+    # sys.path which points to Library.zip, to the directory that contains 
+    # Library.zip, allowing us to import config.py
+    # Adds one level up from the Library.zip directory to the path, so import will go forward
+    sys.path.append(os.path.split(sys.path[0])[0])
+    import config
 
 class control_c(object):
     #Class to read and write data to FSX.
