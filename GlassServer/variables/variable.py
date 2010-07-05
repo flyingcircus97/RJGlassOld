@@ -60,7 +60,10 @@ class var_obj(object):
         self.change_count = 0 #This is incremented everytime value changed. Used for change detect.
         self.read_func = None #Func to convert sim value to variable value.
         self.write_func = None #Func to convert variable value to sim value. (Set by FSX or X-Plane connect modules)
-        self.data = data_obj(0) #Create dataobj.
+        if 's' in pack_format: #if string.
+            self.data = data_obj('') #Create dataobj.
+        else:
+            self.data = data_obj(0) #Create dataobj.
         self.prev_data = self.data.value
     def change_check(self):
         
@@ -98,6 +101,7 @@ class var_obj(object):
                 value = int(value)
             except ValueError:
                 value = None
+
         if value!=None:
             return self.setvalue(value)
         else:
@@ -120,6 +124,7 @@ class var_obj(object):
                 self.data.set_value(result)
             else:
                 print "Variable %04X not WRITEABLE" %self.addr
+                result = None
             
         else: #if result == False
             print "Value %r - Failed valid check for Variable %04X" %(value, self.addr)
@@ -286,8 +291,8 @@ class variable_c(object):
         
         #print self.var_groups
         
-    def get_varAJAX(self, name):
-        
+    def get_varAJAX(self, name, values_only = False):
+        #If values_only then will return just values not entire AJAX table.
         def check_none(value):
             if value == None:
                 return ''
@@ -313,8 +318,18 @@ class variable_c(object):
                 #Format variable
                 format = "%" + i.format_s
                 value = format %i.data.value
-                              
-                out_list.append([hex(i.addr), i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
+                #Check if string then convert from null terminated, and add space if blank.
+                if type(i.data.value) == str:
+                    value = i.data.value.rstrip("\0")
+                    if value == '': value = ' '
+                if values_only:
+                    out_list.append(['value', value])
+                else:
+                    if i.writeable == False:
+                        w = False
+                    else:
+                        w = True
+                    out_list.append([w, hex(i.addr), i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
                 #print "***I", i
         if len(out_list) > 0:
                 out_list.insert(0,[name])
@@ -342,6 +357,8 @@ class variable_c(object):
                 type_s = 'f'
             elif type == 'INT':
                 type_s = 'i'
+            elif type == 'STRING':
+                type_s = '8s'
             else:
                 type_s = 'f' #If not specifies just make float.
             return type_s
