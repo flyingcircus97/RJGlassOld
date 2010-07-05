@@ -76,9 +76,9 @@ class AJAX_c(object):
             #print json.loads(body)
             keys = body['var'][0].split(',')
             for key in keys:
-                for i in self.variables.get_varAJAX(key):
-                    if len(i) > 2:
-                        list.append(i[3])
+                for i in self.variables.get_varAJAX(key, values_only = True):
+                    if len(i) > 1:
+                        list.append(i[1])
                     else:
                         list.append('None')
                 
