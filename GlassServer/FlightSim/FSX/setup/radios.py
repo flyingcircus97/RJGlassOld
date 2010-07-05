@@ -100,6 +100,11 @@ def setup(add_var):
         add_var("Nav DME:2", "Nautical Miles", FLOAT32,  'NAV2_DME')
         add_var("NAV TOFROM:2", "Enum", INT32,  'NAV2_TOFROM')
         add_var("Nav Ident:2", "", STRING8,  'NAV2_ID')
+        #Adfs
+        add_var("ADF Radial:1", "degrees", INT32,  'ADF1_RADIAL')
+        add_var("ADF Radial:2", "degrees", INT32,  'ADF2_RADIAL')
+        add_var("ADF Signal:1", "number", INT32,  'ADF1_hasNAV', converttoBool)
+        add_var("ADF Signal:2", "number", INT32,  'ADF2_hasNAV', converttoBool)
 
 def setup_events(add_event):        
     

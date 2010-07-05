@@ -35,4 +35,40 @@
 	<initial>700.0</initial>
 	<desc>ADF Radio 2 Standby Freq</desc>
 </var>
+<var>
+	<addr>0442</addr>
+	<name>ADF1_RADIAL</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>05.1f</format>
+	<initial>123.2</initial>
+	<desc>ADF Radio 1 Radial</desc>
+</var>
+<var>
+	<addr>0452</addr>
+	<name>ADF2_RADIAL</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>05.1f</format>
+	<initial>90.0</initial>
+	<desc>ADF Radio 2 Radial</desc>
+</var>
+<var>
+	<addr>0443</addr>
+	<name>ADF1_hasNAV</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>ADF Radio 1 Signal</desc>
+</var>
+<var>
+	<addr>0453</addr>
+	<name>ADF2_hasNAV</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>ADF Radio 2 Signal</desc>
+</var>
+
+
 </variables>
