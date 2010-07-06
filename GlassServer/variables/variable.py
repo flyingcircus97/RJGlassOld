@@ -28,20 +28,20 @@
 import struct
 import inspect, os, time
 import variables.valid_check as valid_check #classes to check validity of variables.
-
-class data_obj(object):
+from FlightSim.FSX.PySimConnect import data_obj
+#class data_obj(object):
     #Used to make a object for Definition to link to
-    def __init__(self, value):
-        self.value = value
-        self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
-        self.sim_event = None
-        self.inhibit = 0 #Used to postpone reading of data value from sim, when data is written too.
+#    def __init__(self, value):
+#        self.value = value
+#        self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
+#        self.sim_event = None
+#        self.inhibit = 0 #Used to postpone reading of data value from sim, when data is written too.
         
-    def set_value(self, value):
-        self.value = value
-        if self.sim_event != None:
-            self.sim_event.send()
-            self.inhibit = 4
+#    def set_value(self, value):
+#        self.value = value
+#        if self.sim_event != None:
+#            self.sim_event.send()
+#            self.inhibit = 4
 
 
 class var_obj(object):
