@@ -24,6 +24,7 @@ STRING32 = 6
 STRING64 = 7
 STRING128 = 8
 STRING256 = 9
+SIMCONNECT_DATA_SET_FLAG_TAGGED = 1
 #Header length
 HEADER_len = 12
 
@@ -33,14 +34,18 @@ class data_obj(object):
         self.value = value
         self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
         self.sim_event = None
+        self.sim_obj = None
         self.inhibit = 0 #Used to postpone reading of data value from sim, when data is written too.
         
     def set_value(self, value):
+        print "*************** SET VALUE", value
         self.value = value
         if self.sim_event != None:
             self.sim_event.send()
             self.inhibit = 4
-            
+        elif self.sim_obj != None:
+            self.sim_obj.send()
+            self.inhibit = 4
             
 class empty_event(object):
         
@@ -59,23 +64,41 @@ class event_obj(object):
         
 class DataRequest(object):
     #Attempt to store all value as data definition objects
-    def __init__(self, SimCon, definition, name, unit, type, func=None):
+    def __init__(self, count, SimCon, definition, name, unit, obj, type, func=None):
         #Create Data Definition and Add it to 
         #First send via TCP to Simconnect
-        self.func = func
+        self.func = func #Func called to convert FSX data to GlassServer var.
+        self.send_func = lambda x:x #Func to convert GlassServer var to FSX data.
         self.value = 0
+        self.index = count
+        self.obj = obj
         d = struct.pack('<I', definition) + SimCon.string256(name) + SimCon.string256(unit)
-        e = d + struct.pack('<iii', type, 0, -1)
+        e = d + struct.pack('<iii', type, 0, count)
         SimCon.client.send(e, 0x0c)
+        #Comput size
+        self.size = 4
+        self.type = 'i'
         if type == FLOAT32:
             self.value = 0.0
-        #Add lists to Simconnect to keep track of definition
-        #SimCon.add_DataDefinition(self)
-    #def __get__(self, obj, objtype):
-    #    print "Iam being used"
-    #    return self.value
+            self.type = 'f'
+        self.SimCon = SimCon
+        self.definition = definition
+        
+    def set_send_func(self, func):
+        self.send_func = func
+        
     def get(self):
         return self.value
+    
+    def send(self, object_id = 0): #Default object_id to user aircraft.
+        value = self.send_func(self.obj.value)
+        print "Sending" , value
+        
+        flag = SIMCONNECT_DATA_SET_FLAG_TAGGED
+        d = struct.pack('<iiiiii' + self.type, self.definition, object_id, flag, 1, 4+ self.size , self.index, value)
+
+        self.SimCon.client.send(d, 0x10)
+        
 
 class SimEvent(object):
     def __init__(self, SimCon, eventid, name, data, send_func = None):
@@ -167,9 +190,12 @@ class DataDefinition(object):
         self.id = id
         self.unpack_s = '<' #Always little edian
         self.SimCon = SimCon
+        self.data_count = 0
     def add(self, name, unit, type, obj, func=None):
-        simobj = DataRequest(self.SimCon, self.id, name, unit, type, func)
+        simobj = DataRequest(self.data_count, self.SimCon, self.id, name, unit, obj, type, func)
+        
         #print self.id
+        obj.sim_obj = simobj
         self.list.append(simobj)
         self.objlist.append(obj)
         #print obj
@@ -188,10 +214,12 @@ class DataDefinition(object):
             print "ERROR: Type Not Found"
             #raise
         self.unpack_s += temp
-        
-        #return simobj
+        self.data_count +=1
+        return simobj
+    
     def request(self, request_id, object_id, period, flag =0, orgin =0, interval =0, limit =0):
         #Request Data on SimObject 0xe
+        #flag = 2
         d = struct.pack('<iiiiiiii', request_id, self.id, object_id, period, flag, orgin, interval, limit)
         self.SimCon.client.send(d, 0xe)
         
@@ -294,7 +322,7 @@ class SimConnect_Client_c(threading.Thread):
         print "Py SIMCONNECT SERVER STARTING"
         while self.go:
         #print time.time()-self.clock
-            print self.app_name, "RECIEVE"
+            #print self.app_name, "RECIEVE"
             if self.recieve:
                 try:
                     r = self.s.recv(1024)

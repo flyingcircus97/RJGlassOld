@@ -4,20 +4,30 @@
 # ----------------------------------------------------------
 #Constants
 from PySimConnect import event_obj, data_obj
+from types import FunctionType
 import setup.radios as radios
 import setup.airspeed as airspeed
 import setup.altitude as altitude
- 
+import setup.position as position
+import setup.heading as heading
 
 def setup(s, variables):
     
-        def add_var(desc, unit, type, var_name, func = None):
-            s.definition_0.add(desc, unit, type, variables.byName(var_name).data, func)
-            variables.byName(var_name).writeable = False #For FSX set writeable to False
-        
+        def add_var(desc, unit, var_type, var_name, func = None, send = False):
+            simobj = s.definition_0.add(desc, unit, var_type, variables.byName(var_name).data, func)
+            #If send_func eithers holds func or is true, then variable will be writeable.
+            
+            if (type(send) == FunctionType):
+                simobj.set_send_func(send)
+            if send == False: 
+                #Variable is not writable in FSX disable it in Glass Server
+                variables.byName(var_name).writeable = False #For FSX set writeable to False
+            
+       
         s.definition_0 = s.create_DataDefinition(2)
         #Data definition ID 2, is the high priority data, that needs to have no delay.
-       
+        #s.definition_1 = s.create_DataDefinition(3)
+        
         
         #Airspeed
         airspeed.setup(add_var)
@@ -25,6 +35,10 @@ def setup(s, variables):
         altitude.setup(add_var)
         #Radios
         radios.setup(add_var)
+        #Position
+        position.setup(add_var)
+        #HEading
+        heading.setup(add_var)
 
 
 def setup_events(sevent, variables):        
