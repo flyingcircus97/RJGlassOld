@@ -10,7 +10,7 @@ def setup(add_var):
         add_var("Indicated Altitude", "feet", INT32, 'IND_ALT')
         add_var("Pressure Altitude", "feet", INT32, 'PRESSURE_ALT')
         add_var("Kohlsman Setting HG", "inHG", FLOAT32, 'ALT_SETTING')
-        add_var("SIM ON GROUND", "", INT32, 'ON_GROUND', converttoBool)
+        
         
 def setup_events(add_event):        
     

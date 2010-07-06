@@ -9,11 +9,13 @@
 </var>
   <var>
 	<addr>0101</addr>
-	<name>MACH</name>
+	<name>TAS</name>
 	<type>float</type>
-	<format>4.3f</format>
-	<desc>Indicated Mach</desc>
+	<unit>Knots</unit>
+	<format>5.1f</format>
+	<desc>Indicated AirSpeed</desc>
 </var>
+
   <var>
 	<addr>0102</addr>
 	<name>GS</name>
@@ -22,4 +24,13 @@
 	<format>5.1f</format>
 	<desc>Ground Speed</desc>
 </var>
+<var>
+	<addr>0103</addr>
+	<name>MACH</name>
+	<type>float</type>
+	<format>4.3f</format>
+	<desc>Indicated Mach</desc>
+</var>
+
+
 </variables>

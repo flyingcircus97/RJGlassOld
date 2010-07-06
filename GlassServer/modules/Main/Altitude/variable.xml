@@ -25,20 +25,21 @@
 </var>
 <var>
 	<addr>0113</addr>
-	<name>ON_GROUND</name>
-	<type>int</type>
-	<unit>1=True</unit>
-	<format>d</format>
-	<desc>Aircraft on the ground</desc>
-</var>
-<var>
-	<addr>0114</addr>
 	<name>ALT_SETTING</name>
 	<type>float</type>
 	<unit>inHg</unit>
 	<format>5.2f</format>
 	<desc>Altimeter Setting (Kohlsmann Setting)</desc>
 </var>
+<var>
+	<addr>0115</addr>
+	<name>VERT_SPEED</name>
+	<type>ing</type>
+	<unit>FPM</unit>
+	<format>d</format>
+	<desc>Vertical Speed</desc>
+</var>
+
 
 
 </variables>

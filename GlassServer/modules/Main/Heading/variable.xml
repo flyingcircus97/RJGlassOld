@@ -1,0 +1,34 @@
+<variables>
+<var>
+	<addr>0130</addr>
+	<name>MAG_HEAD_IND</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>4.1f</format>
+	<desc>Aircraft Indicated Magnetic Heading</desc>
+</var>
+<var>
+	<addr>0131</addr>
+	<name>MAG_VARIATION</name>
+	<type>float</type>
+	<format>3.1f</format>
+	<unit>deg</unit>
+	<desc>Magnetic Varitation at Aircarft Location</desc>
+</var>
+<var>
+	<addr>0132</addr>
+	<name>MAG_TRACK</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>4.1f</format>
+	<desc>Magnetic Track</desc>
+</var>
+<var>
+	<addr>0133</addr>
+	<name>TURN_CORD</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>pos</unit>
+	<desc>Turn Coordinator Position</desc>
+</var>
+</variables>

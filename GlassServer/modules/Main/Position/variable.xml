@@ -1,0 +1,70 @@
+<variables>
+<var>
+	<addr>0120</addr>
+	<name>PLANE_LAT</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>9.5f</format>
+	<desc>Aircraft Latitude</desc>
+</var>
+<var>
+	<addr>0121</addr>
+	<name>PLANE_LONG</name>
+	<type>float</type>
+	<format>9.5f</format>
+	<unit>deg</unit>
+	<desc>Aircarft Longitude</desc>
+</var>
+<var>
+	<addr>0122</addr>
+	<name>PLANE_ALT</name>
+	<type>int</type>
+	<unit>Feet</unit>
+	<format>d</format>
+	<desc>Aircarft Altitude</desc>
+</var>
+<var>
+	<addr>0123</addr>
+	<name>PLANE_HDG_MAG</name>
+	<type>float</type>
+	<format>4.1f</format>
+	<unit>deg</unit>
+	<desc>Aircarft Heading (Magnetic)</desc>
+</var>
+<var>
+	<addr>0124</addr>
+	<name>PLANE_HDG_TRUE</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>4.1f</format>
+	<desc>Aircarft Heading (True)</desc>
+</var>
+
+<var>
+	<addr>0125</addr>
+	<name>PLANE_BANK</name>
+	<type>float</type>
+	<format>9.5f</format>
+	<unit>deg</unit>
+	<desc>Aircarft Bank</desc>
+</var>
+<var>
+	<addr>0126</addr>
+	<name>PLANE_PITCH</name>
+	<type>float</type>
+	<unit>deg</unit>
+	<format>9.5f</format>
+	<desc>Aircarft Pitch</desc>
+</var>
+<var>
+	<addr>0127</addr>
+	<name>ON_GROUND</name>
+	<type>int</type>
+	<unit>1=True</unit>
+	<format>d</format>
+	<desc>Aircraft on the ground</desc>
+</var>
+
+
+
+</variables>
