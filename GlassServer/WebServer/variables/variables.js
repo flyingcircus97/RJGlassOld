@@ -42,6 +42,12 @@
 		if (typeof(var_timer) != "undefined") {
 					clearTimeout(var_timer); }  // end if typeof(var_time)
 				var_timer = setTimeout("window.fireEvent('updatevar');", var_refresh_rate.value* 1000); //Stop request
+				}
+  function refresh_flash() {
+		//Flashes Rest Text and Table border, to show vars are being updated.
+			 $('refresh_text').refreshFx.start('background-color','#adff44', '#fff');
+			 //$('refresh_text').highlight('#adff44');
+			 tableFx.start('border-color','#adff44', '#000');
 		}
 
 	function reset_value_td(value_td) {
@@ -63,7 +69,9 @@
 	function create_refresh_selector(refresh_rate) {
 		//Creates the Dom Elements for the Refresh Rate: 1 2 5 10 sec
 		main_div = new Element('div', {'id': 'refresh'});
-		var p = new Element('p',{'text': 'Refresh Rate:'});
+		
+		var p = new Element('p');
+		
 		p.style.MozUserSelect="none";
 			p.addEvent('clear', function() {
 				this.getElements('span').each(function(item,index) {
@@ -71,6 +79,12 @@
 					item.removeClass('selected');
 				});//end this.getElements('span')
 			}); // end p.addEvent('clear')
+		
+		var s = new Element('span', {'text' : 'Refresh Rate:', 'id' : 'refresh_text'});
+		s.refreshFx = new Fx.Tween(s, {'duration' : 800});
+		s.inject(p);
+		
+			
 		[1,2,5,10].each(function(item,index) {
 			var s = new Element('span', {'text' : item.toString(), 'UNSELECTABLE' : "on"});
 			
@@ -105,7 +119,7 @@
 				if (typeof(var_timer) != "undefined") {
 					clearTimeout(var_timer); }  // end if typeof(var_time)
 				var_timer = setTimeout("window.fireEvent('updatevar');", var_refresh_rate.value* 1000); //Stop request if 
-					
+				
 				});
 				
 			s.inject(p);
@@ -211,6 +225,7 @@
 			var last_row = rows[rows.length-1]
 			var value_td = last_row.getElements('td')[td_value_col];
 			value_td.addClass('value');
+			tableFx = new Fx.Tween('the_table', {'duration' : 800});
 			reset_value_td(value_td);
 			var img_td = last_row.getElements('td')[img_td_col];
 			if (first_item == true) {
@@ -285,6 +300,7 @@
 		if (j.length > 0) {
 //			var_timer = setTimeout("alert('EARSHIT')", var_refresh_rate.value* 1000); //Stop request if table 
 			reset_var_timer();
+			refresh_flash();
 			} // if j.length
 		} // if $defined('var_table')
 		} // onSuccess
