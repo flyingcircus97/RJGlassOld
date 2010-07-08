@@ -1,6 +1,6 @@
 //Globals 
 checked = []; //initialize checked as none
-expanded = [];
+expanded = ['All','Main'];
 init_tree = function() {
 		
 		tree = new Mif.Tree({
