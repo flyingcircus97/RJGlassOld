@@ -282,7 +282,10 @@ class SimConnect_Client_c(threading.Thread):
         return succeed    
 
     def close(self):
-        self.s.close()
+        try: 
+            self.s.close()
+        except AttributeError:
+            print "Can't close Socket, Socket doesn't exist."
 
     def quit(self):
         print "QUITTING"
@@ -329,7 +332,9 @@ class SimConnect_Client_c(threading.Thread):
                 except socket.timeout:
                     if self.go:
                         print "SERVER TIMED OUT (Will ReTry)"
-                    
+                        self.go = False
+                except: #Unknown error so shutdown server.
+                    self.go = False
             else:
                 r = ''
             #r =self.s.recv(1024)
@@ -373,6 +378,7 @@ class SimConnect_Client_c(threading.Thread):
             #time.sleep(3)
             #Quit thread
         self.s.close()
+        print "Closing Socket"
         
 class SimConnect(object):
     
@@ -394,6 +400,9 @@ class SimConnect(object):
     def string256(self, s): #Takes a string and returns it padded to 256
         return s.ljust(256, chr(0))
     
+    def connected(self):
+        #If go is true then connected
+        return self.client.go
     
     
     def __init__(self, name, FSX_version, recieve):
