@@ -20,7 +20,7 @@ def scan_folders(extension, variable_name):
     mod_py_files = []
     variable_txt_files = []
     for root, dirs, files in os.walk(__name__):
-        #print root, dirs, files
+        print root, dirs, files
         for f in files:
             #Scan through files, find ones with correct extension.
             if f[-ext_len:] == extension:
