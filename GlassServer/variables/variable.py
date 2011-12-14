@@ -139,6 +139,7 @@ class variable_c(object):
     def __init__(self):
         #self.aircraft = aircraft
         #Creating dict containing all variables
+        print "VARIABLE INIT"
         self.dict = {} #Holds all varibles keyed by address.
         self.valid_check = valid_check
         #Get Element Tree setup for parsing of variable XML files.
@@ -152,6 +153,7 @@ class variable_c(object):
         '''
         r = None
         for var in self.dict.itervalues():
+            
             if var.name == name: #If name match return variable object
                 r = var
         return r    
@@ -367,7 +369,7 @@ class variable_c(object):
         type = type.upper()
         #Check for unique address.
         if self.exists(address):
-            print "Warning: Address 0x%X already exists in Variable dict." %addr
+            print "Warning: Address 0x%X already exists in Variable dict." %address
         #Check for unique name
         elif self.byName(name) != None:
             print "Warning: Name %s already exists in Variable dict." %name
@@ -375,6 +377,30 @@ class variable_c(object):
             self.dict[address] = var_obj(address, name, convert_type(type), desc, unit,format)
             
             return self.dict[address]
+        
+    def create_var_file(self, file_name):
+        '''
+        Creates a text file, of all variables.
+        -- Can be used by clients to translate / lookup variables.
+        -- Updated everytime GlassServer is run.
+        '''
+        def f_write(var):
+            s = "0%X,%s,%s,%s,%s" %(var.addr, var.name, var.pack_format, var.desc, var.unit)
+            s += '\n'
+            return s
+        
+        #open file
+        f = open(file_name,'w')
+        #sort by address
+        keys = self.dict.keys()
+        keys.sort()
+        for k in keys:
+            d = self.dict[k]
+            f.write(f_write(d))
+            
+        f.close()
+
+        
 #def __init__(self):
     #print "LET's GO"
 variables = variable_c()

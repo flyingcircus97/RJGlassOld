@@ -1,0 +1,59 @@
+0100,IAS,f,Indicated AirSpeed,Knots
+0101,TAS,f,Indicated AirSpeed,Knots
+0102,GS,f,Ground Speed,Knots
+0103,MACH,f,Indicated Mach,None
+0110,IND_ALT,i,Indicated Altitude,Feet
+0111,PRESSURE_ALT,i,Pressure Altitude,Feet
+0112,RADAR_ALT,i,Radar Altitude (Altitude Above Ground),Feet
+0113,ALT_SETTING,f,Altimeter Setting (Kohlsmann Setting),inHg
+0115,VERT_SPEED,f,Vertical Speed,FPM
+0120,PLANE_LAT,f,Aircraft Latitude,deg
+0121,PLANE_LONG,f,Aircarft Longitude,deg
+0122,PLANE_ALT,i,Aircarft Altitude,Feet
+0123,PLANE_HDG_MAG,f,Aircarft Heading (Magnetic),deg
+0124,PLANE_HDG_TRUE,f,Aircarft Heading (True),deg
+0125,PLANE_BANK,f,Aircarft Bank,deg
+0126,PLANE_PITCH,f,Aircarft Pitch,deg
+0127,ON_GROUND,i,Aircraft on the ground,1=True
+0130,MAG_HEAD_IND,f,Aircraft Indicated Magnetic Heading,deg
+0131,MAG_VARIATION,f,Magnetic Varitation at Aircarft Location,deg
+0132,MAG_TRACK,f,Magnetic Track,deg
+0133,TURN_CORD,i,Turn Coordinator Position,pos
+0400,COM1_ACTIVE,f,Com Radio 1 Active Freq,MHZ
+0401,COM1_STANDBY,f,Com Radio 1 Standby Freq,MHZ
+0410,COM2_ACTIVE,f,Com Radio 2 Active Freq,MHZ
+0411,COM2_STANDBY,f,Com Radio 2 Standby Freq,MHZ
+0420,NAV1_ACTIVE,f,Nav Radio 1 Active Freq,MHZ
+0421,NAV1_STANDBY,f,Nav Radio 1 Standby Freq,MHZ
+0422,NAV1_OBS,i,Nav Radio 1 OBS heading,deg
+0423,NAV1_RADIAL,f,Nav Radio 1 Radial,deg
+0424,NAV1_CDI,i,Nav Radio 1 CDI (ILS Localizer),None
+0425,NAV1_GSI,i,Nav Radio 1 GSI (ILS GlideSlope),None
+0426,NAV1_hasNAV,i,Nav Radio 1 is receieving Navaid,1=True
+0427,NAV1_hasLOC,i,Nav Radio 1 is receieving ILS Localizer,1=True
+0428,NAV1_hasGS,i,Nav Radio 1 is receiving ILS GlideSlope,1=True
+0429,NAV1_TOFROM,i,Nav Radio 1 TO/FROM,1=To
+042A,NAV1_DME,f,Nav Radio 1 TO/FROM,NM
+042B,NAV1_ID,8s,Nav Radio 1 ID,None
+0430,NAV2_ACTIVE,f,Nav Radio 2 Active Freq,MHZ
+0431,NAV2_STANDBY,f,Nav Radio 2 Standby Freq,MHZ
+0432,NAV2_OBS,i,Nav Radio 2 OBS heading,deg
+0433,NAV2_RADIAL,f,Nav Radio 2 Radial,deg
+0434,NAV2_CDI,i,Nav Radio 2 CDI (ILS Localizer),None
+0435,NAV2_GSI,i,Nav Radio 2 GSI (ILS GlideSlope),None
+0436,NAV2_hasNAV,i,Nav Radio 2 is receiving Navaid,1=True
+0437,NAV2_hasLOC,i,Nav Radio 2 is receiving ILS Localizer,1=True
+0438,NAV2_hasGS,i,Nav Radio 2 is receiving ILS GlideSlope,1=True
+0439,NAV2_TOFROM,i,Nav Radio 2 TO/FROM,1=To
+043A,NAV2_DME,f,Nav Radio 2 DME,NM
+043B,NAV2_ID,8s,Nav Radio 2 ID,None
+0440,ADF1_ACTIVE,f,ADF Radio 1 Active Freq,KHZ
+0441,ADF1_STANDBY,f,ADF Radio 1 Standby Freq,KHZ
+0442,ADF1_RADIAL,f,ADF Radio 1 Radial,deg
+0443,ADF1_hasNAV,i,ADF Radio 1 Signal,1=True
+0450,ADF2_ACTIVE,f,ADF Radio 2 Active Freq,KHZ
+0451,ADF2_STANDBY,f,ADF Radio 2 Standby Freq,KHZ
+0452,ADF2_RADIAL,f,ADF Radio 2 Radial,deg
+0453,ADF2_hasNAV,i,ADF Radio 2 Signal,1=True
+0460,XPDR,i,Transpoder Code,None
+0470,MARKERS,i,Markers (1=IM,2=MM,3=OM),Enum
