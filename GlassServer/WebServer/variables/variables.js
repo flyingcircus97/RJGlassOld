@@ -212,7 +212,12 @@
 		j.each(function(item, index) {
 			if (item.length == 1) {
 				//alert('SPAN');
-				myTable.push([{ content: item[0], properties:{colspan:"7", class:"group_row"}}]);
+				myTable.push([{ content: item[0], properties:{colspan:"7"}}]);
+				//Add group_row class to this item.
+				var rows = $('var_table').getElements('tr');
+				var last_row = rows[rows.length-1]
+				var header_td = last_row.getElements('td')[0];
+				header_td.addClass('group_row');
 			}
 			else {
 			var first_item = item[0];

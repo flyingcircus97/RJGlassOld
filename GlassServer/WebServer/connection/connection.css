@@ -1,0 +1,89 @@
+
+#conn_config {
+	width: 250px;
+	float: left;
+	margin-left: 25px;
+	margin-right: 25px;
+	}
+
+#conn_config table {
+	border: 2px solid black;
+	margin: auto;
+
+}
+
+#conn_config h3 {
+	text-align: center;
+	margin-bottom: 0px;
+	background: lightblue;
+	padding-bottom:5px;
+	padding-top: 5px;
+	border: 2px solid black;
+	border-bottom: 0px;
+	
+	}
+
+#conn_config td {
+//	border: 1px solid;
+	padding: 2px 4px 2px 4px;
+	width: 250px;
+}
+
+#conn_config td.hover {
+	background-color: #adff44;
+	}
+
+#conn_config td.select {
+	background-color: #ffff44;
+	}
+
+#conn_parm {
+	float: left;
+	width: 250px;
+	margin-left: 25px;
+	
+	}
+#conn_parm h3 {
+	text-align: center;
+	margin-bottom: 0px;
+	background: lightblue;
+	padding-bottom:5px;
+	padding-top: 5px;
+	border: 2px solid black;
+	border-bottom: 0px;
+	}
+
+#conn_input input {
+
+	float: right;
+	width: 100px;
+	}
+#connect_button.load {
+	background-image:url('../images/ajax-loader.gif');
+	background-repeat: no-repeat;
+	background-position: 90% 50%;
+	}
+#connect_button {
+	padding-right: 25px;
+  margin: 5px;
+	}
+
+
+#conn_input input.button {
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 5px;
+	}
+
+#conn_input select {
+	width: 100px;
+	float: right;
+	}
+#conn_input {
+	border: 2px solid;
+	float: right;
+	padding: 5px;
+	}
+#conn_input p.first_p {
+	margin-top: 3px;
+	}

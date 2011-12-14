@@ -27,7 +27,10 @@
 				this.getParent().clear();
 				this.selected = true;
 				this.addClass('selected');
+				$('content').set('opacity', 0);
 				load_content(this.func);
+				$('content').tween('opacity',0,1);
+				
 				
 					
 				});
@@ -60,13 +63,17 @@
 	function load_connection() {
 		alert('Connection init');
 		}
+		
+	function load_server() {
+		alert('Server init');
+		}
 
 	window.addEvent('domready', function() {
 	
 	//Globals
 	menu_selected = 0;	
-	var names = ['Variables','Guages','Connection'];
-	var func = [load_variable, load_guages, load_connection];
+	var names = ['Variables','Guages','Connection','Server','Scripts'];
+	var func = [load_variable, load_guages, load_connection, load_server, load_scripts];
 	create_menubar(names, func).inject($('menu'));
 
 	});

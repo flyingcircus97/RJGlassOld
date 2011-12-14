@@ -4,4 +4,44 @@ body {
 	font-size: 75%;
 }
 
+#content {
+  width: 95%;
+  
+  }
+#comm_status {
+	font-size: 125%;
+	
+	}
+#comm_status img {
+	vertical-align: middle;
+	width: 30px;
+	
+	}
+
+
+
+#comm_button {
+	border: 1px solid;
+	padding: 2px;
+	
+	}
+
+#comm_button.empty {
+	border: 0px;
+		}
+
+#comm_button.hover {
+	background-color: gainsboro;
+	}
+
+#comm_button.selected {
+	background-color: yellow;
+	}
+	
+#img_status {
+	cursor: pointer;
+	}
+
+
+	
 

@@ -1,0 +1,45 @@
+
+#script_conn {
+  width: 350px;
+  float:left;
+	margin-left: 25px;
+	margin-right: 25px;
+	}
+
+
+#script_conn h3 {
+	text-align: center;
+	margin-bottom: 0px;
+	background: lightblue;
+	padding-bottom:5px;
+	padding-top: 5px;
+	border: 2px solid black;
+	border-bottom: 0px;
+	
+	}
+
+	
+#script_table {
+ width: 350px;
+ border: 2px solid black;
+ padding: 0px 10px 0px 10px;
+ border: 2px solid black;
+ border-collapse: collapse;
+ }
+#script_table td {
+  border: 1px solid black;
+  }
+#script_table .header {
+  background-color: whitesmoke;
+  }
+#script_table .header td {
+  font-weight: bold;
+  }
+  
+#script_table td {
+  
+  padding-left: 4px;
+  }
+ 
+
+

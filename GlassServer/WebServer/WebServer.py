@@ -87,18 +87,20 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 class GlassWebServer_c(object):
 
     
-    def __init__(self):
+    def __init__(self, port):
+        self.port = port
        #self.webserver = HTTPServer(('', 8080), GlassHandler)
-       self.webserver = ThreadedHTTPServer(('', 8080), GlassHandler)
-       server_thread = threading.Thread(target=self.webserver.serve_forever)
-       server_thread.setDaemon(True)
-       server_thread.start()
+        self.webserver = ThreadedHTTPServer(('', port), GlassHandler)
+        server_thread = threading.Thread(target=self.webserver.serve_forever)
+        server_thread.setDaemon(True)
+        server_thread.start()
        
        #self.webserver.serve_forever()
        # except KeyboardInterrupt:
        #     print "Shutting Down"
        #     self.webserver.socket.close()
-       print "Glass Server running in thread:", server_thread.getName()
+        print "GlassWebServer running in thread:", server_thread.getName()
            
-    
+    def quit(self):
+        self.webserver.shutdown()
         

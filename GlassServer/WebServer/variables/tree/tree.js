@@ -36,7 +36,7 @@ init_tree = function() {
 			this.root.recursive(function() {
 			if (t_checked.indexOf(this.key) != -1) {
 			  //if this.key in checked then toggle it.
-			   this.switch('checked');
+			   this['switch']('checked'); // Weird syntax is for Chrome compatability.
 				}
 			if (t_expanded.indexOf(this.key) != -1) {
 			  //if this.key in checked then toggle it.
