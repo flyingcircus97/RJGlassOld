@@ -28,6 +28,12 @@ class FS_Comm_c(object):
             self.controller = FlightSim.FSX.control.control_c(self.variables, self.mod_data, sim)
             self.status_message = "Connecting"
             
+        elif (sim['mode'] == 'FSX SP2'):
+            import FlightSim.FSX.control 
+            self.sim_name = 'FSX SP2'
+            self.controller = FlightSim.FSX.control.control_c(self.variables, self.mod_data, sim)
+            self.status_message = "Connecting"
+            
         elif sim['mode'] == 'Test':
             self.sim_name = 'TEST'
             import FlightSim.TEST.control
