@@ -5,3 +5,4 @@ GlassServer/dat/*
 GlassServer/preferences.dat
 GlassServer/default.idx
 *.zip
+*.komodoproject
