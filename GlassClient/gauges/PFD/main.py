@@ -1,23 +1,30 @@
-#gauge.py
+#main.py
 #***********************************************
 #GlassClient RJGlass
-#gauge.py - parent class of all gauges
+#main.py - PFD main guage
 #
 #***********************************************
 
 import pyglet
 from gauge import gauge_parent
 
+#Gauge specific imports
+import AHorizon
+
 class gauge(gauge_parent):
     
     def __init__(self, *args, **kwds):
-        print "TEST"
-        super(gauge, self).__init__(*args, **kwds)
         
-        print self.name
+        super(gauge, self).__init__(*args, **kwds)
+        self.set_native_size(500,500)
+        
+        #Init Parts
+        self.AHorizon = AHorizon.gauge_c((500,500),(0,0))
+        
         
     def on_draw(self):
-            pyglet.gl.glClear(pyglet.gl.GL_COLOR_BUFFER_BIT)
-            pyglet.gl.glLoadIdentity()
-            pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
-            ('v2i', (10, 15, 30, 35)))
+            
+            self.init_gauge()
+            self.draw_border()
+            self.AHorizon.on_draw()
+            

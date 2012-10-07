@@ -9,14 +9,40 @@ import pyglet
 
 class gauge_parent(object):
     
-    def __init__(self, name, folder, size, pos):
+    def __init__(self, size, pos, name = None, folder = None):
         #self.win = pyglet.window.Window(width = 1024, height = 768, display=display)
         self.name = name
         self.folder = folder
         self.size = size
+        self.size_div2 = map(lambda x: x/2, self.size)
         self.pos = pos
-        print "PARENT INIT"
         
+        self.native_size = None
+        self.scale_x = 1.0
+        self.scale_y = 1.0
+                
+        
+        
+    def set_native_size(self, x, y):
+        self.native_size = (x,y)
+        self.native_size_div2 = map(lambda x: x/2, self.native_size)
+        self.calc_scale()
+        
+    def calc_scale(self):
+        #Calculate x and y scale factor
+        self.scale_x = 1.0 * self.size[0] / self.native_size[0]
+        self.scale_y = 1.0 * self.size[1] / self.native_size[1]
+        #self.scale_x = 1.0
+        #self.scale_y = 1.0
+        
+    def draw_border(self):
+        x = self.native_size_div2[0]
+        y = self.native_size_div2[1]
+        pyglet.graphics.draw(4, pyglet.gl.GL_LINE_LOOP, ('v2i', (-x,-y,-x,y,x,y,x,-y)))
+    def init_gauge(self):
+        #Initalizes position of guage scaling and translation
+        pyglet.gl.glTranslatef(self.pos[0],self.pos[1],0)
+        pyglet.gl.glScalef(self.scale_x,self.scale_y,0)
         
         #@self.win.event
         #def on_draw():
@@ -24,3 +50,8 @@ class gauge_parent(object):
         #    pyglet.gl.glLoadIdentity()
         #    pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
         #    ('v2i', (10, 15, 30, 35)))
+        
+    def on_draw(self):
+        self.init_gauge()
+        self.draw()
+        

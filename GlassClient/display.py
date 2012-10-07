@@ -8,6 +8,7 @@
 import os
 
 import pyglet
+from pyglet.gl import *
 from xml.etree.ElementTree import ElementTree
 
 import gauge
@@ -25,7 +26,7 @@ class display_c(object):
         self.screens = self.display.get_screens()
         self.parse_file = parse_file
         self.window = None #Leave None for now, will be created in self.parse_xml
-        
+        self.fps_display = pyglet.clock.ClockDisplay()
         self.view_l = [] #view list
         
         if parse_file != None:
@@ -55,7 +56,7 @@ class display_c(object):
         tree.parse(full_parse)
         
         #Create/Adjust window
-        
+        config = pyglet.gl.Config(sample_buffers=1, samples=2)
         #Read fullscreen
         if 'Y' == xml_val(tree.find("fullscreen")):
             self.win = pyglet.window.Window(fullscreen=True, display = self.display)
@@ -88,7 +89,7 @@ class display_c(object):
                 #Import gauge
                 i_name = 'gauges.' + name
                 g = __import__(i_name, fromlist=['main'])
-                gauge_i = g.main.gauge(name,folder,size,pos)
+                gauge_i = g.main.gauge(size, pos, name,folder)
                 #gauge_i = gauge.gauge_c(name,folder,size,pos)
                 view_i.appendGauge(gauge_i)
         
@@ -96,9 +97,20 @@ class display_c(object):
                 
         @self.win.event
         def on_draw():
+            pyglet.gl.glClear(pyglet.gl.GL_COLOR_BUFFER_BIT)
+            pyglet.gl.glLoadIdentity()
+            glEnable(GL_LINE_SMOOTH)
+            glEnable(GL_BLEND)
+            #glBlendFunc(GL_SRC_ALPHA, GL_ZERO)
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+            glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
+            self.fps_display.draw()
             for g in self.view_l[0].gauges:
+                pyglet.gl.glPushMatrix()
                 g.on_draw()
+                pyglet.gl.glPopMatrix()
                 
+            
  
 class view_c(object):
         #A view is a collection of guages, in a set layout.

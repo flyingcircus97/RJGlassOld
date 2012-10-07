@@ -1,15 +1,15 @@
 <screen>
     <name>Test</name>
     <fullscreen>N</fullscreen>
-    <size>1000,600</size>
-    <pos>100,100</pos>
+    <size>1000,800</size>
+    <pos>0,0</pos>
     <view>
         <name>View1</name>
         <gauge>
             <name>PFD</name>
             <folder>PFD</folder>
-            <size>300,400</size>
-            <pos>100,100</pos>
+            <size>500,500</size>
+            <pos>500,400</pos>
         </gauge>
     </view>
 </screen>
