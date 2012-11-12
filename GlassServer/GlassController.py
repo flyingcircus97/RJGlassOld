@@ -299,15 +299,22 @@ class Glass_Server_c():
         self.server = ThreadedTCPServer(('localhost', self.port), ThreadedTCPRequestHandler, variables)
     
         print self.server.server_address
-        server_thread = threading.Thread(target=self.server.serve_forever)
+        self.go = True
+        server_thread = threading.Thread(target=self.serve_forever)
         # Exit the server thread when the main thread terminates
         server_thread.setDaemon(True)
         server_thread.start()
     
         print "Glass Server running in thread:", server_thread.getName()
 
+    def serve_forever(self):
+        self.server.timeout = 3.0
+        while self.go:
+            self.server.handle_request()
+                        
     def shutdown(self):
-        self.server.shutdown()
+        #self.server.shutdown()
+        self.go = False
 
 
 class mod_data_c(object):
@@ -401,6 +408,7 @@ class Glass_Controller_c(object):
         self.gstest.run_test()
             
     def quit(self):
+        print "Controller Quit"
         self.FS_Comm.quit()
         self.Glass_Server.shutdown()
         

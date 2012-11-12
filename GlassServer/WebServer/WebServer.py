@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import string
+import urllib
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
@@ -17,19 +18,14 @@ except ImportError:
 
 class GlassHandler(SimpleHTTPRequestHandler):
     
-    #def __init__(self, request, client_address, server):
-    #    self.do_SHIT = copy(self.do_GET)
-    #    SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
-    #def __init__(self, server_address, RequestHandlerClass, variables):
-    #    SocketServer.TCPServer.__init__(self, server_address, RequestHandlerClass)
-        #self.aircraft = aircraft_data #This is so the handler can access the aircraft data.
-    #    self.variables = variables
-
+   
     #This overides logging of requests to screen
-    #def log_message(self, format, *args): 
-    #    pass
+   # def log_message(self, format, *args): 
+   #     pass
     
     def do_GET(self):
+        #self.timeout = 5.0
+        #self.connection.settimeout(5.0)
         #print 'Get', self.client_address
         path_split = self.path.split('/')
         #print path_split
@@ -39,6 +35,8 @@ class GlassHandler(SimpleHTTPRequestHandler):
             return SimpleHTTPRequestHandler.do_GET(self)
     
     def do_AJAX(self, qs):
+        #self.timeout = 5.0
+        #self.connection.settimeout(5.0)
         #print 'GET', self.path, self.client_address
         qspos = qs.find('?')
         if qspos>=0:
@@ -59,6 +57,7 @@ class GlassHandler(SimpleHTTPRequestHandler):
         # length = int(request.headers.getheader('content-length'))        
        # data_string = request.rfile.read(length)
        # print 'Data' , data_string, length
+        
         out = AJAX.process_AJAX(method, body)
         IAS = "%5.1f" %variable.variables.byName("IAS").data.value
         #out = json.dumps({'age':{'test' :IAS}})
@@ -67,7 +66,7 @@ class GlassHandler(SimpleHTTPRequestHandler):
           self.send_response(200)
           self.send_header('Content-type', 'text/html')
           self.send_header('Content-Length', str(len(out)))
-          self.send_header('Connection', 'Keep-Alive')
+       #   self.send_header('Connection', 'Keep-Alive')
        #   self.send_header('Keep-Alive', 'timeout =5, max=97')
           self.send_header('Transfer-Encoding', 'chunked')
           self.end_headers()
@@ -86,21 +85,36 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
         
 class GlassWebServer_c(object):
 
+    def serve_forever(self):
+        self.webserver.timeout = 3.0
+        while self.go:
+            self.webserver.handle_request()
     
     def __init__(self, port):
+        
+        self.go=True
         self.port = port
        #self.webserver = HTTPServer(('', 8080), GlassHandler)
         self.webserver = ThreadedHTTPServer(('', port), GlassHandler)
-        server_thread = threading.Thread(target=self.webserver.serve_forever)
-        server_thread.setDaemon(True)
-        server_thread.start()
+        self.webserver.daemon_threads = True
+        self.server_thread = threading.Thread(target=self.serve_forever)
+        self.server_thread.setDaemon(True)
+        self.server_thread.start()
+        
        
        #self.webserver.serve_forever()
        # except KeyboardInterrupt:
        #     print "Shutting Down"
        #     self.webserver.socket.close()
-        print "GlassWebServer running in thread:", server_thread.getName()
+        print "GlassWebServer running in thread:", self.server_thread.getName()
            
     def quit(self):
-        self.webserver.shutdown()
+        print "Quitting WebServer"
+        self.go=False
+        #self.webserver.shutdown()
+        #time.sleep(1.0)
+        
+        #urllib.urlopen("http://localhost:8080/WebServer")
+        #print "GlassWebServer is Running: ", self.server_thread.isAlive()
+        #print "Quitting WebServer Done"
         

@@ -24,6 +24,7 @@ except ImportError:
 import socket, select
 import pickle
 import string
+import threading
 from GlassController import controller
 #import FMS_control
 #import aircraft
@@ -34,7 +35,7 @@ class mainloop_c(object):
     
     def __init__(self):
         self.go = True       
-        self.loop_time= 0.1
+        self.loop_time= 0.03
         self.controller = controller
         self.webserver = GlassWebServer_c(config.general.webserver_port)
     def run(self):
@@ -53,11 +54,17 @@ class mainloop_c(object):
         
     def quit(self):
         self.go = False
-        try:
-            self.controller.quit()
-            self.webserver.quit()
-        except NameError:
-            print "No Controller Exists to Kill"
+        print "QUITTING"
+        #try:
+        self.controller.quit()
+        self.webserver.quit()
+        time.sleep(3)
+        print threading._active
+        #sys.exit()
+        os._exit(os.EX_OK)
+        sys.exit()
+        #except NameError:
+        #    print "No Controller Exists to Kill"
     #def restart(self):
     #    self.quit()
     #    time.sleep(3)

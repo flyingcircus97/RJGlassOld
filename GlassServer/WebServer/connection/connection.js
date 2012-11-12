@@ -159,7 +159,7 @@
 		//var form = new Element('form');
 		
 		this.config_name = text_input(div2, 'Name:', 'Test');
-		this.mode = select_input(div2,'Mode:', ['Test','FSX SP2','X-Plane 9', 'FlightGear', 'ESP'], 0);
+		this.mode = select_input(div2,'Mode:', ['Test','FSXSP2','XPLANE', 'FlightGear', 'ESP'], 0);
 		this.IP = text_input(div2, 'IP:', '127.0.0.1');
 		this.port = text_input(div2, 'Port:', '1500');
 		//this.def = checkbox_input(div2, 'Default:', false);
