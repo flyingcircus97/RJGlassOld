@@ -26,8 +26,8 @@ class GlassHandler(SimpleHTTPRequestHandler):
     #    self.variables = variables
 
     #This overides logging of requests to screen
-    def log_message(self, format, *args): 
-        pass
+    #def log_message(self, format, *args): 
+    #    pass
     
     def do_GET(self):
         #print 'Get', self.client_address
