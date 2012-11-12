@@ -9,7 +9,7 @@ import pyglet
 
 class gauge_parent(object):
     
-    def __init__(self, size, pos, name = None, folder = None):
+    def __init__(self, size, pos, name = None, folder = None, parent = None):
         #self.win = pyglet.window.Window(width = 1024, height = 768, display=display)
         self.name = name
         self.folder = folder
@@ -20,7 +20,10 @@ class gauge_parent(object):
         self.native_size = None
         self.scale_x = 1.0
         self.scale_y = 1.0
-                
+        if parent:
+            self.parent_scale_lw = parent.scale_lw
+        else:
+            self.parent_scale_lw = 1.0
         
         
     def set_native_size(self, x, y):
@@ -32,6 +35,9 @@ class gauge_parent(object):
         #Calculate x and y scale factor
         self.scale_x = 1.0 * self.size[0] / self.native_size[0]
         self.scale_y = 1.0 * self.size[1] / self.native_size[1]
+        #Calcuate scale factor for Linewidth
+        # -- Use average for time being, see how it results. Feeling aspect ratio of gagues will stay consistant
+        self.scale_lw = ((self.scale_x + self.scale_y) / 2.0) * self.parent_scale_lw
         #self.scale_x = 1.0
         #self.scale_y = 1.0
         
@@ -54,4 +60,8 @@ class gauge_parent(object):
     def on_draw(self):
         self.init_gauge()
         self.draw()
+        
+    def linewidth(self):
+        #Compensates linewidth for scale_x and scale_y
+        return(self.scale_lw)
         
