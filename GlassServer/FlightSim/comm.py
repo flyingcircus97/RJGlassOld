@@ -28,6 +28,18 @@ class FS_Comm_c(object):
             self.controller = FlightSim.FSX.control.control_c(self.variables, self.mod_data, sim)
             self.status_message = "Connecting"
             
+        elif sim['mode'] == 'FSXSP2':
+            import FlightSim.FSX.control 
+            self.sim_name = 'FSXSP2'
+            self.controller = FlightSim.FSX.control.control_c(self.variables, self.mod_data, sim)
+            self.status_message = "Connecting"
+            
+        elif sim['mode'] == 'XPLANE':
+            import FlightSim.XPLANE.control
+            self.sim_name = 'XPLANE'
+            self.controller = FlightSim.XPLANE.control.control_c(self.variables, self.mod_data, sim)
+            self.status_message = "Connecting"
+        
         elif sim['mode'] == 'Test':
             self.sim_name = 'TEST'
             import FlightSim.TEST.control
@@ -57,6 +69,7 @@ class FS_Comm_c(object):
         self.controller.process()
         self.status_message = self.controller.calc_status_message()
     def quit(self):
+        print "FSComm quit"
         self.controller.quit()
             
 FS_Comm = FS_Comm_c()            

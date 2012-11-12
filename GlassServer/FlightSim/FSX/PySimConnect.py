@@ -410,6 +410,7 @@ class SimConnect(object):
         #Depending on your FSX_version you are connecting to, need to set protocol etc.
 #        self.read_buffer = ''
         self.data_dict = {}
+        print "FSX VERSION", FSX_version
         if FSX_version == config.FSXSP0:
             FSX_subversion = 60905
             FSX_major_version = 10

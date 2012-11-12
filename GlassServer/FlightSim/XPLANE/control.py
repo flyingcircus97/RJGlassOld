@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # ----------------------------------------------------------
-# Controller File for FSX
+# Controller File for XPLANE
 # ----------------------------------------------------------
-from PySimConnect import SimConnect, DataDefinition
-import FSXdef
+from XPlaneConnect import XPlaneUDP
+import XPdef
 import time
 #This is code to import config file (config.py)
 try:
@@ -37,17 +37,22 @@ class control_c(object):
               #Add definition's
         #self.s.definition_0 = self.s.create_DataDefinition(2)   
         #self.connect()    
+        self.init_comm()
         time.sleep(0.01)
         
     def init_comm(self):
         #Before connecting initialize SimConnect connections
-        self.s = SimConnect('GlassServer', self.mode, True)
-        self.sevent = SimConnect('GlassServer Event', self.mode, False)
+        self.comm = XPlaneUDP(True)
+        #self.sevent = SimConnect('GlassServer Event', self.mode, False)
+        XPdef.setup(self.comm, self.variables)
+        #self.comm.outdata_add("bank",'f',self.variables.get(0x125))
+        #self.comm.outdata_add("pitch",'f',self.variables.get(0x126))
+        
         
     def close_comm(self):
         #Shutdown both sockets.
-        self.s.quit()
-        self.sevent.quit()
+        if hasattr(self, 'comm'):
+            self.comm.close()
         self.connected = False
         
     def quit(self):
@@ -56,33 +61,24 @@ class control_c(object):
         self.close_comm()
         
     def connect(self):
-        self.init_comm()
+        #self.init_comm()
         self.connected = True
         self.desire_connect = True
         print 'Connect:' , self.addr, self.port
-        if not self.s.connect(self.addr, self.port, True):
-            self.connected = False
-        if not self.sevent.connect(self.addr, self.port, False):
-            self.connected = False
-        self.last_connect_attempt = time.time()
-        if self.connected == True:        
-           FSXdef.setup(self.s,self.variables)
-           FSXdef.setup_events(self.sevent, self.variables) 
-           self.request_data()
-           print "Connection to FSX Succeded"
-        else:
-            print "Connection to FSX Failed"
+        self.comm.connect(self.addr, self.port, True)
+        #self.connected = True #assume connected
         
+        self.last_connect_attempt = time.time()
+        
+        print "XPlane listening"
             
     def request_data(self):
         self.s.definition_0.request(4, DataDefinition.USER, DataDefinition.ONCE, interval = 0, flag = 0)
     
-    def decode_input(self, data_in):
-        if self.s.definition_0.id in data_in: #Define ID is high priority data, if received then compute, and request another.
-            #start_time = 0.0
-            self.request_data()
-            #self.comp() # Main computation loop
+    def decode_input(self):
+        if self.comm.receive():
             self.nodata = False #Rest no data boolean    
+            self.connected = True
             self.nodata_time = time.time()
         else:
             diff = time.time() - self.nodata_time
@@ -91,7 +87,7 @@ class control_c(object):
             if diff > 2.0: #If no data for 2 seconds.
             #Request data
                 self.nodata = True
-            
+                self.connected = False
                 #Request more data from FSX (This was causing multiple requests removed for now)
             #    self.request_data()
             #    self.nodata_time +=2 #Reset timer so request again in 2 seconds.
@@ -108,17 +104,23 @@ class control_c(object):
             
     def process(self):
         if self.connected:
-            if ((self.s.connected() == False) or (self.sevent.connected() == False)): #Probably with socket, socket has shutdown.
-                self.close_comm() #Reset comm, to try a reconnect.
-            else:
-                self.decode_input(self.s.receive())
-                self.mod_data.comp()
             
+            if self.comm.connected == False:
+                self.close_comm()
+            else:
+                self.decode_input()
+                self.comm.client.send("TEST")
+        #    if ((self.s.connected() == False) or (self.sevent.connected() == False)): #Probably with socket, socket has shutdown.
+        #        self.close_comm() #Reset comm, to try a reconnect.
+        #    else:
+        #        self.decode_input(self.s.receive())
+        #        self.mod_data.comp()
+        #    
         elif self.desire_connect == True: #not connected
             if (time.time() - self.nodata_time) > 5.0: #Wait 5 sec to reconnect
                 if (time.time() - self.last_connect_attempt) > 10.0: #Wait 10 sec between attempts.
                     self.connect()
-                
+        
         #Create Status message
-        #self.status_message = self.calc_status_message()
-        pass        
+        self.status_message = self.calc_status_message()
+        #pass        

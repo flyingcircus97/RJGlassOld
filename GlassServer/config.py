@@ -10,8 +10,8 @@ FSXSP1 = 3
 FSXSP2 = 4
 ESP = 5
 CLIENT = 6
-modes = {'Test':1,'FSXSP0':2,'FSXSP1':3,'FSXSP2':4,'ESP':5}
-modes_list = ['Test','FSXSP0','FSXSP1','FSXSP2','ESP']
+modes = {'Test':1,'FSXSP0':2,'FSXSP1':3,'FSXSP2':4,'ESP':5,'XPLANE':6}
+modes_list = ['Test','FSXSP0','FSXSP1','FSXSP2','ESP','XPLANE']
 
 class general_c(object):
     def __init__(self, filename):
