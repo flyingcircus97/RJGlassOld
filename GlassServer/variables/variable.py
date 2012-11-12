@@ -109,6 +109,7 @@ class var_obj(object):
     
     def setvalue(self, value):
         #Check for valid number and correct it if needed.
+        print "SETTING VALUE"
         result = self.valid_check.test(value)
                     
         if result != None: #If valid check return False (Don't write)
@@ -132,6 +133,9 @@ class var_obj(object):
             
     def client_setvalue(self, value):
         self.data.value = self.unpack(value)
+        
+    def client_set(self,value):
+        self.data.set_value(value)
     
 class variable_c(object):
     
