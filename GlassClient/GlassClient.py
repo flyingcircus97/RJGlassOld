@@ -6,10 +6,13 @@
 import display, time
 import pyglet
 import gauge
+import client
+#from variable import variables_c
 
+#variables = variables_c()
 
 display = display.display_c('view.xml')
-
+c = client.client_c()
 #window = windows[0]
 
 
@@ -19,3 +22,5 @@ display = display.display_c('view.xml')
 
 
 pyglet.app.run()
+
+c.stop()
