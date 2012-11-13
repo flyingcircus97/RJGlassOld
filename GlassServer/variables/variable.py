@@ -29,20 +29,7 @@ import struct
 import inspect, os, time
 import variables.valid_check as valid_check #classes to check validity of variables.
 from FlightSim.FSX.PySimConnect import data_obj
-#class data_obj(object):
-    #Used to make a object for Definition to link to
-#    def __init__(self, value):
-#        self.value = value
-#        self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
-#        self.sim_event = None
-#        self.inhibit = 0 #Used to postpone reading of data value from sim, when data is written too.
-        
-#    def set_value(self, value):
-#        self.value = value
-#        if self.sim_event != None:
-#            self.sim_event.send()
-#            self.inhibit = 4
-
+from IOCP.IOCPClient import IOCP_data_obj
 
 class var_obj(object):
     #This is the a Glass Protocol variable object, similar to data_obj that holds are information
@@ -60,13 +47,18 @@ class var_obj(object):
         self.change_count = 0 #This is incremented everytime value changed. Used for change detect.
         self.read_func = None #Func to convert sim value to variable value.
         self.write_func = None #Func to convert variable value to sim value. (Set by FSX or X-Plane connect modules)
+        #IOCP Functions
+        self.IOCP = IOCP_data_obj(self)
         if 's' in pack_format: #if string.
             self.data = data_obj('') #Create dataobj.
         else:
             self.data = data_obj(0) #Create dataobj.
         self.prev_data = self.data.value
+
+
     def change_check(self):
-        
+        #Increment change cound of variable, everytime it changes.
+        #--Used by GlassServer, and IOCP, to see when variable has changed.
         if self.prev_data!= self.data.value:
             self.prev_data = self.data.value
             self.change_count +=1
@@ -74,8 +66,6 @@ class var_obj(object):
     def unpack(self, value):
         print self.pack_format, "%r" %value
         return struct.unpack(self.pack_format, value)[0]
-    
-    
     
     def set_writeable(self, func):
         self.writeable = func
@@ -405,49 +395,4 @@ class variable_c(object):
         f.close()
 
         
-#def __init__(self):
-    #print "LET's GO"
 variables = variable_c()
-        #Load up dictinary with all variables.
-    #    aircraft = self.aircraft
-        #Speed
-    #    add_var(0x0100, "f", aircraft.airspeed.IAS)
-    #    add_var(0x0101, "f", aircraft.airspeed.Mach)
-    #    add_var(0x0102, "f", aircraft.airspeed.GS)
-    #    add_var(0x0103, "f", aircraft.airspeed.bug)
-        #Artifical Horizon
-    #    add_var(0x0200, "f", aircraft.attitude.pitch)
-    #    add_var(0x0201, "f", aircraft.attitude.bank)
-    #    add_var(0x0202, "h", aircraft.attitude.FD_active)
-    #    add_var(0x0203, "f", aircraft.attitude.FD_pitch)
-    #    add_var(0x0204, "f", aircraft.attitude.FD_bank)
-    #    add_var(0x0205, "i", aircraft.attitude.turn_coord)
-    #    add_var(0x0206, "i", aircraft.attitude.marker)
-        #Altimeter
-    #    add_var(0x0300, "i", aircraft.altimeter.indicated)
-    #    add_var(0x0301, "i", aircraft.altimeter.absolute)
-#        add_var(0x0302, "H", aircraft.altimeter.bug)
-#        add_var(0x0303, "H", aircraft.onground)
-#        #HSI
-#        add_var(0x0400, "f", aircraft.HSI.Mag_Heading)
-#        add_var(0x0401, "f", aircraft.HSI.Mag_Variation)
-#        add_var(0x0402, "f", aircraft.HSI.Mag_Track)
-#        add_var(0x0403, "f", aircraft.HSI.Heading_Bug)
-#        
-#        #VSI
-#        add_var(0x0500, "i", aircraft.VSI)
-#        
-#        #COM and NAV Radio Freq
-#        add_var(0x0600, "f", aircraft.Com_1.Active)
-#        add_var(0x0601, "f", aircraft.Com_1.Standby)
-#        add_var(0x0602, "f", aircraft.Com_2.Active)
-#        add_var(0x0603, "f", aircraft.Com_2.Standby)
-#        add_var(0x0604, "f", aircraft.Nav_1.Active)
-#        add_var(0x0605, "f", aircraft.Nav_1.Standby)
-#        add_var(0x0606, "f", aircraft.Nav_2.Active)
-#        add_var(0x0607, "f", aircraft.Nav_2.Standby)
-#        
-#        #Test data
-#        add_var(0x0A00, "i", aircraft.TEST, True)
-#        
-#        return dict

@@ -11,13 +11,25 @@ import struct
 #import config
 #from socket import *
 import socket
-#Constants
 
+import variables.variable
+import IOCPdef
+#Constants
+class IOCP_data_obj(object):
+    #Data object used by variables to hold IOCP data.
+    def __init__(self, var_obj, read = None, write = None):
+        self.var = var_obj #Parent variable object (var_obj)
+        self.read = read
+        self.write = write
+        self.change_count = self.var.change_count
+        
+        
         
 class IOCP_Client_c(threading.Thread):
     
        
-    def __init__(self, ip, port):
+    def __init__(self, parent, ip, port):
+        self.IOCPcomm = parent
         self.ip = ip
         self.port = port
         self.clock = time.time()
@@ -63,18 +75,17 @@ class IOCP_Client_c(threading.Thread):
             self.send(data)
         
     def connect(self, addr, port):
-    #Attempts to connect to FSX.
+    #Attempts to connect to IOCP Server
         
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(5.0)
         succeed = False
         try:
             self.s.connect((addr, port))
-        
             #Send connection header
-            self.send('TipoSer:GlassServer:')
-            
+            self.send_typeserver('GlassServer')
             succeed = True
+            
         except socket.error:
             print "Could Not Connect"
         
@@ -91,6 +102,11 @@ class IOCP_Client_c(threading.Thread):
         self.go = False
         
         
+    def connect_init(self):
+        #Set variables that need to be monitor, know if they change.        
+        self.send_initiation(self.IOCPcomm.keys())
+        self.connected = True
+        
     def run(self):
         
         def reset_timer():
@@ -98,16 +114,29 @@ class IOCP_Client_c(threading.Thread):
             #Called from RJGlass to reset timer, if timer isn't reset then thread will die.
             self.kill_timer = 0 #currently not used
         
+        def process_packet(packet):
+            
+            command = packet[0]
+            args = packet[1:-1] #Remove command, and CRLF at end.
+            print "IOCP Pakcet Recieved", packet
+            
+            if command == 'Resp':
+                pass
+            
             
         def decode_recieve(data_in):
             #Used to look for and read anydata that is coming in.
+            #All data starts with Arn.
             #Split by Arn.
-            pass
+            packets = data_in.split('Arn.')
+            for packet in packets:
+                process_packet(packet.split(':'))
+                
         
             #print self.packet_data
         #Begin self.receive()
         
-        def recieve():
+        def receive():
             try:
                 r = self.s.recv(1024)
             except socket.timeout:
@@ -127,15 +156,16 @@ class IOCP_Client_c(threading.Thread):
         while self.go:
             #I connected run
             if self.connected:
-                r = recieve()    
+                r = receive()    
                 
                 self.read_buffer = r
                 if len(r) > 0:
                     print "IOCP Recv: %r" %r
+                    self.decode_receive()
                 
             else: #Try to reconnect
                 if self.connect(self.ip, self.port) == True:
-                    self.connected = True
+                    self.connect_init()
                     print "Connected to IOCP Server"
                 else:
                     print "Connect to IOCP Server failed %s:%d" %(self.ip,self.port)
@@ -148,15 +178,22 @@ class IOCP_Client_c(threading.Thread):
 class IOCPComm(object):
         
         def __init__(self, config):
+            self.variables = variables.variable.variables
             self.active = int(config['active'])
             self.ip = config['ip']
             self.port = int(config['port'])
-            
-        
-            self.client = IOCP_Client_c(self.ip, self.port)
+            self.client = IOCP_Client_c(self, self.ip, self.port)
+            self.var_dict = {}
+            IOCPdef.setup(self, self.variables)
             if self.active: 
                 self.client.start()
                 
+        def keys(self):
+            return self.var_dict.keys()
+            
+        def add_IOCP(self, var_num, var, read, write):
+                self.var_dict[var_num] = IOCP_data_obj(var, read, write)
+            
         def quit(self):
             self.client.go = False
          

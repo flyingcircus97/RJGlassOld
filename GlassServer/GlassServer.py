@@ -25,6 +25,7 @@ import socket, select
 import pickle
 import string
 import threading
+import logging
 
 from GlassController import controller
 #import FMS_control
@@ -36,13 +37,20 @@ from IOCP.IOCPClient import IOCPComm
 class mainloop_c(object):
     
     def __init__(self):
+        #Init Logging
+        self.init_log()
         self.go = True       
         self.loop_time= 0.03
         self.controller = controller
         self.webserver = GlassWebServer_c(config.general.webserver_port)
         self.IOCPclient = IOCPComm(config.general.IOCP_client)
+        
+    def init_log(self):
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
+        
     def run(self):
-        #self.webserver = GlassWebServer_c()
+        logging.info('MainLoop Started')
+        
         try:
             while self.go:
                 time.sleep(self.loop_time)
@@ -52,13 +60,13 @@ class mainloop_c(object):
                 
                 
         except KeyboardInterrupt:
-            print "KEY INT"
+            logging.warning('Main Loop - Keyboard Interrupt')
         #Shut down server
         
         
     def quit(self):
         self.go = False
-        print "QUITTING"
+        logging.info('Glass Server Quiting')
         #try:
         self.IOCPclient.quit()
         self.controller.quit()
@@ -69,45 +77,21 @@ class mainloop_c(object):
         #os._exit(os.EX_OK)
         os._exit(0)
         sys.exit()
-        #except NameError:
-        #    print "No Controller Exists to Kill"
-    #def restart(self):
-    #    self.quit()
-    #    time.sleep(3)
-    #    controller.init_server()
-    #    time.sleep(3)
-    #    self.run()
+        
         
 mainloop = mainloop_c()
 
 def run():
     mainloop.run()
+    
 def quit():
     mainloop.quit()
+    
+
     
 if __name__ == '__main__':
     
     print "Press Ctrl-C to Quit"
-    
     run()
-        
-        
-    #import variable, aircraft, event
-#    import variable
-#    import modules
-    #aircraft_data = aircraft.data()
-#    variables = variable.variable_c()
-#    variables.parse_variable_files(modules.variable_files)
-#    print modules.variable_files
-    #print modules.list #list of modules to go through
-#    mod_data = mod_data_c(modules.mod_list, variables)
-#    mike = variables.byName('IAS').data
-    #events = event.event_c(aircraft_data)
-#    glass = Glass_Server_c(variables)
-#    print "SERVER is RUNNING"
-#    for i in range(10):
-#        time.sleep(2)
-#        mod_data.test() #Here loop through all modules calling test method.
-#        print mike.value
-    #input("enter to quit")
-#    print variables.dict
+ 
+ 
