@@ -3,8 +3,6 @@
 # Testing for IOCPClient
 # ----------------------------------------------------------
 # This module handels communication with a IOCPServer
-#
-# 
 # ---------------------------------------------------------------
 
 import threading 
