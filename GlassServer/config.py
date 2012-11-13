@@ -18,7 +18,7 @@ class general_c(object):
         self.config = ConfigObj(filename)
         self.glassserver_port = int(self.config['GlassServer']['port'])
         self.webserver_port = int(self.config['WebServer']['port'])
-        
+        self.IOCP_client = self.config['IOCPClient']
         
 #load connection config file.
 class connection_c(object):

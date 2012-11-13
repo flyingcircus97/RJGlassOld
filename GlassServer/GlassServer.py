@@ -25,11 +25,13 @@ import socket, select
 import pickle
 import string
 import threading
+
 from GlassController import controller
 #import FMS_control
 #import aircraft
 #Constants
 from WebServer.WebServer import GlassWebServer_c
+from IOCP.IOCPClient import IOCPComm
 
 class mainloop_c(object):
     
@@ -38,6 +40,7 @@ class mainloop_c(object):
         self.loop_time= 0.03
         self.controller = controller
         self.webserver = GlassWebServer_c(config.general.webserver_port)
+        self.IOCPclient = IOCPComm(config.general.IOCP_client)
     def run(self):
         #self.webserver = GlassWebServer_c()
         try:
@@ -46,6 +49,7 @@ class mainloop_c(object):
                 self.controller.FS_Comm.process()
                 self.controller.comp()
                 self.controller.variables.change_check()
+                
                 
         except KeyboardInterrupt:
             print "KEY INT"
@@ -56,12 +60,14 @@ class mainloop_c(object):
         self.go = False
         print "QUITTING"
         #try:
+        self.IOCPclient.quit()
         self.controller.quit()
         self.webserver.quit()
         time.sleep(3)
         print threading._active
         #sys.exit()
-        os._exit(os.EX_OK)
+        #os._exit(os.EX_OK)
+        os._exit(0)
         sys.exit()
         #except NameError:
         #    print "No Controller Exists to Kill"
