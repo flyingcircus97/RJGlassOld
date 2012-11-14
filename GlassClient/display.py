@@ -6,7 +6,7 @@
 #***********************************************
 
 import os
-
+import logging
 import pyglet
 from pyglet.gl import *
 from xml.etree.ElementTree import ElementTree
@@ -97,6 +97,7 @@ class display_c(object):
                 
         @self.win.event
         def on_draw():
+            logging.debug("Display: Start on_draw")
             pyglet.gl.glClear(pyglet.gl.GL_COLOR_BUFFER_BIT)
             pyglet.gl.glLoadIdentity()
             glEnable(GL_LINE_SMOOTH)
@@ -106,11 +107,12 @@ class display_c(object):
             glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
             self.fps_display.draw()
             for g in self.view_l[0].gauges:
+                logging.debug("Display: Drawing Guage %s", g.name)
                 pyglet.gl.glPushMatrix()
                 g.on_draw()
                 pyglet.gl.glPopMatrix()
                 
-            
+            logging.debug("Display: End Drawing Guages")
  
 class view_c(object):
         #A view is a collection of guages, in a set layout.

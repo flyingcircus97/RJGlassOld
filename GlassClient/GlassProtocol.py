@@ -1,5 +1,5 @@
 import time, struct, socket
-
+import logging
 
 def parse_data(self):
         #Go through data and find command and end codes to parse recv buffer
@@ -32,7 +32,7 @@ def parse_data(self):
                         go = True
                     #print self.recv_buffer, i_start, i_end
             else:
-                print "ERROR: Command %s Not Valid" %command_id
+                logging.warning("GlassProtocol: Command %s Not Valid" ,command_id)
                 self.recv_buffer = ''
                 
                 
@@ -44,7 +44,7 @@ def sendrecv(self, conn):
         #Send data if available
         if len(self.send_buffer)>=1:
             conn.send(self.send_buffer)
-            print "SENDING %r" %self.send_buffer
+            logging.info("GlassProtocol: Sending %r" ,self.send_buffer)
             self.send_buffer = '' #Clear buffer after it has been sent.
             self.time_lastTX = temp_time
         elif temp_time - self.time_lastTX > 3:
@@ -60,7 +60,7 @@ def sendrecv(self, conn):
             if e[0]==11 or e[0]==10035: #Standard error if no data to receieve
                 pass 
             else: #Something is wrong True Error occured
-                print "Error", e
+                logging.warning("GlassProtocol: Socket Error %r", e)
                 self.go = False #Quit connection
                 
 def initialize(self):

@@ -5,6 +5,7 @@ import socket
 import config
 import time
 import struct
+import logging
 
 import GlassProtocol
 
@@ -53,7 +54,7 @@ class client_c(object):
             #count = count -1
             #time.sleep(0.01)
          
-        print "Thread Ended", self.client_thread.name
+        logging.info("Client Thread Ended %s", self.client_thread.name)
             
     def init_client(self):
         self.commands = ["PI","VD"]
@@ -73,15 +74,18 @@ class client_c(object):
             if e[0]==111: #Connection refused
                 pass
             else: #Something is wrong True Error occured
-                print "Error", e
+                logging.warning("Client: Socket Error %r", e)
                 self.go = False #Quit connection
         if success: 
             self.connected= True
+            logging.info("Client: Connected %r:%r",self.host,self.port)
             self.lastRXtime = time.time()
-        else: time.sleep(3)
+        else: 
+            time.sleep(3)
         
     def reset_connect(self):
         #Reset connection if no ping recieved
+        logging.warning("Client: Resetting Connection No Data Received")
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
         time.sleep(1)
@@ -98,6 +102,7 @@ class client_c(object):
         if len(self.send_buffer) > 0:
             #try:
                 self.sock.send(self.send_buffer)
+                logging.debug("Client: Send send_buffer %r" ,self.send_buffer)
                 self.send_buffer = "" #Empty send buffer
             #except:
             
@@ -119,10 +124,11 @@ class client_c(object):
         if command_byte == "PI":
             desc = "Ping from Server "
             #No actions taken
+            logging.debug("Client: Ping for Server Received")
         elif command_byte == "VD":
             i=0
             self.rx_count = self.rx_count + 1
-            print time.time(), self.rx_count
+            logging.debug("Client: VD Recieved rx_count %r" , self.rx_count)
             while i<data_len: #Loop through till data runs out.
                 #Get addr
                 addr = struct.unpack("H",command_data[i:i+2])[0]

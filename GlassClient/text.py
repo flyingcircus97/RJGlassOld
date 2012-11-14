@@ -359,7 +359,7 @@ def draw_D():
         a = 68-34-x3  #+ globaltest.one
         b =  h  
         m.append((a*math.cos(angle)+x3,b*math.sin(angle)+(-h+b)))
-    print m
+    #print m
     #glBegin(GL_LINE_LOOP)
     #for t in l:
     #    glVertex2f(t[0],t[1])
@@ -502,7 +502,7 @@ def draw_K():
     slope = (50 - y1) / (2.0*w)
     #y = mx +b 
     b = h - slope * w
-    print "B", b, slope
+    
     x2 = -w + 10
     y2 = x2*slope + b
     
@@ -604,12 +604,11 @@ def draw_S():
     y = 90
     p = []
     m = [72,23,62,19,52,16,40,16,28,19,19,24,14,31,13,40,20,47,34,54,48,60,58,66,65,72,68,80,67,88,64,94,58,100,48,103,36,103,24,102,14,99,6,94]
-    print "RNAGE",range(0,len(m),2)
+    #print "RANGE",range(0,len(m),2)
     for i in range(0,len(m),2):
         p.append(1.0*(m[i]-4)/x*w*2-w)
         p.append(-1.0*(m[i+1]-15)/y*h*2+h)
         
-    print p
     batch = pyglet.graphics.Batch()
     #v = batch.add(4, GL_LINES, None, ('v2f', (-w,h,0,-h,0,-h,w,h)))
     v1 = add_batch(batch, GL_LINE_STRIP, p)
