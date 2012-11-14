@@ -23,13 +23,30 @@ class IOCP_data_obj(object):
         self.write = write
         self.change_count = self.var.change_count
         
+    def var_read(self, value):
+        if self.read: #Check for function
+            self.var.setvalue(value)
+            
+    def var_changed(self): 
+        #Scans variable if writeable sees if changed, then sends to IOCP
         
+        if self.write: #If variable not to be written to IOCP stop here
+            if self.var.change_count != self.change_count: #see if variable has changed
+                self.change_count = self.var.change_count
+                return self.var.getvalue()
+            else: 
+                return None
+        else:
+            return None
+            
+         
+            
         
 class IOCP_Client_c(threading.Thread):
     
        
     def __init__(self, parent, ip, port):
-        self.IOCPcomm = parent
+        self.IOCPComm = parent
         self.ip = ip
         self.port = port
         self.clock = time.time()
@@ -59,12 +76,14 @@ class IOCP_Client_c(threading.Thread):
         self.send('Vivo:')
         
     def send_response(self, response_l):
-        data = 'Resp:'
+        command = 'Resp:'
+        data = ''
         for i in response_l:
-            data+='%d=%d:' %(i[0],i[1])
+            if i[1]!=None:
+                data+='%d=%d:' %(i[0],i[1])
             
         if len(data) >0 :
-            self.send(data)
+            self.send(command+data)
             
     def send_initiation(self, init_l):
         data = 'Inicio:'
@@ -79,15 +98,21 @@ class IOCP_Client_c(threading.Thread):
         
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(5.0)
+        
+        
         succeed = False
         try:
             self.s.connect((addr, port))
-            #Send connection header
+            self.s.setblocking(0)
+        #Send connection header
             self.send_typeserver('GlassServer')
             succeed = True
             
-        except socket.error:
-            print "Could Not Connect"
+        except socket.error, e:
+             if e[0]!=10035: #Non blocking error
+                succeed = False
+                
+
         
         return succeed    
 
@@ -104,8 +129,18 @@ class IOCP_Client_c(threading.Thread):
         
     def connect_init(self):
         #Set variables that need to be monitor, know if they change.        
-        self.send_initiation(self.IOCPcomm.keys())
+        self.send_initiation(self.IOCPComm.keys())
         self.connected = True
+        
+    def process_resp(self, args):
+        for arg in args:
+            l = arg.split('=')
+            if len(l) == 2:
+                var_num = int(l[0])
+                value = int(l[1])
+                self.IOCPComm.response(var_num, value)
+                
+    
         
     def run(self):
         
@@ -118,50 +153,72 @@ class IOCP_Client_c(threading.Thread):
             
             command = packet[0]
             args = packet[1:-1] #Remove command, and CRLF at end.
-            print "IOCP Pakcet Recieved", packet
+            print "IOCP Packet Recieved", command, args
             
-            if command == 'Resp':
-                pass
+            if command == 'Vivo':
+                self.send_live()
+            elif command == 'Resp':
+                self.process_resp(args)
+        
+        def check_var():
+            self.IOCPComm.check_var()
             
-            
-        def decode_recieve(data_in):
+        def decode_receive(data_in):
             #Used to look for and read anydata that is coming in.
             #All data starts with Arn.
             #Split by Arn.
             packets = data_in.split('Arn.')
             for packet in packets:
-                process_packet(packet.split(':'))
+                if len(packet)>0:
+                    process_packet(packet.split(':'))
                 
         
             #print self.packet_data
         #Begin self.receive()
         
         def receive():
+            
+            r = ''
             try:
                 r = self.s.recv(1024)
+                
+            except socket.error, e:
+                
+                if e[0] != 10035:
+                   print "SOCKET ERROR", e
+                   self.connected = False
+                
             except socket.timeout:
-                r = ''
+                pass
                 #if self.go:
                 #    print "SERVER TIMED OUT (Will ReTry)"
                     
             except: #Unknown error so shutdown server.
-                r = ''
+                
                 self.connected = False
                     
             return r
                     
         #Starst of run loop
         self.go = True
-        
+        self.live_count = 0
         while self.go:
             #I connected run
+            time.sleep(0.1)
             if self.connected:
+                #Receive data
                 r = receive()    
-                
                 self.read_buffer = r
                 if len(r) > 0:
                     print "IOCP Recv: %r" %r
-                    self.decode_receive()
+                    decode_receive(self.read_buffer)
+                #Send data Response if needed
+                self.send_response(self.IOCPComm.check_var())
+                #Send live if needed
+                self.live_count +=1
+                if self.live_count > 40:
+                    self.send_live()
+                    self.live_count = 0
                 
             else: #Try to reconnect
                 if self.connect(self.ip, self.port) == True:
@@ -185,15 +242,29 @@ class IOCPComm(object):
             self.client = IOCP_Client_c(self, self.ip, self.port)
             self.var_dict = {}
             IOCPdef.setup(self, self.variables)
+            self.var_keys = self.var_dict.keys()
             if self.active: 
                 self.client.start()
                 
         def keys(self):
-            return self.var_dict.keys()
+            return self.var_keys
             
         def add_IOCP(self, var_num, var, read, write):
                 self.var_dict[var_num] = IOCP_data_obj(var, read, write)
-            
+                
+        def response(self, var_num, value):
+                if var_num in self.var_keys:
+                    self.var_dict[var_num].var_read(value)
+                    
+        def check_var(self):
+                #Look for changes
+                l = []
+                for var_num in self.var_keys:
+                    l.append([var_num, self.var_dict[var_num].var_changed()])
+                    
+                return l
+                
+                
         def quit(self):
             self.client.go = False
          

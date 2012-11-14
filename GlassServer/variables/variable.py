@@ -121,6 +121,9 @@ class var_obj(object):
             print "Value %r - Failed valid check for Variable %04X" %(value, self.addr)
         return result
             
+    def getvalue(self):
+        return self.data.value
+    
     def client_setvalue(self, value):
         self.data.value = self.unpack(value)
         

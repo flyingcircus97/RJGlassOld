@@ -27,9 +27,9 @@ def setup(comm, variables):
         #Altitude
         #altitude.setup(add_var)
         #Radios
-        #radios.setup(add_var)
+        radios.setup(add_IOCP)
         #Position
-        position.setup(add_IOCP)
+        #position.setup(add_IOCP)
         #HEading
         #heading.setup(add_var)
 
