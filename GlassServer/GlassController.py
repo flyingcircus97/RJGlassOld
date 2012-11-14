@@ -1,6 +1,7 @@
 import config
 import SocketServer, socket
 import threading, time, struct
+import logging
 
 class VariableWatch_c(object):
     #Class to keep track of variables that are being watched
@@ -30,13 +31,13 @@ class VariableWatch_list(object):
             
     def add(self, addr):
         if addr in self.addr_list:
-            print "Warning: Address %04X allready in watch list. Not Added" %addr
+            logging.info("GlassController: Address %04X allready in watch list. Not Added", addr)
         else:
             v = self.variables.get(addr)
             if v!=None:
                 self.list.append(VariableWatch_c(v))
                 self.update_addr_list()
-                print "Added Variable %04X to watch list." %addr
+                logging.debug("GlassController: Added Variable %04X to watch list.", addr)
                 
     def check(self):
         change_list = []
@@ -122,7 +123,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         self.log = []
         connections.add(self)
         self.commands = ["AV","SV","SE","SN"]
-        print self.client_address, 'connected!'
+        logging.info("GlassController: Connected to client %r", self.client_address)
         #self.request.send('hi ' + str(self.client_address) + '\n')
         #self.socket.settimeout(10)
         self.request.setblocking(0)
@@ -134,7 +135,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
     
     def process_data(self, command_byte, command_data):
-        print "Byte = %r  Data = %r" %(command_byte, command_data)
+        logging.debug("GlassController: Process Data Byte = %r  Data = %r", command_byte, command_data)
         data_len = len(command_data)
         desc = "UNKNOWN"
         
@@ -208,7 +209,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                 if buffer_length >= length + 4: 
                     #Parse data
                     command_data = data[4:length+4]
-                    print "Command %r %r" %(command_id, command_data)
+                    logging.debug("GlassController: Command %r %r", command_id, command_data)
                     self.process_data(command_id, command_data)
                     #Delete from recv buffer all data before end point
                     self.recv_buffer = data = data[length+4:]
@@ -217,7 +218,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                         go = True
                     #print self.recv_buffer, i_start, i_end
             else:
-                print "ERROR: Command %s Not Valid" %command_id
+                logging.warning("GlassController: ERROR: Command %s Not Valid %r" ,command_id)
                 self.recv_buffer = ''
     def sendrecv(self):
         #Send and recieve data
@@ -227,7 +228,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         #Send data if available
         if len(self.send_buffer)>=1:
             self.request.send(self.send_buffer)
-            print "SENDING %r" %self.send_buffer
+            logging.debug("GlassController: Sending %r", self.send_buffer)
             self.send_buffer = '' #Clear buffer after it has been sent.
             self.time_lastTX = temp_time
         elif temp_time - self.time_lastTX > 3:
@@ -243,7 +244,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
             if e[0]==11 or e[0]==10035: #Standard error if no data to receieve
                 pass 
             else: #Something is wrong True Error occured
-                print "Error", e
+                logging.warning("GlassController: Socket Error %r", e)
                 self.go = False #Quit connection
 
     def add_to_send(self, response):
@@ -270,7 +271,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
 
     def finish(self):
-        print self.client_address, 'disconnected!'
+        logging.info("GlassController: Disconecteed %r", self.client_address)
         #self.request.send('bye ' + str(self.client_address) + '\n')
         del(self)
 
@@ -298,14 +299,15 @@ class Glass_Server_c():
         self.port = port
         self.server = ThreadedTCPServer(('localhost', self.port), ThreadedTCPRequestHandler, variables)
     
-        print self.server.server_address
+        #print self.server.server_address
         self.go = True
         server_thread = threading.Thread(target=self.serve_forever)
         # Exit the server thread when the main thread terminates
         server_thread.setDaemon(True)
         server_thread.start()
     
-        print "Glass Server running in thread:", server_thread.getName()
+        logging.info("Glass Server running in thread: %r", server_thread.getName())
+        logging.info("Glass Server Address: %r", self.server.server_address)
 
     def serve_forever(self):
         self.server.timeout = 3.0
@@ -393,14 +395,14 @@ class Glass_Controller_c(object):
         self.FS_Comm.setup_sim(config.connection.active)
     
     def __init__(self):
-        print "CONTROLLER INIT"
+        logging.info("Glass Controller Initializing")
         self.setup_Modules()
         self.setup_FSComm(self.variables)        
         self.init_server()
         
     def init_server(self):
         self.Glass_Server = Glass_Server_c(self.variables, config.general.glassserver_port)
-        print "SERVER is RUNNING"
+        logging.info("GlassServer is Running")
     
     def comp(self):
         #print "COMP"
@@ -408,7 +410,7 @@ class Glass_Controller_c(object):
         self.gstest.run_test()
             
     def quit(self):
-        print "Controller Quit"
+        logging.info("Glass Controller Quiting")
         self.FS_Comm.quit()
         self.Glass_Server.shutdown()
         

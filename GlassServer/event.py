@@ -26,6 +26,7 @@
 #This module is used for both the server and client.
 import PySimConnect
 import struct
+import logging
 
 
 class event_obj(object):
@@ -44,7 +45,7 @@ class event_obj(object):
 				for i in range(value):
 					self.func()
 			else:
-				print "Can't process Event %0X as multiple, data not int." %self.addr 
+				logging.info("event: Can't process Event %0X as multiple, data not int.", self.addr)
 		else:
 			self.func(value)		
 		
@@ -85,7 +86,7 @@ class event_c(object):
 				
 			
 		else:
-			print "Event Obj Not Found - Not Processed by Server" %addr	
+			logging.info("event: Event Obj Not Found - Not Processed by Server %r", %addr)
 			#Not an error, as event could not apply to server.
 			
 		

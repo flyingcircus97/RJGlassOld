@@ -5,6 +5,7 @@
 from XPlaneConnect import XPlaneUDP
 import XPdef
 import time
+import logging
 #This is code to import config file (config.py)
 try:
     import config
@@ -64,13 +65,13 @@ class control_c(object):
         #self.init_comm()
         self.connected = True
         self.desire_connect = True
-        print 'Connect:' , self.addr, self.port
+        logging.info('XPlane Connect: %r : %r' , self.addr, self.port)
         self.comm.connect(self.addr, self.port, True)
         #self.connected = True #assume connected
         
         self.last_connect_attempt = time.time()
         
-        print "XPlane listening"
+        logging.info('XPlane listening')
             
     def request_data(self):
         self.s.definition_0.request(4, DataDefinition.USER, DataDefinition.ONCE, interval = 0, flag = 0)

@@ -2,6 +2,7 @@
 # ----------------------------------------------------------
 # FlightSim Comm 
 # ----------------------------------------------------------
+import logging
 import variables.variable as variable
 import config
 class FS_Comm_c(object):
@@ -46,8 +47,7 @@ class FS_Comm_c(object):
             self.controller = FlightSim.TEST.control.control_c(self.variables, self.mod_data)
             
         else:
-            print "ERROR: Sim ID Not Found", sim
-            print "Fallback to Test Mode Disconnected"
+            logging.warning("ERROR: Sim ID Not Found %r -- Fallingback to Test Mode Disconnected", sim)
             self.sim_name = 'TEST'
             import FlightSim.TEST.control
             self.controller = FlightSim.TEST.control.control_c(self.variables, self.mod_data)
@@ -55,11 +55,11 @@ class FS_Comm_c(object):
             #Defaults
     
     def disconnect(self):
-        print 'Controller Disconnect'
+        logging.info('FlightSim Controller - Disconnect')
         if self.controller != None:
             self.controller.quit()
     def connect(self):
-        print 'Controller Connect'
+        logging.info('FlightSim Controller - Connect')
         if self.sim != None:
             self.status_message = "Connecting"
             self.setup_sim(self.sim)
@@ -69,7 +69,7 @@ class FS_Comm_c(object):
         self.controller.process()
         self.status_message = self.controller.calc_status_message()
     def quit(self):
-        print "FSComm quit"
+        logging.info('FlightSim Controller - Quitting')
         self.controller.quit()
             
 FS_Comm = FS_Comm_c()            

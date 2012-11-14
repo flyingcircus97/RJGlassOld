@@ -1,5 +1,6 @@
 #config.py 
 # Config file for PyGlass
+import logging
 from configobj import ConfigObj
 #This imported by PyGlass via  import config
 #
@@ -41,7 +42,7 @@ class connection_c(object):
             self.config['active'] = num
             self.config.write()
         else:
-            print "Connection Config - Active not found."
+            logging.warning("Config: Connection Config - Active not found.")
             
     def connection_data(self):
         #Return all the connection data in dictionary format for AJAX request.
@@ -93,10 +94,10 @@ class connection_c(object):
                 key = 'connection' + str(i)
                 key_next = 'connection' + str(i+1)
                 self.config[key] = self.config[key_next]
-                print key, ' = ', key_next
+                #print key, ' = ', key_next
             key = 'connection' + str(index)
             del self.config[key_next]
-            print 'delete ', key_next
+            logging.debug('Config: Deleting Key %r', key_next)
         self.config.write()
         
         return str(0)
