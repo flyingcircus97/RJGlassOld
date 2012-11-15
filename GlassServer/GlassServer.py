@@ -106,9 +106,7 @@ def quit():
 if __name__ == '__main__':
     
     print "Press Ctrl-C to Quit"
-    #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
     
-    logging.info("WTF")
     run()
  
  
