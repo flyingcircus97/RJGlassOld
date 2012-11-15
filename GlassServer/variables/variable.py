@@ -26,6 +26,7 @@
 #This module is used for both the server and clinet.
 #import PySimConnect
 import struct
+import logging
 import inspect, os, time
 import variables.valid_check as valid_check #classes to check validity of variables.
 from FlightSim.FSX.PySimConnect import data_obj
@@ -64,7 +65,7 @@ class var_obj(object):
             self.change_count +=1
             
     def unpack(self, value):
-        print self.pack_format, "%r" %value
+        #print self.pack_format, "%r" %value
         return struct.unpack(self.pack_format, value)[0]
     
     def set_writeable(self, func):
@@ -99,7 +100,7 @@ class var_obj(object):
     
     def setvalue(self, value):
         #Check for valid number and correct it if needed.
-        print "SETTING VALUE"
+        logging.debug("Variable: Setting Value: %04X %r %r", self.addr, self.name, value)
         result = self.valid_check.test(value)
                     
         if result != None: #If valid check return False (Don't write)
@@ -108,17 +109,17 @@ class var_obj(object):
         #If write_func is False, means variable not writeable.
             if inspect.ismethod(self.writeable):
                 #self.writeable(self.unpack(value))
-                print "WRITEABLE FUNC"
+                #logging.debug("Varibale: Writeable Func")
                 self.writeable(result)
             elif self.writeable == True:
                 #self.data.set_value(self.unpack(value))
                 self.data.set_value(result)
             else:
-                print "Variable %04X not WRITEABLE" %self.addr
+                logging.debug("Variable: Variable %04X not WRITEABLE",self.addr)
                 result = None
             
         else: #if result == False
-            print "Value %r - Failed valid check for Variable %04X" %(value, self.addr)
+            logging.warning("Variable: Value %r - Failed valid check for Variable %04X", value, self.addr)
         return result
             
     def getvalue(self):
@@ -136,7 +137,7 @@ class variable_c(object):
     def __init__(self):
         #self.aircraft = aircraft
         #Creating dict containing all variables
-        print "VARIABLE INIT"
+        #print "VARIABLE INIT"
         self.dict = {} #Holds all varibles keyed by address.
         self.valid_check = valid_check
         #Get Element Tree setup for parsing of variable XML files.
@@ -177,7 +178,7 @@ class variable_c(object):
         if addr in self.dict.keys():
             return self.dict[addr]
         else:
-            print "Error: Variable Addr %04X Not valid" %addr
+            logging.warning("Variable: Variable Addr %04X Not valid", addr)
             return None
     
     def get_string(self,addr):
@@ -205,7 +206,7 @@ class variable_c(object):
             ok = v.setvalue(value)
             return ok
         else:
-            print "Error: Variable Addr %04X Not valid Can Not Write to" %addr    
+            logging.warning("Variable: Variable Addr %04X Not valid Can Not Write to", addr)
             return None
     
     def set_string(self, addr, value):
@@ -216,7 +217,7 @@ class variable_c(object):
             ok = v.setvalue_string(value)
             return ok
         else:
-            print "Error: Variable Addr %04X Not valid Can Not Write to" %addr    
+            logging.warning("Variable: Variable Addr %04X Not valid Can Not Write to", addr)
             return None
     
     def change_check(self):#Is called when SV is recieved.
@@ -366,10 +367,10 @@ class variable_c(object):
         type = type.upper()
         #Check for unique address.
         if self.exists(address):
-            print "Warning: Address 0x%X already exists in Variable dict." %address
+            logging.warning("Variable: Address 0x%X already exists in Variable dict.", address)
         #Check for unique name
         elif self.byName(name) != None:
-            print "Warning: Name %s already exists in Variable dict." %name
+            logging.warning("Variable: Name %s already exists in Variable dict.", name)
         else:
             self.dict[address] = var_obj(address, name, convert_type(type), desc, unit,format)
             

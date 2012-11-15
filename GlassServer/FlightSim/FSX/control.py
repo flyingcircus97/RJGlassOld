@@ -5,6 +5,7 @@
 from PySimConnect import SimConnect, DataDefinition
 import FSXdef
 import time
+import logging
 #This is code to import config file (config.py)
 try:
     import config
@@ -59,7 +60,7 @@ class control_c(object):
         self.init_comm()
         self.connected = True
         self.desire_connect = True
-        print 'Connect:' , self.addr, self.port
+        logging.info('SimConnect Connect: %r : %r' , self.addr, self.port)
         if not self.s.connect(self.addr, self.port, True):
             self.connected = False
         if not self.sevent.connect(self.addr, self.port, False):
@@ -69,9 +70,9 @@ class control_c(object):
            FSXdef.setup(self.s,self.variables)
            FSXdef.setup_events(self.sevent, self.variables) 
            self.request_data()
-           print "Connection to FSX Succeded"
+           logging.info("Connection to FSX Succeded")
         else:
-            print "Connection to FSX Failed"
+           logging.info("Connection to FSX Failed")
         
             
     def request_data(self):

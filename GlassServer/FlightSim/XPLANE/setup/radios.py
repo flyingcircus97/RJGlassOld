@@ -27,7 +27,7 @@ def xpdrtoBCD(freq):
         bcd = bcd * 16
         bcd+= temp / 1000
         temp = temp % 1000  * 10
-    print bcd
+    #print bcd
     return bcd
 
 def adftoBCD(freq):

@@ -9,6 +9,7 @@
 
 import threading 
 import time
+import logging
 import struct
 import config
 #from socket import *
@@ -36,8 +37,8 @@ HEADER_len = 12
 class empty_event(object):
 		
 	def send(self):
-		print "Pass, no function associated with this event to do."
-	
+		logging.debug("Pass, no function associated with this event to do.")
+
 class event_obj(object):
 	#Used to hold send event, with its data
 	def __init__(self,value):
@@ -72,7 +73,7 @@ class XPlaneUDP_Client_c(threading.Thread):
 	
 	def start_client(self):
 		if self.started==False:
-			print "Starting Thread"
+			logging.info("XPlaneConnect: Starting Thread")
 			self.start()
 			self.started=True
 	
@@ -88,8 +89,8 @@ class XPlaneUDP_Client_c(threading.Thread):
 		#self.s.settimeout(None)
 		self.s.settimeout(8)
 		#self.s.setblocking(0)
-		print "SENDING CONNECT"
-		self.send('CONNECT') #The initial connect attempt to FSX.
+		logging.info("XPlane Connect: Sending Connect string")
+		self.send('CONNECT') #The initial connect attempt to XPLANE
 
 	def close(self):
 		self.go = False
@@ -116,7 +117,7 @@ class XPlaneUDP_Client_c(threading.Thread):
 			#print self.packet_data
 		#Begin self.receive()
 		self.go = True
-		print "SERVER STARTING"
+		logging.info("XPlaneConnect: Server Starting")
 		while self.go:
 			#print "SERVER LOOP"
 		#print time.time()-self.clock
@@ -232,7 +233,7 @@ class XPlaneUDP(object):
 			out_s += struct.pack(self.inpack_list[index],item.value)
 			index += 1
 		self.client.send(out_s)
-		print "XP OUT %r" %out_s
+		logging.debug("XPlaneConnect: Client Out %r", out_s)
 		
 	def receive(self):
 		
@@ -243,7 +244,7 @@ class XPlaneUDP(object):
 				count = 0 
 				#print out
 				for item in outdata.list:
-					print count, out[count]
+					#print count, out[count]
 					#Possible functio here?
 					item.var.client_set(out[count])
 					count += 1
@@ -251,7 +252,7 @@ class XPlaneUDP(object):
 		def decode_data(data):
 					
 			id = struct.unpack('c', data[0])
-			print 'ID', id
+			logging.debug("XPlaneConnect: ID %d received", id)
 			if id[0] == '1': #High Priority outdata
 				#Main Data struct
 				unpack_data(self.LP_outdata, data)
@@ -259,15 +260,16 @@ class XPlaneUDP(object):
 				
 					
 			elif id[0] == '2':
-				print "ID 2"		
+				#print "ID 2"		
+				pass
 						
 			
 		status = False	#Check packet data to see if any data is in there.
-		print len(self.client.read_buffer), "%r" %self.client.read_buffer
-		print self.LP_outdata.outpack_size
+		logging.debug("XPlaneConnect : Readbuffer %d %r", len(self.client.read_buffer), self.client.read_buffer)
+		#print self.LP_outdata.outpack_size
 		if len(self.client.read_buffer) == self.LP_outdata.outpack_size + 1:
 			#print "Decoding Packet", len(self.client.packet_data)
-			print len(self.client.read_buffer), "%r" %self.client.read_buffer
+			#print len(self.client.read_buffer), "%r" %self.client.read_buffer
 			status = True
 			decode_data(self.client.read_buffer)
 			self.client.read_buffer = ''
@@ -279,8 +281,8 @@ class XPlaneUDP(object):
 	def output(self):
 		while len(self.client.packet_data) >0:
 			i = self.client.packet_data.pop(0)
-			print "Packet Recv Len:", len(i[1])
-			print "%r", i
+			logging.debug("XPlaneConnect: Packet Recv : %d %r", len(i[1]),i)
+			
 			
 			
 	

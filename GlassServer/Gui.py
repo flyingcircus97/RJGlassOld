@@ -4,6 +4,7 @@ import GlassServer
 import threading
 import webbrowser
 import time, socket
+import logging
 
 
 class GlassServerApp(threading.Thread):
@@ -96,9 +97,9 @@ class Application(Frame):
         
         
     def comm_quit(self):
-        print "COMMQUIT"
+        logging.info("Gui - Communication Quit")
         self.glassserver.quit()
-        print "WHAT"
+        logging.info("Gui - Quite Gui")
         self.quit()
         
     #def comm_restart(self):

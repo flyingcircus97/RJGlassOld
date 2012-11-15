@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import string
 import urllib
+import logging
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
@@ -106,10 +107,10 @@ class GlassWebServer_c(object):
        # except KeyboardInterrupt:
        #     print "Shutting Down"
        #     self.webserver.socket.close()
-        print "GlassWebServer running in thread:", self.server_thread.getName()
+        logging.info("GlassWebServer: Running in thread: %r", self.server_thread.getName())
            
     def quit(self):
-        print "Quitting WebServer"
+        logging.info("GlassWebServer: Quitting")
         self.go=False
         #self.webserver.shutdown()
         #time.sleep(1.0)

@@ -27,26 +27,38 @@ import string
 import threading
 import logging
 
-from GlassController import controller
-#import FMS_control
-#import aircraft
-#Constants
-from WebServer.WebServer import GlassWebServer_c
-from IOCP.IOCPClient import IOCPComm
+
+def init_log():
+    level = logging.INFO
+    if '-debug' in sys.argv:
+        level = logging.DEBUG
+    logging.basicConfig(level=level, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
+    #Set up File log
+    logger = logging.getLogger()
+    handler = logging.FileHandler('GlassServer.log', mode='w')
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)d %(levelname)s:%(message)s', '%H:%M:%S'))
+    logger.addHandler(handler)
 
 class mainloop_c(object):
     
     def __init__(self):
         #Init Logging
-        self.init_log()
-        self.go = True       
-        self.loop_time= 0.03
+        init_log()
+        #Import Server/Client Modules
+        from GlassController import controller
+        from WebServer.WebServer import GlassWebServer_c
+        from IOCP.IOCPClient import IOCPComm
         self.controller = controller
         self.webserver = GlassWebServer_c(config.general.webserver_port)
         self.IOCPclient = IOCPComm(config.general.IOCP_client)
+        #Initalize variables
+        self.go = True       
+        self.loop_time= 0.03
         
-    def init_log(self):
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
+#    def init_log(self):
+#        print "Initialize Logging"
+#        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
         
     def run(self):
         logging.info('MainLoop Started')
@@ -61,6 +73,7 @@ class mainloop_c(object):
                 
         except KeyboardInterrupt:
             logging.warning('Main Loop - Keyboard Interrupt')
+            self.quit()
         #Shut down server
         
         
@@ -72,7 +85,8 @@ class mainloop_c(object):
         self.controller.quit()
         self.webserver.quit()
         time.sleep(3)
-        print threading._active
+        logging.info("Threads Active - %r", threading._active)
+        logging.shutdown()
         #sys.exit()
         #os._exit(os.EX_OK)
         os._exit(0)
@@ -92,6 +106,9 @@ def quit():
 if __name__ == '__main__':
     
     print "Press Ctrl-C to Quit"
+    #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
+    
+    logging.info("WTF")
     run()
  
  

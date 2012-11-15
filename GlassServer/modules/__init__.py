@@ -9,6 +9,7 @@
 
 # ---------------------------------------------------------------
 import os, sys
+import logging
 
 extension = '_mod.py'
 variable_name = 'variable.xml'
@@ -20,7 +21,7 @@ def scan_folders(extension, variable_name):
     mod_py_files = []
     variable_txt_files = []
     for root, dirs, files in os.walk(__name__):
-        print root, dirs, files
+        #print root, dirs, files
         for f in files:
             #Scan through files, find ones with correct extension.
             if f[-ext_len:] == extension:
@@ -31,16 +32,15 @@ def scan_folders(extension, variable_name):
     return mod_py_files, variable_txt_files
     
 def import_mod_files(mod_files):
-    #print mod_files
+    
     list = []
     for f in mod_files:
         mod_name = f[:-3].replace(os.sep,'.')
-        print mod_name
+        
         try:
            exec('import ' + mod_name)
         except ImportError:
-           print "IMPORT ERROR"
-           print os.path.split(sys.path[0])[0] + '\\modules'
+           logging.debug("Modules.__init__.IMPORT ERROR %s", os.path.split(sys.path[0])[0] + '\\modules')
            sys.path.append(os.path.split(sys.path[0])[0])
            exec('import ' + 'modules.' + mod_name)
         exec('list.append(%s)' %mod_name)

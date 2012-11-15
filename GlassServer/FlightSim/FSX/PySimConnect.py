@@ -8,6 +8,7 @@
 # ---------------------------------------------------------------
 
 import threading 
+import logging
 import time
 import struct
 import config
@@ -38,7 +39,7 @@ class data_obj(object):
         self.inhibit = 0 #Used to postpone reading of data value from sim, when data is written too.
         
     def set_value(self, value):
-        print "*************** SET VALUE", value
+        logging.debug('Set Value - Data Object %r', value)
         self.value = value
         if self.sim_event != None:
             self.sim_event.send()
@@ -50,7 +51,7 @@ class data_obj(object):
 class empty_event(object):
         
     def send(self):
-        print "Pass, no function associated with this event to do."
+        logging.debug("Empty Event")
 
 
 class event_obj(object):
@@ -92,7 +93,7 @@ class DataRequest(object):
     
     def send(self, object_id = 0): #Default object_id to user aircraft.
         value = self.send_func(self.obj.value)
-        print "Sending" , value
+        logging.debug("PySimConnect Sending %r" , value)
         
         flag = SIMCONNECT_DATA_SET_FLAG_TAGGED
         d = struct.pack('<iiiiii' + self.type, self.definition, object_id, flag, 1, 4+ self.size , self.index, value)
@@ -116,10 +117,10 @@ class SimEvent(object):
         #print "%r" %self.data
         if self.send_func:
             d = struct.pack('<iiiii', 0, self.eventid, self.send_func(self.data.value), 1, 16)
-            print "SEND FUNC ", self.data.value, self.send_func(self.data.value)
+            logging.debug("PySimConnect Event Send Func %r %r", self.data.value, self.send_func(self.data.value))
         else:
             d = struct.pack('<iiiii', 0, self.eventid, self.data.value, 1, 16)
-        print "FSX Event Send %r" %d
+        logging.debug("PySimConnect Event Send %r", d)
         
         self.SimCon.client.send(d, 0x05)
     
@@ -211,7 +212,7 @@ class DataDefinition(object):
         elif type == STRING8:
             temp = '8s'
         else:
-            print "ERROR: Type Not Found"
+            logging.warning("PySimConnect Error Adding %s: Type Not Found", name)
             #raise
         self.unpack_s += temp
         self.data_count +=1
@@ -277,7 +278,7 @@ class SimConnect_Client_c(threading.Thread):
             self.send(init_string, 0x01) #The initial connect attempt to FSX.
             succeed = True
         except socket.error:
-            print "Could Not Connect"
+            logging.debug("PySimConnect Socket: Could Not Connect")
         
         return succeed    
 
@@ -285,10 +286,11 @@ class SimConnect_Client_c(threading.Thread):
         try: 
             self.s.close()
         except AttributeError:
-            print "Can't close Socket, Socket doesn't exist."
+            logging.debug("PySimConnect Socket: Can't close Socket, Socket doesn't exist.")
 
     def quit(self):
-        print "QUITTING"
+        logging.info("PySimConnect: Quitting")
+        
         if self.recieve: #Kill Thread
             self.go = False
         else:
@@ -322,7 +324,8 @@ class SimConnect_Client_c(threading.Thread):
             #print self.packet_data
         #Begin self.receive()
         self.go = True
-        print "Py SIMCONNECT SERVER STARTING"
+        logging.info("PySimConnect Server: Starting")
+        
         while self.go:
         #print time.time()-self.clock
             #print self.app_name, "RECIEVE"
@@ -331,7 +334,7 @@ class SimConnect_Client_c(threading.Thread):
                     r = self.s.recv(1024)
                 except socket.timeout:
                     if self.go:
-                        print "SERVER TIMED OUT (Will ReTry)"
+                        logging.info("PySimConnect Server: Recieve Timed Out (Will ReTry)")
                         self.go = False
                 except: #Unknown error so shutdown server.
                     self.go = False
@@ -361,16 +364,17 @@ class SimConnect_Client_c(threading.Thread):
                         if num > 4: #If data is not being read then close thread.
                         #This is so the thread wont run forever.
                             self.go = False
-                            print "RJGlass is not reading input buffer, exiting client thread."
+                            logging.warning("PySimConnect: Input buffer not being read, exiting client thread.")
                         #If data is decoded it will be sent to self.packet_data list.
                         #print time.time()-self.clock, out[0], out[2]
                     else:
-                        print "Error: Length not correct" , l, out[0]
+                        logging.warning("PySimConnect Error: Read buffer Length not correct %r %r" , l, out[0])
                         l=0 #bad data forces while loop to exit
                 else: #If protocol wrong then error in transmission clear buffer
                     #self.read_buffer = ''
                     l=0 #forces loop to exit
-                    print "Error in Data: Protocol Wrong,  Read_Buffer cleared" , out[1]
+                    logging.warning("PySimConnect Error: Read Buffer Protocol Wrong,  Read_Buffer cleared %r" , out[1])
+                    
             
             #Check read buffer
             #print "%r" %self.read_buffer
@@ -378,7 +382,7 @@ class SimConnect_Client_c(threading.Thread):
             #time.sleep(3)
             #Quit thread
         self.s.close()
-        print "Closing Socket"
+        logging.info("PySimConnect: Closing Socket")
         
 class SimConnect(object):
     
@@ -410,7 +414,7 @@ class SimConnect(object):
         #Depending on your FSX_version you are connecting to, need to set protocol etc.
 #        self.read_buffer = ''
         self.data_dict = {}
-        print "FSX VERSION", FSX_version
+        logging.debug("PySimConnect: FSX verison %d", FSX_version)
         if FSX_version == config.FSXSP0:
             FSX_subversion = 60905
             FSX_major_version = 10
@@ -485,7 +489,7 @@ class SimConnect(object):
                     i+=1
                 return id
             else:
-                print "Error Type Equals", packet_type
+                logging.warning("PySimConnect Decode Packet: Error Type Equals %r", packet_type)
                 return -1
             
             

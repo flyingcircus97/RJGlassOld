@@ -2,6 +2,7 @@
 # ----------------------------------------------------------
 # IOCP Load Definitions 
 # ----------------------------------------------------------
+import logging
 #Constants
 from types import FunctionType
 import setup.radios as radios
@@ -17,7 +18,7 @@ def setup(comm, variables):
             if v!=None:
                 comm.add_IOCP(var_num,v, read, write)
             else:
-                print "Couldn't add IOCP var, variable name %s not found" %var_name
+                logging.warning("IOCPdef: Couldn't add IOCP var, variable name %s not found", var_name)
                 
             
           

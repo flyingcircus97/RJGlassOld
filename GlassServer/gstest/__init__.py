@@ -9,6 +9,7 @@
 
 # ---------------------------------------------------------------
 import os, sys
+import logging
 
 extension = '.py'
 
@@ -34,12 +35,12 @@ def import_test_files(test_files):
     list = []
     for f in test_files:
         test_name = f[:-3].replace(os.sep,'.')
-        print test_name
+        #print test_name
         try:
            exec('import ' + test_name)
         except ImportError:
-           print "IMPORT ERROR"
-           print os.path.split(sys.path[0])[0] + '\\test'
+           #print "IMPORT ERROR"
+           #print os.path.split(sys.path[0])[0] + '\\test'
            sys.path.append(os.path.split(sys.path[0])[0])
            exec('import ' + 'test.' + test_name)
         exec('list.append(%s)' %test_name)
@@ -48,10 +49,10 @@ def import_test_files(test_files):
 
 def run_test():
     for i in test_list:
-        #try:
+        try:
             i.thetest.step()
-        #except:
-        #    print "ERROR RUNNING TEST" ,i
+        except:
+            logging.warning("Running Test Exception %r" ,i.thetest.name)
         
 def AJAX_list(active_list):
     out = []
@@ -71,7 +72,7 @@ def AJAX_list(active_list):
         
 #Main program
 test_files = scan_folders(extension)
-print test_files
+#print test_files
 test_list = import_test_files(test_files)
 
 #import Main.airspeed_mod

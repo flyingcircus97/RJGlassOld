@@ -6,8 +6,8 @@
 # ---------------------------------------------------------------
 
 import threading 
+import logging
 import time
-import struct
 #import config
 #from socket import *
 import socket
@@ -38,9 +38,6 @@ class IOCP_data_obj(object):
                 return None
         else:
             return None
-            
-         
-            
         
 class IOCP_Client_c(threading.Thread):
     
@@ -66,7 +63,7 @@ class IOCP_Client_c(threading.Thread):
         out = pre + data + '\r\n'
         #Send data to socket
         self.s.send(out)
-        print "IOCP Send: ", pre+data
+        logging.debug("IOCPClient: IOCP Send: %s", pre+data)
         
     def send_typeserver(self, name):
         data = 'TipoSer:'+ name + ':'
@@ -120,10 +117,10 @@ class IOCP_Client_c(threading.Thread):
         try: 
             self.s.close()
         except AttributeError:
-            print "Can't close Socket, Socket doesn't exist."
+            logging.warning("IOCPClient: Can't close Socket, Socket doesn't exist.")
 
     def quit(self):
-        print "QUITTING IOCP Client"
+        logging.info("IOCPClient: Qutitting IOCP Client")
         self.go = False
         
         
@@ -153,7 +150,7 @@ class IOCP_Client_c(threading.Thread):
             
             command = packet[0]
             args = packet[1:-1] #Remove command, and CRLF at end.
-            print "IOCP Packet Recieved", command, args
+            #print "IOCP Packet Recieved", command, args
             
             if command == 'Vivo':
                 self.send_live()
@@ -185,7 +182,7 @@ class IOCP_Client_c(threading.Thread):
             except socket.error, e:
                 
                 if e[0] != 10035:
-                   print "SOCKET ERROR", e
+                   logging.warning("IOCP Client: IOCP Server socket error", e)
                    self.connected = False
                 
             except socket.timeout:
@@ -210,7 +207,7 @@ class IOCP_Client_c(threading.Thread):
                 r = receive()    
                 self.read_buffer = r
                 if len(r) > 0:
-                    print "IOCP Recv: %r" %r
+                    logging.debug("IOCPClient: IOCP Recv: %r", r)
                     decode_receive(self.read_buffer)
                 #Send data Response if needed
                 self.send_response(self.IOCPComm.check_var())
@@ -223,13 +220,13 @@ class IOCP_Client_c(threading.Thread):
             else: #Try to reconnect
                 if self.connect(self.ip, self.port) == True:
                     self.connect_init()
-                    print "Connected to IOCP Server"
+                    logging.info("IOCPClient: Connected to IOCP Server %s:%d", self.ip,self.port)
                 else:
-                    print "Connect to IOCP Server failed %s:%d" %(self.ip,self.port)
+                    logging.warning("IOCPClient: Connect to IOCP Server failed %s:%d",self.ip,self.port)
                     time.sleep(5)
         #End of while self.go
         self.close()
-        print "End IOCP Thread"
+        logging.info("IOCPClient: IOCP Thread Ended")
         
         
 class IOCPComm(object):
