@@ -22,20 +22,36 @@ class IOCP_data_obj(object):
         self.read = read
         self.write = write
         self.change_count = self.var.change_count
+        self.read_inhibit = 0 #Set to inhibit reads from IOCP Server, after a write to IOCP Server if performed
+        self.write_inhibit = 0 #Set to inhibit writes to IOCP Server, after new data from IOCP Server if received
+        self.inhibit_count = 3 #Value inhibit get set to
         
     def var_read(self, value):
         if self.read: #Check for function
-            self.var.setvalue(value)
+            if not self.read_inhibit: #Check for read being inhibited.
+                self.var.setvalue(value)
+                self.write_inhibit = self.inhibit_count
+            
+    def inhibit_check(self):
+        # lower inhibit down to zero.
+        if self.read_inhibit > 0:
+            self.read_inhibit -= 1 
+        if self.write_inhibit > 0:
+            self.write_inhibit -= 1 
+            
             
     def var_changed(self): 
         #Scans variable if writeable sees if changed, then sends to IOCP
         
         if self.write: #If variable not to be written to IOCP stop here
-            if self.var.change_count != self.change_count: #see if variable has changed
-                self.change_count = self.var.change_count
-                return self.var.getvalue()
-            else: 
-                return None
+            if not self.write_inhibit: #See if writing to IOCP has been inhibited
+                if self.var.change_count != self.change_count: #see if variable has changed
+                    self.change_count = self.var.change_count
+                    #Set inhibit, if variable changed it will be sent out to IOCP server.
+                    self.read_inhibit = self.inhibit_count
+                    return self.var.getvalue()
+                else: 
+                    return None
         else:
             return None
         
@@ -81,7 +97,7 @@ class IOCP_Client_c(threading.Thread):
             
         if len(data) >0 :
             self.send(command+data)
-            
+    
     def send_initiation(self, init_l):
         data = 'Inicio:'
         for i in init_l:
@@ -95,7 +111,6 @@ class IOCP_Client_c(threading.Thread):
         
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(5.0)
-        
         
         succeed = False
         try:
@@ -135,7 +150,7 @@ class IOCP_Client_c(threading.Thread):
             if len(l) == 2:
                 var_num = int(l[0])
                 value = int(l[1])
-                self.IOCPComm.response(var_num, value)
+                self.IOCPComm.read_response(var_num, value)
                 
     
         
@@ -249,19 +264,22 @@ class IOCPComm(object):
         def add_IOCP(self, var_num, var, read, write):
                 self.var_dict[var_num] = IOCP_data_obj(var, read, write)
                 
-        def response(self, var_num, value):
+        def read_response(self, var_num, value):
                 if var_num in self.var_keys:
                     self.var_dict[var_num].var_read(value)
                     
+                
         def check_var(self):
-                #Look for changes
+                #Look for changes and lower inhibit
+                
                 l = []
                 for var_num in self.var_keys:
-                    l.append([var_num, self.var_dict[var_num].var_changed()])
+                    v = self.var_dict[var_num]
+                    l.append([var_num, v.var_changed()])
+                    v.inhibit_check()
                     
                 return l
-                
-                
+       
         def quit(self):
             self.client.go = False
          
