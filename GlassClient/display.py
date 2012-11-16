@@ -25,10 +25,15 @@ class display_c(object):
         self.display = self.platform.get_default_display()
         self.screens = self.display.get_screens()
         self.parse_file = parse_file
-        self.window = None #Leave None for now, will be created in self.parse_xml
+        self.win = None #Leave None for now, will be created in self.parse_xml
         self.fps_display = pyglet.clock.ClockDisplay()
         self.view_l = [] #view list
+        #pyglet.clock.Clock.MIN_SLEEP = 0.1
+        print pyglet.clock.Clock.MIN_SLEEP
+        #pyglet.clock.schedule_interval(self.on_draw, 1.0/10.0)
         
+        #pyglet.clock.set_fps_limit(10.0)
+        print pyglet.clock.get_fps_limit()
         if parse_file != None:
             
             self.parse_view_xml(parse_file)
@@ -41,6 +46,14 @@ class display_c(object):
            
         #window_list.append(win)
         
+    def update(self, dt):
+        pass
+    
+    def myDraw(self, dt):
+        self.win.dispatch_event('on_draw')
+        self.win.flip()
+        
+    
     def parse_view_xml(self, parse_file):
         
         def xml_val(element, prev=None):
@@ -97,6 +110,7 @@ class display_c(object):
                 
         @self.win.event
         def on_draw():
+            
             logging.debug("Display: Start on_draw")
             pyglet.gl.glClear(pyglet.gl.GL_COLOR_BUFFER_BIT)
             pyglet.gl.glLoadIdentity()

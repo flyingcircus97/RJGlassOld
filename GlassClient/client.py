@@ -23,6 +23,7 @@ class client_c(object):
         self.go = True
         self.client_thread.start()
         self.rx_count =0
+        self.VD_recv = False
     def stop(self):
         self.go=False    
     
@@ -128,6 +129,7 @@ class client_c(object):
         elif command_byte == "VD":
             i=0
             self.rx_count = self.rx_count + 1
+            self.VD_recv = True
             logging.debug("Client: VD Recieved rx_count %r" , self.rx_count)
             while i<data_len: #Loop through till data runs out.
                 #Get addr
