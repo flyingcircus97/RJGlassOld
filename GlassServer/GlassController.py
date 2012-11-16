@@ -222,7 +222,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                 self.recv_buffer = ''
     def sendrecv(self):
         #Send and recieve data
-        time.sleep(0.01)
+        time.sleep(0.03)
         temp_time = time.time()
         
         #Send data if available

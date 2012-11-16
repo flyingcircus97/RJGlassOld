@@ -3,7 +3,8 @@ from pyglet.gl import *
 from gauge import gauge_parent
 import common
 import variable
-import math, text
+import math, time
+import text
 
 
 class gauge_c(gauge_parent):
@@ -27,8 +28,10 @@ class gauge_c(gauge_parent):
         self.pitch = variable.variables.load(0x126)
         self.roll = variable.variables.load(0x125, 0.00)
         #self.pitch = 8.5
-        pyglet.clock.schedule_interval(self.fade_in, .03) 
+        #pyglet.clock.schedule_interval(self.fade_in, .03) 
         #print self.pitch2.hex
+        #pyglet.clock.schedule_interval(self.update, 1.0/30.0)
+        #pyglet.clock.set_fps_limit(30.0)
         
         
     def load_batch(self):
@@ -186,8 +189,8 @@ class gauge_c(gauge_parent):
         return batch
     
     
-    def fade_in(self, dt):
-        self.a+=1.5
+    def update(self, dt):
+        pass
         #self.pitch += 0.01
         #self.a = 45.0
         #if self.a>180.0:
@@ -204,6 +207,7 @@ class gauge_c(gauge_parent):
         glLineWidth(1.5*self.scale_lw)
         self.bV_shape.draw()
         self.static_triangle_shape.draw()
+        #time.sleep(0.03)
         #self.draw_border()
         
             
