@@ -27,6 +27,7 @@ class gauge_c(gauge_parent):
         self.a = 0.0
         self.pitch = variable.variables.load(0x126)
         self.roll = variable.variables.load(0x125, 0.00)
+        
         #self.pitch = 8.5
         #pyglet.clock.schedule_interval(self.fade_in, .03) 
         #print self.pitch2.hex
@@ -209,6 +210,12 @@ class gauge_c(gauge_parent):
         self.static_triangle_shape.draw()
         #time.sleep(0.03)
         #self.draw_border()
+        #self.pitch.value += 0.2
+        #self.roll.value += 0.8
+        #if self.pitch.value > 30.0:
+        #    self.pitch.value = -30.0
+        #if self.roll.value >180.0:
+        #    self.roll.value = -180.0
         
             
     def pitch_marks(self, roll, pitch, line_width):
