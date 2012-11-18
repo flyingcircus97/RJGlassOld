@@ -218,7 +218,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                         go = True
                     #print self.recv_buffer, i_start, i_end
             else:
-                logging.warning("GlassController: ERROR: Command %s Not Valid %r" ,command_id)
+                logging.warning("GlassController: ERROR: Command %s Not Valid " ,command_id)
                 self.recv_buffer = ''
     def sendrecv(self):
         #Send and recieve data
