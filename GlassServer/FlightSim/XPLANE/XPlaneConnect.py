@@ -272,9 +272,10 @@ class XPlaneUDP(object):
 			#print len(self.client.read_buffer), "%r" %self.client.read_buffer
 			status = True
 			decode_data(self.client.read_buffer)
+			#print "R BUFFER %r " %self.client.read_buffer
 			self.client.read_buffer = ''
-		#else:
-			#print "WRONG SIZE", len(self.client.read_buffer)
+		else:
+			pass #print "WRONG SIZE", len(self.client.read_buffer)
 			#define_id.append(decode_packet(self.client.packet_data.pop(0)))
 		return status
 	

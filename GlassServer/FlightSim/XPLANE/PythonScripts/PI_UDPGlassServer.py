@@ -144,7 +144,7 @@ class PythonInterface:
             #Add aircraft data.
             #print temp, len(self.data_out) - temp
             print len(self.data_out)
-            #print '%r' %(self.data_out)
+            print '%r' %(self.data_out)
             self.recv_data()
         
             # Return 1.0 to indicate that we want to be called again in 1 frame.

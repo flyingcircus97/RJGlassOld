@@ -8,7 +8,7 @@ class Test_c(object):
         #self.variables = variables
         self.func_list = []
         self.func_list_count = 0
-        self.active = True
+        self.active = False
         self.name = "Not Set"
         self.filename = name.split('.')[-1]+'.py'
         self.message = "--" #Used to put message on Scripts tab on webpage.
