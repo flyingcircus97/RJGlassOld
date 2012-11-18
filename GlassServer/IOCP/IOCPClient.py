@@ -267,7 +267,7 @@ class IOCPComm(object):
         def read_response(self, var_num, value):
                 if var_num in self.var_keys:
                     self.var_dict[var_num].var_read(value)
-                    
+                                        
                 
         def check_var(self):
                 #Look for changes and lower inhibit

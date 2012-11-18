@@ -5,11 +5,9 @@
 import logging
 #Constants
 from types import FunctionType
-import setup.radios as radios
-import setup.airspeed as airspeed
-import setup.altitude as altitude
-import setup.position as position
-import setup.heading as heading
+
+import setupIOCP.radios
+import setupIOCP.CRJ700.indications
 
 def setup(comm, variables):
     
@@ -28,11 +26,14 @@ def setup(comm, variables):
         #Altitude
         #altitude.setup(add_var)
         #Radios
-        radios.setup(add_IOCP)
+        setupIOCP.radios.setup(add_IOCP)
         #Position
         #position.setup(add_IOCP)
         #HEading
         #heading.setup(add_var)
+        #CRJ700
+            #Indications
+        setupIOCP.CRJ700.indications.setup(add_IOCP)
 
 
 def setup_events(sevent, variables):        
