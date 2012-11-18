@@ -54,7 +54,7 @@ class mainloop_c(object):
         self.IOCPclient = IOCPComm(config.general.IOCP_client)
         #Initalize variables
         self.go = True       
-        self.loop_time= 0.03
+        self.loop_time= 1/60.0
         
 #    def init_log(self):
 #        print "Initialize Logging"

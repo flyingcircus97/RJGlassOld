@@ -33,11 +33,11 @@ class myEventLoop(pyglet.app.EventLoop):
     def __init__(self):
         super(myEventLoop, self).__init__()
         
-    def idle(self):
-        pyglet.clock.tick(poll=False)
-        #print "IDLE"
-        #print pyglet.clock.get_sleep_time(sleep_idle=True)
-        return pyglet.clock.get_sleep_time(sleep_idle=True)
+   # def idle(self):
+   #     pyglet.clock.tick(poll=False)
+   #     #print "IDLE"
+   #     #print pyglet.clock.get_sleep_time(sleep_idle=True)
+   #     return pyglet.clock.get_sleep_time(sleep_idle=True)
         
 #    def myDraw(self, dt):
 #        #pyglet.window.dispatch_event('on_draw')
@@ -53,7 +53,8 @@ class myEventLoop(pyglet.app.EventLoop):
 def myDraw(dt):
     #if c.VD_recv:
     #   c.VD_recv = False
-    display.myDraw(dt)
+    #display.myDraw(dt)
+    pass
     #print rx_count
     #print c.rx_count
         
@@ -64,7 +65,7 @@ display = display.display_c('view.xml')
 
 #pyglet.clock.schedule_interval(event_loop.myDraw, 1/20.0)
 #pyglet.app.run()
-pyglet.clock.schedule_interval(myDraw, 1.0/30.0)
+pyglet.clock.schedule_interval(myDraw, 1.0/60.0)
 event_loop.run()
 
 #Stop Client
