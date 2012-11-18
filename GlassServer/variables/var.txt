@@ -57,3 +57,5 @@
 0453,ADF2_hasNAV,i,ADF Radio 2 Signal,1=True
 0460,XPDR,i,Transpoder Code,None
 0470,MARKERS,i,Markers (1=IM,2=MM,3=OM),Enum
+01001,MSTRWARN_IND,i,Master Warning Indication,onoff
+01002,MSTRCAUT_IND,i,Master Caution Indication,onoff

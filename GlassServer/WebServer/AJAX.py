@@ -67,7 +67,7 @@ class AJAX_c(object):
             return children	
         #Create Tree Directory, JSON.
         var_groups = self.variables.var_groups
-        #print "*******"
+        #print "VAR GROUPS", var_groups
         var_d = {}
         var_d["property"] = {"name": "All", "key" : "All"}
         var_d["children"] = get_children(var_groups, None)

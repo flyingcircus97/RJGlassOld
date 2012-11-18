@@ -1,0 +1,19 @@
+<variables>
+  <var>
+	<addr>1001</addr>
+	<name>MSTRWARN_IND</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<desc>Master Warning Indication</desc>
+</var>
+  <var>
+	<addr>1002</addr>
+	<name>MSTRCAUT_IND</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<desc>Master Caution Indication</desc>
+</var>
+
+</variables>
