@@ -223,6 +223,7 @@ class DataDefinition(object):
         #flag = 2
         d = struct.pack('<iiiiiiii', request_id, self.id, object_id, period, flag, orgin, interval, limit)
         self.SimCon.client.send(d, 0xe)
+        logging.debug("PySimConnect: Sending Request %d", request_id)
         
 class SimConnect_Client_c(threading.Thread):
     
