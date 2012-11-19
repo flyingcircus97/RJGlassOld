@@ -52,6 +52,7 @@ class control_c(object):
         
     def close_comm(self):
         #Shutdown both sockets.
+        logging.debug("Control Close_Comm")
         if hasattr(self, 'comm'):
             self.comm.close()
         self.connected = False
@@ -68,7 +69,7 @@ class control_c(object):
         logging.info('XPlane Connect: %r : %r' , self.addr, self.port)
         self.comm.connect(self.addr, self.port, True)
         #self.connected = True #assume connected
-        
+        self.nodata_time = time.time()
         self.last_connect_attempt = time.time()
         
         logging.info('XPlane listening')
@@ -85,8 +86,9 @@ class control_c(object):
             diff = time.time() - self.nodata_time
             #if diff > 5.0: #If no data for more than 5 seconds, stop socket.
                 #self.s.client.go = False 
-            if diff > 2.0: #If no data for 2 seconds.
+            if diff > 8.0: #If no data for 2 seconds.
             #Request data
+                logging.debug("XPlane Control NODATA")
                 self.nodata = True
                 self.connected = False
                 #Request more data from FSX (This was causing multiple requests removed for now)
@@ -104,10 +106,12 @@ class control_c(object):
             
             
     def process(self):
+        logging.debug("Control Process Started %d", self.connected)
         if self.connected:
-            
+
             if self.comm.connected == False:
                 self.close_comm()
+                
             else:
                 self.decode_input()
                 self.comm.client.send("TEST")

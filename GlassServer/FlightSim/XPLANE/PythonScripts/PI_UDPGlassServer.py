@@ -14,6 +14,12 @@ from XPLMPlanes import XPLMAcquirePlanes, XPLMCountAircraft, XPLMReleasePlanes, 
 import socket #Used for UDP server.
 import GlassData
 import os, struct, time
+import logging
+
+#Initialize Logging
+level=logging.INFO
+
+logging.basicConfig(level=level, format='%(asctime)s.%(msecs)d %(levelname)s:%(message)s', datefmt='%H:%M:%S')
 
 class PythonInterface:
     def create_socket(self):
@@ -27,7 +33,7 @@ class PythonInterface:
     def reset_socket(self):
         self.UDPSock.close()
         self.create_socket()
-        print "RESETING SOCKET ****"
+        logging.info("Resetting Socket")
         
     def XPluginStart(self):
         #global gOutputFile, gPlaneLat, gPlaneLon, gPlaneEl
@@ -96,7 +102,7 @@ class PythonInterface:
         #self.UDPSock.sendto("STARTING", self.addr)
         
         self.ready = True #Ready to go
-        
+        logging.info("UDPGLassServer Plugin Started")
                 
         
 
@@ -143,8 +149,8 @@ class PythonInterface:
             
             #Add aircraft data.
             #print temp, len(self.data_out) - temp
-            print len(self.data_out)
-            print '%r' %(self.data_out)
+            #print len(self.data_out)
+            #print '%r' %(self.data_out)
             self.recv_data()
         
             # Return 1.0 to indicate that we want to be called again in 1 frame.
@@ -158,10 +164,11 @@ class PythonInterface:
         try:
             data_in, client_addr = self.UDPSock.recvfrom(1024)
             self.UDPTimeout = self.elapsed
-            print "%r" %(data_in), client_addr
+            logging.debug("RECV from %r %r", client_addr, data_in)
             if self.data_in_list.parse_data_in(data_in):
                     ok = True
             self.UDPSock.sendto(self.data_out, client_addr)
+            logging.debug("SEND to %r %r", client_addr, self.data_out)
         except socket.error: #Error due to non blocking not receving anything.
             pass
         return ok

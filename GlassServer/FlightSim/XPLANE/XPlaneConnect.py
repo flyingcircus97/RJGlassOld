@@ -69,7 +69,7 @@ class XPlaneUDP_Client_c(threading.Thread):
 	def send(self, data):
 		#Send to server UDP
 		self.s.sendto(data, self.addr)
-		#print "UDP OUT:", data, self.addr
+		logging.debug("UDP OUT: %s %r", data, self.addr)
 	
 	def start_client(self):
 		if self.started==False:
@@ -87,10 +87,11 @@ class XPlaneUDP_Client_c(threading.Thread):
 		self.addr = (addr,port)
 		#Send connection header
 		#self.s.settimeout(None)
-		self.s.settimeout(8)
+		self.s.settimeout(2)
 		#self.s.setblocking(0)
 		logging.info("XPlane Connect: Sending Connect string")
 		self.send('CONNECT') #The initial connect attempt to XPLANE
+		self.connected=True
 
 	def close(self):
 		self.go = False
@@ -125,10 +126,10 @@ class XPlaneUDP_Client_c(threading.Thread):
 			if self.recieve:
 				try:
 					r, addr2 = self.s.recvfrom(1024)
-					#print "%r" %r, len(r)
-				except:
+					logging.debug("UDP RECV (%d) %r ", len(r), r)
+				except socket.timeout:
 					r = ''
-					pass
+					logging.debug("UDP RECV Timedout")
 					
 			else:
 				r = ''
@@ -136,7 +137,7 @@ class XPlaneUDP_Client_c(threading.Thread):
 			#print "%r" %r
 			#self.read_buffer = self.read_buffer + r
 			self.read_buffer = r
-			#print "Recived Bytes", len(r)
+			logging.debug("Recived Buffer (%d) %r", len(r), r)
 			#except:
 			#	pass
 			#self.kill_timer += 1 #This is used to kill thread, if RJGlass crashes, or locks up.
@@ -252,7 +253,7 @@ class XPlaneUDP(object):
 		def decode_data(data):
 					
 			id = struct.unpack('c', data[0])
-			logging.debug("XPlaneConnect: ID %d received", id)
+			logging.debug("XPlaneConnect: ID %s received", id[0])
 			if id[0] == '1': #High Priority outdata
 				#Main Data struct
 				unpack_data(self.LP_outdata, data)
