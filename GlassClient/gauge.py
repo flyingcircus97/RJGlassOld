@@ -40,13 +40,18 @@ class gauge_parent(object):
         self.scale_lw = ((self.scale_x + self.scale_y) / 2.0) * self.parent_scale_lw
         #self.scale_x = 1.0
         #self.scale_y = 1.0
+        #print self.scale_x, self.scale_y
+        #print self.size
+        #print self.native_size
         
     def draw_border(self):
+        pyglet.gl.glColor3f(1.0,0.0,0.0)
         x = self.native_size_div2[0]
         y = self.native_size_div2[1]
         pyglet.graphics.draw(4, pyglet.gl.GL_LINE_LOOP, ('v2i', (-x,-y,-x,y,x,y,x,-y)))
     def init_gauge(self):
         #Initalizes position of guage scaling and translation
+        pyglet.gl.glPushMatrix()
         pyglet.gl.glTranslatef(self.pos[0],self.pos[1],0)
         pyglet.gl.glScalef(self.scale_x,self.scale_y,0)
         
@@ -57,11 +62,19 @@ class gauge_parent(object):
         #    pyglet.graphics.draw(2, pyglet.gl.GL_LINES,
         #    ('v2i', (10, 15, 30, 35)))
         
-    def on_draw(self):
+    def end_gauge(self):
+        pyglet.gl.glPopMatrix()
+        
+    def on_draw(self, draw_border = False):
         self.init_gauge()
         self.draw()
+        self.draw_border()
+        self.end_gauge()
         
     def linewidth(self):
         #Compensates linewidth for scale_x and scale_y
         return(self.scale_lw)
+    
+    def glLineWidth(self, w):
+        pyglet.gl.glLineWidth(self.scale_lw*w)
         
