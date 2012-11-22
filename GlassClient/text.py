@@ -743,6 +743,7 @@ def draw_Z():
 
 
 dict = {}
+dict[' '] = None
 dict['0'] = char_c(draw_0)
 dict['1'] = char_c(draw_1)
 dict['2'] = char_c(draw_2)
@@ -783,6 +784,7 @@ dict['Z'] = char_c(draw_Z)
 
 def write(s):
     for c in s:
-        dict[c].draw()
+        if dict[c]:
+            dict[c].draw()
         glTranslatef(85,0,0)
     
