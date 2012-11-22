@@ -6,6 +6,7 @@ class color_c(object):
     def __init__(self):
         self.white = (1.0,1.0,1.0)
         self.yellow  = (1.0,1.0,0.0)
+        self.black = (0.0,0.0,0.0)
     
 
 class xycalc_c(object):
@@ -27,6 +28,9 @@ class vertex(object):
             self.list = [] #Line strip
             self.count = 0
         
+        def __len__(self):
+            return len(self.points)
+        
         def add(self, list):
             while len(list)>=2:
                 pop = list[:2]
@@ -36,6 +40,7 @@ class vertex(object):
                 self.points.extend(pop)
                 self.count += 1
                 self.list.extend(pop) #Standard list
+                self.num_points = len(self.points) // 2
                 
         def reset(self):
             #Restarts line_strip for lines calc
