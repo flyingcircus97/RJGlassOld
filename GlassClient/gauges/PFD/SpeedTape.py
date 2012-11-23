@@ -1,4 +1,12 @@
 #Speed Tape Gauge
+# 
+#
+# -- Currently Missing
+#   -- Barber pole, Low Speed reference
+#   -- Mach text
+#   -- Fine location and positioning
+#   -- Connection with GlassServer
+
 
 import pyglet
 from pyglet.gl import *
@@ -9,7 +17,45 @@ import math, time
 import text
 
 
+class Vspeed_c(object):
+    #Hold all data on VSpeed Class
+        def __init__(self, name, y_pos, value):
+            self.name = name
+            self.y_pos = y_pos
+            self.value = value
+        
+        def draw_indicator(self, loc):
+            if self.y_pos + loc > -165:    
+                glPushMatrix()
+                glTranslatef(-35.0, self.y_pos + loc, 0.0)
+                glScalef(0.15,0.15,1.0)
+                text.write("%s %3d" %(self.name, self.value))
+                glPopMatrix()
+        
+        def draw_bug(self, airspeed, knot_unit):
+            diff = (self.value- airspeed) * knot_unit
+            noshow = 168 #If out of this range then don't show
+            if abs(diff) <= noshow:
+                glPushMatrix()
+                glTranslatef(17.5, diff, 0.0) #Move to point of V speed bug
+                #Draw Line
+                glBegin(GL_LINES)
+                glVertex2f(-35.0,0.0)
+                glVertex2f(-7.5,0.0)
+                glEnd()
+                #Draw Text next to line 1,2,R,T
+                
+                glScalef(0.12,0.12,1.0)
+                text.write(self.name[1]) #Only do 2nd character
+                glPopMatrix()
+        
+        def draw(self,loc, airspeed, knot_unit):
+            self.draw_indicator(loc)
+            self.draw_bug(airspeed, knot_unit)
+        
 class gauge_c(gauge_parent):
+    
+     
     
     def __init__(self, *args, **kwds):
         
@@ -31,13 +77,23 @@ class gauge_c(gauge_parent):
         
         #Init Variables
         self.IAS = variable.variables.load(0x100)
+        self.V1 = 100
+        self.VR = 120
+        self.V2 = 145
+        self.VT = 162
         self.a = 0.0
+        # Init Vspeeds  
+        y_space = 30
+        y_offset = 5
+        self.Vspeed_l = [Vspeed_c('V1', y_offset, self.V1),Vspeed_c('VR', y_space+y_offset, self.VR),
+            Vspeed_c('V2', 2*y_space+y_offset, self.V2), Vspeed_c('VT', 3*y_space+y_offset, self.VT)]
         
         
     def load_batch(self):
         self.arrow_shape = self.center_arrow_b()
         self.top_black_shape = self.black_blocks_b(True)
         self.bottom_black_shape = self.black_blocks_b(False)
+        self.speedbug_shape = self.speedbug_b()
     
     def black_blocks_b(self, top):
         #Black blocks on top and bottom of speed tape. To hide numbers that spill over.
@@ -56,6 +112,15 @@ class gauge_c(gauge_parent):
             b1 = batch.add(v1.num_points, GL_POLYGON, None, ('v2f', v1.points),('c3f',common.color.black*v1.num_points))
          
             return batch
+        
+    def speedbug_b(self):
+        
+        v1 = common.vertex.lines()
+        v1.add([0,0,10,8,10,15,0,15,0,-15,10,-15,10,-8,0,0])
+        batch = pyglet.graphics.Batch()
+        b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.purple*v1.num_points))
+        
+        return batch
             
     def center_arrow_b(self):
             
@@ -81,6 +146,52 @@ class gauge_c(gauge_parent):
         
             return batch
     
+    def airspeed_diff(self, difference):
+            #Pink Line above or below arrow that shoes accel or decel rate. Forcast 5 seconds ahead??
+            if abs(difference) > 1: #If forcasted not difference is less than 2 knots then down't show
+                y1 = 0
+                y2 = y1 + difference * self.knot_unit
+                x1 = 18
+                x2 = x1 + 12.0
+                glLineWidth(2.0)
+                common.color.set(common.color.purple)
+                glBegin(GL_LINE_STRIP)
+                glVertex2f(x1, y2)
+                glVertex2f(x2, y2)
+                glVertex2f(x2, y1)
+                glEnd()
+    
+    def speedbug_draw(self, x=0,y=0):
+        
+        diff = 100 - self.indicated_IAS()
+        diff = diff*self.knot_unit
+        if abs(diff)<168:
+            glPushMatrix()
+            glTranslatef(0,diff,0)
+            self.speedbug_shape.draw()
+            glPopMatrix()
+            
+    def speedbugind_draw(self, x=0,y=0):
+        
+        
+            glPushMatrix()
+            glTranslatef(x,y,0)
+            self.speedbug_shape.draw()
+            glTranslatef(30,0,0)
+            glScalef(0.15,0.15,1.0)
+            text.write("%3d" %(100))
+            glPopMatrix()        
+        
+    def Vspeeds(self, start_loc, start_tick_ten):
+        #Draw Vspeeds
+        
+                    
+        #First calculate location of each of the Vspeeds (V1,VR,V2,VT)
+        loc = start_loc - (start_tick_ten *10 * self.knot_unit)
+        common.color.set(common.color.cyan)
+        for speed in self.Vspeed_l:
+            speed.draw(loc, self.airspeed, self.knot_unit)
+                    
     def tick_marks(self, x=0, y=0):
 
             #Draw the tick mark
@@ -163,10 +274,14 @@ class gauge_c(gauge_parent):
     def draw(self):
         #self.glLineWidth(2.0)
         #Limit Airspeed
+        self.airspeed = self.indicated_IAS()
         glLineWidth(2.0)
         self.arrow_shape.draw()
         start_loc, start_tick_ten = self.tick_marks()
         self.tick_numbers(start_loc, start_tick_ten)    
+        self.speedbug_draw()
+        self.Vspeeds(start_loc, start_tick_ten)
+        self.airspeed_diff(10)
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
-        
+        self.speedbugind_draw(-40,-170)
