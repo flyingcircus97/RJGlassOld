@@ -1,13 +1,18 @@
 #common.py
 # -- Common function used by all guages
 import math
+from pyglet.gl import glColor3f
 
 class color_c(object):
     def __init__(self):
         self.white = (1.0,1.0,1.0)
         self.yellow  = (1.0,1.0,0.0)
         self.black = (0.0,0.0,0.0)
+        self.purple = (1.0,0.0,1.0)
+        self.cyan = (0.0,1.0,1.0)
     
+    def set(self, c):
+        glColor3f(c[0],c[1],c[2])
 
 class xycalc_c(object):
     
