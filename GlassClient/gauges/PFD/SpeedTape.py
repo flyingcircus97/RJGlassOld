@@ -2,7 +2,7 @@
 # 
 #
 # -- Currently Missing
-#   -- Barber pole, Low Speed reference
+#  
 #   -- Mach text
 #   -- Fine location and positioning
 #   -- Connection with GlassServer
@@ -94,6 +94,8 @@ class gauge_c(gauge_parent):
         self.top_black_shape = self.black_blocks_b(True)
         self.bottom_black_shape = self.black_blocks_b(False)
         self.speedbug_shape = self.speedbug_b()
+        self.barberup_shape = self.barberpole_b(1)
+        self.barberdown_shape = self.barberpole_b(-1)
     
     def black_blocks_b(self, top):
         #Black blocks on top and bottom of speed tape. To hide numbers that spill over.
@@ -121,7 +123,36 @@ class gauge_c(gauge_parent):
         b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.purple*v1.num_points))
         
         return batch
-            
+    
+    def barberpole_b(self, dir):
+    
+        step = 12 #Determine step between
+        x1 = 2
+        x2 = 14
+        vp = common.vertex.lines()
+        vl = common.vertex.lines()
+        loc = 0
+        i =0
+        num = 2
+        d = step* dir
+        
+        #Draw polygon
+        vp.add([x1,0,x2,0])
+        loc+=d
+        vp.add([x2,loc,x1,loc, x1,0])
+        loc+=d
+        #Draw lines
+        vl.add([x1,0,x1,loc])
+        vl.reset()
+        vl.add([x2,0,x2,loc])
+
+        batch = pyglet.graphics.Batch()
+        b1 = batch.add(vp.num_points, GL_POLYGON, None, ('v2f', vp.points),('c3f', common.color.red*vp.num_points))
+        b2 = batch.add(vl.num_points, GL_LINES, None, ('v2f', vl.points),('c3f', common.color.red*vl.num_points))
+        
+        return batch
+        
+         
     def center_arrow_b(self):
             
             #Center White Arrow 
@@ -172,7 +203,6 @@ class gauge_c(gauge_parent):
             glPopMatrix()
             
     def speedbugind_draw(self, x=0,y=0):
-        
         
             glPushMatrix()
             glTranslatef(x,y,0)
@@ -264,6 +294,66 @@ class gauge_c(gauge_parent):
                 tick_ten = tick_ten +1
                 loc = loc + (unit_apart * 10)
                 
+    def speed_cues(self):
+        
+        def lowspeedcue(y):
+            x1 = -17.5
+            x2 = 22.5
+            common.color.set(common.color.green)
+            glLineWidth(2.0)
+            glBegin(GL_LINES)
+            glVertex2f(x1,y)
+            glVertex2f(x2,y)
+            glEnd()
+        
+        def barberpole(y, dir):
+            glPushMatrix()
+            noshow = 168
+            
+            if dir==1:
+                if y < -noshow: #If outside of range draw bar entire length
+                    num = 14
+                    y = -noshow + (y % 24)
+                else:
+                    num = int(((noshow - y) / 24) + 1)
+                    
+                glTranslatef(0,y,0)
+                for i in range(num):
+                    self.barberup_shape.draw()
+                    glTranslatef(0,24,0)
+            else:
+                if y > noshow: #If outside of range draw bar entire length
+                    num = 14
+                    y = noshow + (y % 24)
+                else:
+                    num = int(((noshow + y) / 24) + 1)
+               
+                glTranslatef(0,y,0)
+                for i in range(num):
+                    self.barberdown_shape.draw()
+                    glTranslatef(0,-24,0)
+            glPopMatrix()
+        
+        #Lowspeed cue
+        y = self.calc_show(60)
+        if y: lowspeedcue(y)
+        #Barber Pole Lower
+        y = self.calc_show(120, False)
+        barberpole(y,-1)
+        #Barber Pole Upper
+        y = self.calc_show(220, False)
+        barberpole(y,1)
+        
+        
+    def calc_show(self, speed, return_none = True):
+        #Calculate on speed tape if item should be visible and where.
+        diff = (speed - self.airspeed) * self.knot_unit
+        noshow = 168
+        if (abs(diff) <= noshow) or (not return_none):
+            return diff
+        else:
+            return None
+    
     def indicated_IAS(self):
         indicated = self.a
         if indicated <40: indicated =40
@@ -281,6 +371,7 @@ class gauge_c(gauge_parent):
         self.tick_numbers(start_loc, start_tick_ten)    
         self.speedbug_draw()
         self.Vspeeds(start_loc, start_tick_ten)
+        self.speed_cues()
         self.airspeed_diff(10)
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()

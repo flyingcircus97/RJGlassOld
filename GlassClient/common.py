@@ -10,6 +10,8 @@ class color_c(object):
         self.black = (0.0,0.0,0.0)
         self.purple = (1.0,0.0,1.0)
         self.cyan = (0.0,1.0,1.0)
+        self.green = (0.0,1.0,0.0)
+        self.red = (1.0,0.0,0.0)
     
     def set(self, c):
         glColor3f(c[0],c[1],c[2])
