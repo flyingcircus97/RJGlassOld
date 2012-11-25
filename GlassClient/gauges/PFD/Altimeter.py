@@ -15,7 +15,7 @@ class gauge_c(gauge_parent):
         
         super(gauge_c, self).__init__(*args, **kwds)
         
-        self.x = 90
+        self.x = 100
         self.y = 300
         self.set_native_size(self.x, self.y)
         
@@ -25,7 +25,7 @@ class gauge_c(gauge_parent):
         #Init Constants
         
         #Init Variables
-        self.a = 10800
+        self.a = 200
         self.count = 0
     
         
@@ -34,19 +34,60 @@ class gauge_c(gauge_parent):
         self.thousand_shape, self.fivehund_shape = self.thousand_lines_b()
         self.thousandodd_shape = self.thousand_ticks_b(1)
         self.thousandeven_shape = self.thousand_ticks_b(0)
-        self.centerblack_shape = self.centerblack_b()
+        self.rollingblack_shape = self.rollingblack_b()
+        self.rollingblackhalf_shape = self.rollingblack_b(True)
+        self.rollingblacksmall_shape = self.rollingblack_b(small=True)
         self.altitudebg_shape = self.altitudebg_b()
-    
-    def centerblack_b(self):
-        x1 = 20
+        self.blackbox_shape = self.blackbox_b()
+        
+    def rollingblack_b(self, half=False, small=False):
+        #Used to conver up rolling digits and thousands tick marks as they go through center.
+        #Normal covers up upper and lower digit
+        #Half covers up lower half digit
+        #Small covers up just thousands tick marks as the move through center.
+        
+        x1 = 0
         x2 = 38
-        black_l = -30.0
-        black_h = 30.0
+        black_l = 29.0
+        black_h = 57.0
+        if small:
+            black_h = 30.0
+            black_l = 22.0
         vp = common.vertex.lines()
+        vp2 = common.vertex.lines()
         vp.add([x1,black_l,x2,black_l,x2,black_h,x1,black_h,x1,black_l])
+        if half:
+            black_h = 44.0
+        vp2.add([x1,-black_l,x2,-black_l,x2,-black_h,x1,-black_h,x1,-black_l])
         
         batch = pyglet.graphics.Batch()
-        b1 = batch.add(vp.num_points, GL_POLYGON, None, ('v2f', vp.points),('c3f',common.color.black*vp.num_points))
+        top = pyglet.graphics.OrderedGroup(0)
+        bottom = pyglet.graphics.OrderedGroup(1)
+        
+        b1 = batch.add(vp.num_points, GL_POLYGON, top, ('v2f', vp.points),('c3f',common.color.black*vp.num_points))
+        b2 = batch.add(vp2.num_points, GL_POLYGON, bottom, ('v2f', vp2.points),('c3f',common.color.black*vp2.num_points))
+         
+        return batch
+    
+    def blackbox_b(self):
+        #Used to conver up top and bottom of altitude tape for scissoring
+     
+        x1 = 0
+        x2 = 100
+        black_l = 150.0
+        black_h = 190.0
+        
+        vp = common.vertex.lines()
+        vp2 = common.vertex.lines()
+        vp.add([x1,black_l,x2,black_l,x2,black_h,x1,black_h,x1,black_l])
+        vp2.add([x1,-black_l,x2,-black_l,x2,-black_h,x1,-black_h,x1,-black_l])
+        
+        batch = pyglet.graphics.Batch()
+        top = pyglet.graphics.OrderedGroup(0)
+        bottom = pyglet.graphics.OrderedGroup(1)
+        
+        b1 = batch.add(vp.num_points, GL_POLYGON, top, ('v2f', vp.points),('c3f',common.color.black*vp.num_points))
+        b2 = batch.add(vp2.num_points, GL_POLYGON, bottom, ('v2f', vp2.points),('c3f',common.color.black*vp2.num_points))
          
         return batch
             
@@ -72,19 +113,19 @@ class gauge_c(gauge_parent):
         loc = 0
         x2 = 37
         
-        for i in range(5):
+        #for i in range(5):
             #Tick itself
-                if (tick % 2): #If odd then 500 foot mark make smaller, if even then make larger 1000 foot mark
-                    x1 = 29
-                else:
-                    x1 = 21
-       
-                y1 = loc-3
-                y2 = loc+3
-                vl.add([x1, y1, x2, y1, x2, y2, x1,y2, x1,y1]) 
-                vl.reset()
-                tick = tick +1
-                loc = loc + 65	
+        if (tick % 2): #If odd then 500 foot mark make smaller, if even then make larger 1000 foot mark
+            x1 = 29
+        else:
+            x1 = 21
+
+        y1 = loc-3
+        y2 = loc+3
+        vl.add([x1, y1, x2, y1, x2, y2, x1,y2, x1,y1]) 
+        vl.reset()
+        #tick = tick +1
+        #loc = loc + 65	
                 
         batch = pyglet.graphics.Batch()
         b1 = batch.add(vl.num_points, GL_LINES, None, ('v2f', vl.points),('c3f',common.color.white*vl.num_points))
@@ -111,7 +152,7 @@ class gauge_c(gauge_parent):
         #White solid square
         vp = common.vertex.lines()
         x1 = -10
-        x2 = -4
+        x2 = -1
         y1 = -3
         y2 = 3
         vp.add([x1,y1,x2,y1,x2,y2,x1,y2,x1,y1])
@@ -174,7 +215,7 @@ class gauge_c(gauge_parent):
                     glPushMatrix()
                     temp = abs(tick_ten / 5 ) % 10
                     #if tick_ten<0: temp = 10 - temp
-                    h = 16.0
+                    h = 16.0                  
                     if temp ==0: #Need to be lines above and below altitude
                         glPushMatrix()
                         glTranslatef(52.0, loc, 0.0)
@@ -212,14 +253,19 @@ class gauge_c(gauge_parent):
             #Thousand ticks
             glPushMatrix()
             glTranslatef(0,loc,0)
-            if (tick % 2):
-                self.thousandodd_shape.draw()
-            else:
-                self.thousandeven_shape.draw()
+            for i in range(5):
+                if abs(loc)>27:
+                    if (tick % 2):
+                        self.thousandodd_shape.draw()
+                    else:
+                        self.thousandeven_shape.draw()
+                tick=tick+1
+                glTranslatef(0,65,0)
+                loc+=65
             glPopMatrix()
             
             #Draw black plygon over area, therefore these ticks need to be done first, eaiser then doing multiple scissor boxes	
-            self.centerblack_shape.draw()
+            #self.centerblack_shape.draw()
             #common.color.set(common.color.purple)
             #glBegin(GL_POLYGON)
             #glVertex2f(20.0, black_l)
@@ -233,6 +279,7 @@ class gauge_c(gauge_parent):
             def thousands():  # This does the thousands and ten thousands digit
                 alt = altitude
                 thou = (alt // 1000)
+                roll=False
                 
                 def text_out(d, blank_zero = False): #Just output the text.
                     if ((d>0) or (not blank_zero)):
@@ -258,64 +305,71 @@ class gauge_c(gauge_parent):
                 glPushMatrix()
                 if thou <0: #negative number no rolling
                 #Display yellow NEG in place of number
+                    self.rollingblacksmall_shape.draw()
                     common.color.set(common.color.yellow)
                     #glDisable(GL_SCISSOR_TEST) #Turn off so text will show up
-                    glTranslatef(28.0, 8.0, 0.0)
+                    glTranslatef(28.0, 12.0, 0.0)
                     glScalef(0.10, 0.10, 1.0)
                     text.write("N")
-                    glTranslatef(0.0, -120.0, 0.0)
+                    glTranslatef(-85.0, -120.0, 0.0)
                     text.write("E")
-                    glTranslatef(0.0, -120.0, 0.0)
+                    glTranslatef(-85.0, -120.0, 0.0)
                     text.write("G")
-                
+                    
                 #Bottom digit starts moving and top digit appears at 900.
                 #--Top digit goes twice as fast about as lower digit. 
                 #--Digits hit at 950, then bottom digit goes twice as fast as top digit.
-                elif (alt_1000 >= 900): # Close to change in thousand will roll digits
-                    thou_diff = 1000- alt_1000 
-                    diff100 = 100-thou_diff
-                    if thou_diff <=50:
-                        diff50 = 50-thou_diff
+                else: #Altitude positive.
+                    if (alt_1000 >= 900): # Close to change in thousand will roll digits
+                        roll=True
+                        thou_diff = 1000- alt_1000 
+                        diff100 = 100-thou_diff
+                        if thou_diff <=50:
+                            diff50 = 50-thou_diff
+                        else:
+                            diff50 = 0
+                            
+                        rate = 0.3   #pixel per foot for movement of digits
+                        y_digit = (diff100+diff50) * rate  #y position of current lower digit
+                        y_nextdigit = (2*diff100-diff50) * rate#y position of next upper digit
+                    else: 
+                        #No rolling <900
+                        y_digit=0
+                        y_nextdigit= 0 
+                    #1's thounsands digit
+                    altdigit_draw(thou%10, y_nextdigit, y_digit, 12)
+                    #10's thousand digit
+                    if thou%10 != 9: #Don't roll it
+                        y_nextdigit=0 
+                        y_digit =0 
+                    altdigit_draw(thou//10, y_nextdigit, y_digit, -8, True)    
+                    #Draw black box to conver up rolling numbers
+                    if roll:
+                        if thou_diff<=30:#used to gradually cover up lower digit, without covering thousands tick marks.
+                            self.rollingblack_shape.draw()
+                        else:
+                            self.rollingblackhalf_shape.draw()
                     else:
-                        diff50 = 0
+                        self.rollingblacksmall_shape.draw()
                         
-                    rate = 0.3   #pixel per foot for movement of digits
-                    y_digit = (diff100+diff50) * rate  #y position of current lower digit
-                    y_nextdigit = (2*diff100-diff50) * rate#y position of next upper digit
-                else: 
-                    #No rolling <900
-                    y_digit=0
-                    y_nextdigit= 0 
-                #1's thounsands digit
-                altdigit_draw(thou%10, y_nextdigit, y_digit, 8)
-                #10's thousand digit
-                if thou%10 != 9: #Don't roll it
-                    y_nextdigit=0 
-                    y_digit =0 
-                altdigit_draw(thou//10, y_nextdigit, y_digit, -8, True)    
-                
-                
                 glPopMatrix()
-            
-            #Main draw function for altitude_display	
-            #Draw Background
-            #glDisable(GL_SCISSOR_TEST)
-            self.altitudebg_shape.draw()
-            
-
             #glEnable(GL_SCISSOR_TEST)
             #scissor(x-10, y-15, 80, 30)
             #Draw thousands digits
             thousands()
+            self.altitudebg_shape.draw()
     
     def draw(self):
+        glPushMatrix()
         #self.glLineWidth(2.0)
         glLineWidth(2.0)
+        glTranslatef(-50.0,0,0)
         self.tick_marks(self.a)
         self.thousand_tick_marks(self.a)
         self.altitude_disp(self.a)
+        self.blackbox_shape.draw()
         self.count+=1
-        if self.count ==1:
-            self.a = self.a + 1
+        if self.count ==3:
+            self.a = self.a - 1
             self.count = 0 
-        
+        glPopMatrix()
