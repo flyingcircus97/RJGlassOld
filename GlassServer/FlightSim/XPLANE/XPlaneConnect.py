@@ -130,7 +130,11 @@ class XPlaneUDP_Client_c(threading.Thread):
 				except socket.timeout:
 					r = ''
 					logging.debug("UDP RECV Timedout")
-					
+				except socket.error,e:
+					#logging.warning("UDP Error  %r", e)
+					self.connected = False
+					r = ""
+
 			else:
 				r = ''
 			#r =self.s.recv(1024)
