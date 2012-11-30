@@ -76,7 +76,7 @@ class gauge_c(gauge_parent):
         self.knot_text = ['%3d' %(i*10) for i in range(0,56,2)]
         
         #Init Variables
-        self.IAS = variable.variables.load(0x100)
+        self.IAS = variable.variables.load(0x100,'4F')
         self.V1 = 100
         self.VR = 120
         self.V2 = 145
@@ -355,7 +355,7 @@ class gauge_c(gauge_parent):
             return None
     
     def indicated_IAS(self):
-        indicated = self.a
+        indicated = self.IAS.value
         if indicated <40: indicated =40
         elif indicated > 500: indicated = 500
         

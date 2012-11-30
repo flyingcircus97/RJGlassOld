@@ -25,8 +25,8 @@ class gauge_c(gauge_parent):
         
         #Init Variables
         self.a = 0.0
-        self.pitch = variable.variables.load(0x126)
-        self.roll = variable.variables.load(0x125, 0.00)
+        self.pitch = variable.variables.load(0x126,'4F')
+        self.roll = variable.variables.load(0x125, '4F')
         
         #self.pitch = 8.5
         #pyglet.clock.schedule_interval(self.fade_in, .03) 

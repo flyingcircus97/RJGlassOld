@@ -152,8 +152,9 @@ class client_c(object):
                     #self.connection.SetVariable(addr,value_s)
                     format = "%" + var.format_s
                     value = format %v
-                    desc = "Set Variable 0x%04X to " %(addr) + value
+                    desc = "Client Set Variable 0x%04X to " %(addr) + value
                     #print desc
+                    logging.debug(desc)
         elif command_byte == "SE": #Send Event
             #Events don't repeat.. so certian events can be passed through server,
             #with server not needing to know of them.
