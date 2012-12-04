@@ -17,6 +17,7 @@
 		var j = JSON.decode(responseText);
 		var mode=j[0]
 		var status = j[1]
+		var IOCP_status = j[2][0]
 		
 		// If sim name changes then update src of img
 		if (mode != prev_mode) {
@@ -48,6 +49,16 @@
 				var f_name = 'images/status/disconnect.png';
 				$('img_status').command = 'Disconnect';
 				}
+				
+		/*IOCP Status */
+		if (IOCP_status != prev_IOCP_status) {
+			//Set Status image correctly
+			var f_name = 'images/status/' + IOCP_status.toLowerCase() + '.png';
+			$('IOCP_status').set('src',f_name);
+			$('IOCP_status').set('title',IOCP_status);
+			$('IOCP_status').set('alt',IOCP_status);						
+			prev_IOCP_status = IOCP_status;
+			}
 			//Create button image				
 			/*var button_img = new Element('img', {
 				'id': 'comm_img',
@@ -109,6 +120,7 @@
 	//Globals
 	prev_mode = '';
 	prev_status = '';
+	prev_IOCP_status = '';
 	comm_timer = setTimeout("commRequest.send();", 2000);
 	});
 

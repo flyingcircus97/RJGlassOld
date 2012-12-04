@@ -70,6 +70,8 @@ class IOCP_Client_c(threading.Thread):
         self.packet_data = []
         self.go = True
         self.connected = False
+        self.rx_count = 0
+        self.tx_count = 0
         
         
     def send(self, data):
@@ -80,6 +82,7 @@ class IOCP_Client_c(threading.Thread):
         #Send data to socket
         self.s.send(out)
         logging.debug("IOCPClient: IOCP Send: %s", pre+data)
+        self.tx_count+=1
         
     def send_typeserver(self, name):
         data = 'TipoSer:'+ name + ':'
@@ -197,7 +200,7 @@ class IOCP_Client_c(threading.Thread):
             except socket.error, e:
                 
                 if e[0] != 10035:
-                   logging.warning("IOCP Client: IOCP Server socket error", e)
+                   logging.warning("IOCP Client: IOCP Server socket error %r", e)
                    self.connected = False
                 
             except socket.timeout:
@@ -223,6 +226,7 @@ class IOCP_Client_c(threading.Thread):
                 self.read_buffer = r
                 if len(r) > 0:
                     logging.debug("IOCPClient: IOCP Recv: %r", r)
+                    self.rx_count += 1
                     decode_receive(self.read_buffer)
                 #Send data Response if needed
                 self.send_response(self.IOCPComm.check_var())
@@ -244,19 +248,27 @@ class IOCP_Client_c(threading.Thread):
         logging.info("IOCPClient: IOCP Thread Ended")
         
         
-class IOCPComm(object):
+class IOCPComm_c(object):
         
-        def __init__(self, config):
+        def __init__(self):
+            pass
+
+                
+        def set_config(self, config):
+            
             self.variables = variables.variable.variables
+            self.var_dict = {}
+            IOCPdef.setup(self, self.variables)
+            self.var_keys = self.var_dict.keys()
+            
             self.active = int(config['active'])
             self.ip = config['ip']
             self.port = int(config['port'])
             self.client = IOCP_Client_c(self, self.ip, self.port)
-            self.var_dict = {}
-            IOCPdef.setup(self, self.variables)
-            self.var_keys = self.var_dict.keys()
             if self.active: 
                 self.client.start()
+            
+            
                 
         def keys(self):
             return self.var_keys
@@ -279,10 +291,24 @@ class IOCPComm(object):
                     v.inhibit_check()
                     
                 return l
+            
+        def status(self):
+            if self.active == 0:
+                s = "Deactivated"
+            elif self.client.connected:
+                s = "Connected"
+            else:
+                s = "Disconnected"
+                
+            return [s,self.ip,self.port,self.client.rx_count,self.client.tx_count]
+                
        
         def quit(self):
             self.client.go = False
-         
+            
+
+IOCPComm = IOCPComm_c()
+
 if __name__ == '__main__':
     c = IOCP_Client_c()
     c.connect('127.0.0.1', 8092)

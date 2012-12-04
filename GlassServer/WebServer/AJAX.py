@@ -2,6 +2,7 @@
 import variables.variable as variable
 import config
 import FlightSim.comm
+import IOCP.IOCPClient
 from GlassController import controller, connections
 import time
 try:
@@ -119,9 +120,9 @@ class AJAX_c(object):
     def comm_status(self, body):
             #FlightSim.comm.FS_Comm.disconnect()
             comm = FlightSim.comm.FS_Comm
-          
-            
-            return json.dumps([comm.sim_name,comm.status_message])
+            IOCPcomm =IOCP.IOCPClient.IOCPComm
+           
+            return json.dumps([comm.sim_name,comm.status_message, IOCPcomm.status()])
             
     def comm_update(self, body):
         

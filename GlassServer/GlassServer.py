@@ -48,10 +48,12 @@ class mainloop_c(object):
         #Import Server/Client Modules
         from GlassController import controller
         from WebServer.WebServer import GlassWebServer_c
-        from IOCP.IOCPClient import IOCPComm
+        
         self.controller = controller
         self.webserver = GlassWebServer_c(config.general.webserver_port)
-        self.IOCPclient = IOCPComm(config.general.IOCP_client)
+        import IOCP
+        self.IOCPclient = IOCP.IOCPClient.IOCPComm
+        self.IOCPclient.set_config(config.general.IOCP_client)
         #Initalize variables
         self.go = True       
         self.loop_time= 1/60.0
