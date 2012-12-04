@@ -28,6 +28,7 @@ class gauge_c(gauge_parent):
         self.thoupixel_per_foot = 13.0/100.0
         #Init Variables
         self.ind_alt = variable.variables.load(0x110)
+        self.rad_alt = variable.variables.load(0x112)
         self.count = 0
     
         
@@ -557,7 +558,8 @@ class gauge_c(gauge_parent):
     def draw(self):
         common.color.set(common.color.white)
         glPushMatrix()
-        alt = int(self.ind_alt.value)
+        alt = self.ind_alt.value
+        
         #print "ALT", alt
         #self.glLineWidth(2.0)
         glLineWidth(2.5)
@@ -566,6 +568,6 @@ class gauge_c(gauge_parent):
         self.thousand_tick_marks(alt)
         self.altitude_disp(alt)
         self.alt_bug(alt, 3000)
-        self.radar_alt(alt)
+        self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
         glPopMatrix()
