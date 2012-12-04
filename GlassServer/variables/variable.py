@@ -397,6 +397,10 @@ class variable_c(object):
             f.write(f_write(d))
             
         f.close()
+        
+    def reset_vars(self):
+        for i in self.dict:
+            self.dict[i].data.reset()
 
         
 variables = variable_c()

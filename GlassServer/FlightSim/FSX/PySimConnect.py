@@ -48,6 +48,12 @@ class data_obj(object):
             self.sim_obj.send()
             self.inhibit = 4
             
+    def reset(self):
+        #Sets sim_event and sim_obj to None so variable won't try to communicate.
+        #--Used when mode switches from FSX to Test
+        self.sim_event = None
+        self.sim_obj = None
+        
 class empty_event(object):
         
     def send(self):

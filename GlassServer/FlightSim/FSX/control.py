@@ -50,6 +50,7 @@ class control_c(object):
         self.s.quit()
         self.sevent.quit()
         self.connected = False
+        logging.info("GlassServer - SimConnect Comm Closed")
         
     def quit(self):
         self.desire_connect = False

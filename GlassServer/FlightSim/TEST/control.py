@@ -20,6 +20,7 @@ class control_c(object):
     def __init__(self, variables, mod_data):
         self.connected = True
         self.variables = variables
+        self.variables.reset_vars()
         self.mod_data = mod_data
             
         time.sleep(0.4)
