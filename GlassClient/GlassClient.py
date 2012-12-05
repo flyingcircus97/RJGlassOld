@@ -18,8 +18,6 @@ def init_log():
     logger.addHandler(handler)
 
 
-
-
 #Initalize logging
 init_log()
 #Finish Imports

@@ -339,7 +339,7 @@ class gauge_c(gauge_parent):
         if y: lowspeedcue(y)
         #Barber Pole Lower
         y = self.calc_show(120, False)
-        barberpole(y,-1)
+        #barberpole(y,-1)  ##Disable Lower Barber Pole for now.
         #Barber Pole Upper
         y = self.calc_show(220, False)
         barberpole(y,1)
