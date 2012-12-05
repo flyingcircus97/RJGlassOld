@@ -31,7 +31,7 @@ class gauge(gauge_parent):
     def on_draw(self):
             
             self.init_gauge()
-            self.draw_border()
+            #self.draw_border()
             self.AHorizon.on_draw()
             self.SpeedTape.on_draw()
             self.Altimeter.on_draw()

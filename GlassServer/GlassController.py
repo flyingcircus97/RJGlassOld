@@ -122,7 +122,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         self.start_time = time.time()
         self.log = []
         connections.add(self)
-        self.commands = ["AV","SV","SE","SN"]
+        self.commands = ["AV","SV","SE","SN","PI"]
         logging.info("GlassController: Connected to client %r", self.client_address)
         #self.request.send('hi ' + str(self.client_address) + '\n')
         #self.socket.settimeout(10)

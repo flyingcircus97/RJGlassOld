@@ -44,7 +44,7 @@ def sendrecv(self, conn):
         #Send data if available
         if len(self.send_buffer)>=1:
             conn.send(self.send_buffer)
-            logging.info("GlassProtocol: Sending %r" ,self.send_buffer)
+            logging.debug("GlassProtocol: Sending %r" ,self.send_buffer)
             self.send_buffer = '' #Clear buffer after it has been sent.
             self.time_lastTX = temp_time
         elif temp_time - self.time_lastTX > 3:

@@ -68,7 +68,7 @@ class gauge_parent(object):
     def on_draw(self, draw_border = False):
         self.init_gauge()
         self.draw()
-        self.draw_border()
+        if draw_border: self.draw_border()
         self.end_gauge()
         
     def linewidth(self):
