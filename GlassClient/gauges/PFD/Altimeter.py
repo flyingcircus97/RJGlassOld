@@ -554,6 +554,43 @@ class gauge_c(gauge_parent):
             #     DH_Notifier(-80,y_cent+ 35)
             #      DH.notify = True
 
+    def alt_bug_text(self, bug):
+            common.color.set(common.color.purple)
+            #glLineWidth(2.0)
+            glPushMatrix()
+            glTranslatef(25, 200, 0.0) #Move to start of digits
+            glScalef(0.16,0.16,1.0)
+            text.write("%2d" %(bug // 1000))
+            glScalef(0.80,0.80,1.0) #Scale digits 85%
+            glTranslatef(0,-13,0)
+            text.write("%03d" %(bug % 1000))
+            glPopMatrix()
+            
+    def alt_setting_disp(self, setting):
+            common.color.set(common.color.cyan)
+            glPushMatrix()
+            glTranslatef(15,-165,0)
+            #Text out setting
+            glPushMatrix()
+            glScalef(0.14,0.15,0)
+            #value = round(setting,2) 
+            #value += 0.01
+            if setting <35: #Must be inches of HG if under 35
+                text.write("%5.2f" %setting, 90) #Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
+            else:
+                text.write("%4d" %setting, 90)
+            glPopMatrix() #Text 29.92
+            #Display IN
+            if setting <35: #Must by HG if under 35 HPA if not.
+                glTranslatef(58,-1,0) #move for In display
+                glScalef(0.12,0.12,0)
+                text.write("I N",40)
+            else: #Must be HPA
+                glTranslatef(53, -1,0)
+                glScalef(0.12,0.12,0)
+                text.write("HPA",90)
+                
+            glPopMatrix()
     
     def draw(self):
         common.color.set(common.color.white)
@@ -567,7 +604,11 @@ class gauge_c(gauge_parent):
         self.tick_marks(alt)
         self.thousand_tick_marks(alt)
         self.altitude_disp(alt)
+        
         self.alt_bug(alt, 3000)
+        
         self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
+        self.alt_bug_text(3000)
+        self.alt_setting_disp(29.92)
         glPopMatrix()

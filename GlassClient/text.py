@@ -741,6 +741,26 @@ def draw_Z():
     
     return batch
 
+def draw_period():
+    x = -34-7
+    y = -48
+    w = 7
+    h = 7
+    m = []
+    x1 = 0
+    x_offset = 10
+    y1 = 5
+    for i in range(w):
+        m.append([x,y+i,x+w,y+i])
+       
+    
+    #points.append([-x,y,x,y])
+    batch = pyglet.graphics.Batch()
+    #v = batch.add(4, GL_LINES, None, ('v2f', (-w,h,0,-h,0,-h,w,h)))
+    v = add_batch(batch, GL_LINES, m)
+    
+    return batch
+
 
 dict = {}
 dict[' '] = None
@@ -780,11 +800,20 @@ dict['W'] = char_c(draw_W)
 dict['X'] = char_c(draw_X)
 dict['Y'] = char_c(draw_Y)
 dict['Z'] = char_c(draw_Z)
+dict['.'] = char_c(draw_period)
 #v = char_c(draw_9)
 
-def write(s):
+def write(s, spacing = 85):
+    #len_s = len(s)
+    #count  = 0
     for c in s:
+        space = spacing
         if dict[c]:
             dict[c].draw()
-        glTranslatef(85,0,0)
-    
+            if c=='.':
+                space = 10
+        #count+=1
+        #if count != len_s: #Move to next character if not last one.
+        glTranslatef(space,0,0)
+                
+        
