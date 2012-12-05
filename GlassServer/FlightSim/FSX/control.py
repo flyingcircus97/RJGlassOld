@@ -78,7 +78,7 @@ class control_c(object):
             
     def request_data(self):
         #self.s.definition_0.request(4, DataDefinition.USER, DataDefinition.ONCE, interval = 0, flag = 0)
-        self.s.definition_0.request(4, DataDefinition.USER, DataDefinition.SIM_FRAME, interval = 1, flag = 0)
+        self.s.definition_0.request(4, DataDefinition.USER, DataDefinition.VISUAL_FRAME, interval = 1, flag = 0)
     
     def decode_input(self, data_in):
         if self.s.definition_0.id in data_in: #Define ID is high priority data, if received then compute, and request another.
