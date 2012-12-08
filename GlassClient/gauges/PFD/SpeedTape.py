@@ -87,8 +87,35 @@ class gauge_c(gauge_parent):
         y_offset = 5
         self.Vspeed_l = [Vspeed_c('V1', y_offset, self.V1),Vspeed_c('VR', y_space+y_offset, self.VR),
             Vspeed_c('V2', 2*y_space+y_offset, self.V2), Vspeed_c('VT', 3*y_space+y_offset, self.VT)]
+        # Init speed tending line variables
+        self.IAS_speeds = [[40.0, time.time()]] * 60
+        self.IAS_trend = 0.0
         
         
+    def comp(self):
+            self.time = time.time()
+            self.comp_IAS_accel()
+            
+    def comp_IAS_accel(self):
+        self.IAS_speeds.append([self.airspeed,self.time])
+        self.IAS_speeds.pop(0)
+        
+        avg = []
+        for i in range(0,60,6):
+            first = self.IAS_speeds[i]
+            last = self.IAS_speeds[i+5]
+            if (last[1]-first[1])!=0.0:
+                avg.append((last[0]-first[0]) / (last[1]-first[1]))
+            #print i,i+6
+            #print first,last
+        #print self.IAS_speeds
+        #print "LAST,FIRST", last,first
+        #self.IAS_trend = (last[0]-first[0]) / (last[1]-first[1]) * 10.0 #Ten second forecast for tend line
+        #self.IAS_trend = (last[0]-first[0]) / (.333333333) * 10.0 #Ten second forecast for tend line
+        new_trend = sum(avg) / len(avg) * 10.0
+        self.IAS_trend += (new_trend - self.IAS_trend) * 0.05
+            
+            
     def load_batch(self):
         self.arrow_shape = self.center_arrow_b()
         self.top_black_shape = self.black_blocks_b(True)
@@ -365,14 +392,16 @@ class gauge_c(gauge_parent):
         #self.glLineWidth(2.0)
         #Limit Airspeed
         self.airspeed = self.indicated_IAS()
+        self.comp()
         glLineWidth(2.0)
-        self.arrow_shape.draw()
+        
         start_loc, start_tick_ten = self.tick_marks()
         self.tick_numbers(start_loc, start_tick_ten)    
         self.speedbug_draw()
         self.Vspeeds(start_loc, start_tick_ten)
         self.speed_cues()
-        self.airspeed_diff(10)
+        self.airspeed_diff(self.IAS_trend)
+        self.arrow_shape.draw()
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
         self.speedbugind_draw(-40,-170)
