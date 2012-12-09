@@ -271,6 +271,7 @@ class SimConnect_Client_c(threading.Thread):
         
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(config.timeout)
+        self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY,1)
         succeed = False
         try:
             self.s.connect((addr, port))

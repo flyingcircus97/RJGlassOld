@@ -263,6 +263,7 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         self.recv_buffer = ''
         self.send_buffer = ''
         self.go = True
+        self.request.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY,1)
         while self.go:
             self.add_to_send(self.connection.getsend()) #Sees if any response is needed
             self.sendrecv()
@@ -297,7 +298,7 @@ class Glass_Server_c():
     def __init__(self, variables, port):
     
         self.port = port
-        self.server = ThreadedTCPServer(('localhost', self.port), ThreadedTCPRequestHandler, variables)
+        self.server = ThreadedTCPServer(('', self.port), ThreadedTCPRequestHandler, variables)
     
         #print self.server.server_address
         self.go = True

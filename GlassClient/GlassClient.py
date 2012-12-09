@@ -61,6 +61,7 @@ event_loop = myEventLoop()
 c = client.client_c()
 display = display.display_c('view.xml')
 
+c.start()
 #pyglet.clock.schedule_interval(event_loop.myDraw, 1/20.0)
 #pyglet.app.run()
 pyglet.clock.schedule_interval(myDraw, 1.0/60.0)

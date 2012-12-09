@@ -77,7 +77,7 @@ class display_c(object):
             size = xml_val(tree.find("size"))
             if size:
                 width,height = size.split(",")
-                self.win = pyglet.window.Window(width = int(width), height = int(height), display=self.display) 
+                self.win = pyglet.window.Window(width = int(width), height = int(height), display=self.display, vsync=0) 
         #print fs, size_x, size_y
         #Read views
         views = tree.findall('view')

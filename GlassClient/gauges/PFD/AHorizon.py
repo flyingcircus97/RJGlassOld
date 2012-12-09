@@ -168,7 +168,7 @@ class gauge_c(gauge_parent):
         v_points = []
         v_points.extend(V_shape(-1)[0])
         v_points.extend(V_shape(1)[0])
-        print v_points
+        #print v_points
         
         v_list = []
         v_list.extend(V_shape(-1)[1])
