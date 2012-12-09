@@ -58,7 +58,8 @@ def sendrecv(self, conn):
             self.recv_buffer += data
         except socket.error, e:
             if e[0]==11 or e[0]==10035: #Standard error if no data to receieve
-                pass 
+                #print "Not Blocking"
+                pass
             else: #Something is wrong True Error occured
                 logging.warning("GlassProtocol: Socket Error %r", e)
                 self.go = False #Quit connection

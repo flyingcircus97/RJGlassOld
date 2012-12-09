@@ -81,6 +81,7 @@ class client_c(object):
             self.connected= True
             logging.info("Client: Connected %r:%r",self.host,self.port)
             self.lastRXtime = time.time()
+            self.sock.setblocking(0)
         else: 
             time.sleep(3)
         
