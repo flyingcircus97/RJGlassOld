@@ -21,12 +21,14 @@ class client_c(object):
         self.host = config.client.config['GlassServer']['ip']
         self.client_thread = threading.Thread(target = self.run)
         self.go = True
-        self.client_thread.start()
+        
         self.rx_count =0
         self.VD_recv = False
     def stop(self):
         self.go=False    
     
+    def start(self):
+        self.client_thread.start()
        
     def run(self):
         self.init_client()
@@ -38,7 +40,7 @@ class client_c(object):
             else:
                 if not self.AVsent: #If no AV sent then send add variables
                     self.AVsend(variables.list())
-                
+                                    
                 #Check send buffer
                 #self.send_data()
                 #self.parse_data(self)

@@ -106,12 +106,7 @@ class gauge_c(gauge_parent):
             last = self.IAS_speeds[i+5]
             if (last[1]-first[1])!=0.0:
                 avg.append((last[0]-first[0]) / (last[1]-first[1]))
-            #print i,i+6
-            #print first,last
-        #print self.IAS_speeds
-        #print "LAST,FIRST", last,first
-        #self.IAS_trend = (last[0]-first[0]) / (last[1]-first[1]) * 10.0 #Ten second forecast for tend line
-        #self.IAS_trend = (last[0]-first[0]) / (.333333333) * 10.0 #Ten second forecast for tend line
+            
         new_trend = sum(avg) / len(avg) * 10.0
         self.IAS_trend += (new_trend - self.IAS_trend) * 0.05
             

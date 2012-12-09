@@ -15,7 +15,6 @@ class variables_c(object):
         #Gets varible is already exists.
         #Adds variable to variables dict if doesn't exist
         #Returns variables.
-        
         if hex not in self.dict.keys():
             self.dict[hex] = variable_c(hex, type, init_value)
             
