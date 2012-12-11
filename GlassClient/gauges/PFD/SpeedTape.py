@@ -107,8 +107,12 @@ class gauge_c(gauge_parent):
             if (last[1]-first[1])!=0.0:
                 avg.append((last[0]-first[0]) / (last[1]-first[1]))
             
-        new_trend = sum(avg) / len(avg) * 10.0
-        self.IAS_trend += (new_trend - self.IAS_trend) * 0.05
+        if len(avg) == 0:
+            new_trend = 0
+        else:
+            new_trend = sum(avg) / len(avg) * 10.0
+            
+        self.IAS_trend += (new_trend - self.IAS_trend) * 0.10
             
             
     def load_batch(self):
