@@ -78,7 +78,7 @@ class client_c(object):
                 pass
             else: #Something is wrong True Error occured
                 logging.warning("Client: Socket Error %r", e)
-                self.go = False #Quit connection
+                #self.go = False #Quit connection
         if success: 
             self.connected= True
             logging.info("Client: Connected %r:%r",self.host,self.port)
@@ -90,9 +90,10 @@ class client_c(object):
     def reset_connect(self):
         #Reset connection if no ping recieved
         logging.warning("Client: Resetting Connection No Data Received")
-        self.sock.shutdown(socket.SHUT_RDWR)
+        #self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
-        time.sleep(1)
+        time.sleep(3)
+        self.init_client()
     
     def add_to_send(self, response):
         #Takes data to send in list form

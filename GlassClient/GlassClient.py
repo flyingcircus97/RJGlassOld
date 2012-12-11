@@ -26,26 +26,33 @@ import pyglet
 import gauge
 import client
 
+
 class myEventLoop(pyglet.app.EventLoop):
 
     def __init__(self):
         super(myEventLoop, self).__init__()
+        self.FPS_clock = pyglet.clock.Clock()
+        self.fps_display = pyglet.clock.ClockDisplay(clock=self.FPS_clock)
         
-   # def idle(self):
-   #     pyglet.clock.tick(poll=False)
+    def idle(self):
+        t = time.time()
+        pyglet.clock.tick(poll=True)
+#        display.win.dispatch_event('on_draw')
+#        display.win.flip()
    #     #print "IDLE"
    #     #print pyglet.clock.get_sleep_time(sleep_idle=True)
-   #     return pyglet.clock.get_sleep_time(sleep_idle=True)
+        #time.sleep(0.01)
+        #print time.time()-t
+        #time.sleep((1/30.0)-t)
+        return pyglet.clock.get_sleep_time(sleep_idle=True)
         
-#    def myDraw(self, dt):
-#        #pyglet.window.dispatch_event('on_draw')
-#        #pyglet.window.flip()
-#        # Redraw all windows
-#        for window in windows:
-#            if window.invalid:
-#                window.switch_to()
-#                window.dispatch_event('on_draw')
-#                window.flip()
+    def myDraw(self, dt):
+        self.FPS_clock.tick(poll=True)
+        display.win.dispatch_event('on_draw')
+        #Draw FPS Display
+        self.fps_display.draw()
+        display.win.flip()
+
 
 
 def myDraw(dt):
@@ -62,9 +69,9 @@ c = client.client_c()
 display = display.display_c('view.xml')
 
 c.start()
-#pyglet.clock.schedule_interval(event_loop.myDraw, 1/20.0)
+pyglet.clock.schedule_interval(event_loop.myDraw, 1/30.0)
 #pyglet.app.run()
-pyglet.clock.schedule_interval(myDraw, 1.0/60.0)
+#pyglet.clock.schedule_interval(myDraw, 1.0/60.0)
 event_loop.run()
 
 #Stop Client

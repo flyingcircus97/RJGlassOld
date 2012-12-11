@@ -62,7 +62,7 @@ def sendrecv(self, conn):
                 pass
             else: #Something is wrong True Error occured
                 logging.warning("GlassProtocol: Socket Error %r", e)
-                self.go = False #Quit connection
+                self.reset_connect() #Quit connection
                 
 def initialize(self):
     self.send_buffer = ''
