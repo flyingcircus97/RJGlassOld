@@ -19,35 +19,51 @@ import text
 
 class Vspeed_c(object):
     #Hold all data on VSpeed Class
-        def __init__(self, name, y_pos, value):
+        def __init__(self, name, y_pos, value, visible):
             self.name = name
             self.y_pos = y_pos
             self.value = value
+            self.visible = visible
         
         def draw_indicator(self, loc):
             if self.y_pos + loc > -165:    
                 glPushMatrix()
                 glTranslatef(-35.0, self.y_pos + loc, 0.0)
                 glScalef(0.15,0.15,1.0)
-                text.write("%s %3d" %(self.name, self.value))
+                if self.visible.value: 
+                    text.write("%s %3d" %(self.name, self.value.value))
+                else:
+                    text.write("%s" %(self.name))
+                glPopMatrix()
+                
+        def draw_selected(self, loc):
+                #Always draw located below airspeed tape
+                glPushMatrix()
+                glTranslatef(-35.0, loc, 0.0)
+                glScalef(0.15,0.15,1.0)
+                if self.visible.value:
+                    text.write("%s %3d" %(self.name, self.value.value))
+                else:
+                    text.write("%s ---" %(self.name))
                 glPopMatrix()
         
         def draw_bug(self, airspeed, knot_unit):
-            diff = (self.value- airspeed) * knot_unit
-            noshow = 168 #If out of this range then don't show
-            if abs(diff) <= noshow:
-                glPushMatrix()
-                glTranslatef(17.5, diff, 0.0) #Move to point of V speed bug
-                #Draw Line
-                glBegin(GL_LINES)
-                glVertex2f(-35.0,0.0)
-                glVertex2f(-7.5,0.0)
-                glEnd()
-                #Draw Text next to line 1,2,R,T
-                
-                glScalef(0.12,0.12,1.0)
-                text.write(self.name[1]) #Only do 2nd character
-                glPopMatrix()
+            if self.visible.value:
+                diff = (self.value.value- airspeed) * knot_unit
+                noshow = 168 #If out of this range then don't show
+                if abs(diff) <= noshow:
+                    glPushMatrix()
+                    glTranslatef(17.5, diff, 0.0) #Move to point of V speed bug
+                    #Draw Line
+                    glBegin(GL_LINES)
+                    glVertex2f(-35.0,0.0)
+                    glVertex2f(-7.5,0.0)
+                    glEnd()
+                    #Draw Text next to line 1,2,R,T
+                    
+                    glScalef(0.12,0.12,1.0)
+                    text.write(self.name[1]) #Only do 2nd character
+                    glPopMatrix()
         
         def draw(self,loc, airspeed, knot_unit):
             self.draw_indicator(loc)
@@ -77,24 +93,42 @@ class gauge_c(gauge_parent):
         
         #Init Variables
         self.IAS = variable.variables.load(0x100,'4F')
-        self.V1 = 100
-        self.VR = 120
-        self.V2 = 145
-        self.VT = 162
+        self.OnGround = variable.variables.load(0x127)
+        self.Mach = variable.variables.load(0x103,'4F')
+        self.V1 = variable.variables.load(0x1100)
+        self.V1_visible = variable.variables.load(0x1101)
+        self.VR = variable.variables.load(0x1102)
+        self.VR_visible = variable.variables.load(0x1103)
+        self.V2 = variable.variables.load(0x1104)
+        self.V2_visible = variable.variables.load(0x1105)
+        self.VT = variable.variables.load(0x1106)
+        self.VT_visible = variable.variables.load(0x1107)
+        self.VSpeed_Selected = variable.variables.load(0x1108)
+        
+        self.Vinput = 0 #Vspeed that is selected. (0-4) 0=V1 1=VR 2=V2 3=VT
         self.a = 0.0
         # Init Vspeeds  
         y_space = 30
         y_offset = 5
-        self.Vspeed_l = [Vspeed_c('V1', y_offset, self.V1),Vspeed_c('VR', y_space+y_offset, self.VR),
-            Vspeed_c('V2', 2*y_space+y_offset, self.V2), Vspeed_c('VT', 3*y_space+y_offset, self.VT)]
+        self.Vspeed_l = [Vspeed_c('V1', y_offset, self.V1, self.V1_visible),Vspeed_c('VR', y_space+y_offset, self.VR, self.VR_visible),
+            Vspeed_c('V2', 2*y_space+y_offset, self.V2, self.V2_visible), Vspeed_c('VT', 3*y_space+y_offset, self.VT, self.VT_visible)]
         # Init speed tending line variables
         self.IAS_speeds = [[40.0, time.time()]] * 60
         self.IAS_trend = 0.0
+        self.Mach_visible = False
         
         
     def comp(self):
             self.time = time.time()
             self.comp_IAS_accel()
+            self.comp_Mach_disp()
+            
+    def comp_Mach_disp(self):
+        self.Mach_ind = self.Mach.value
+        if self.Mach_visible:
+            if self.Mach_ind < 0.4: self.Mach_visible = False
+        else:
+            if self.Mach_ind > 0.45: self.Mach_visible = True
             
     def comp_IAS_accel(self):
         self.IAS_speeds.append([self.airspeed,self.time])
@@ -113,6 +147,9 @@ class gauge_c(gauge_parent):
             new_trend = sum(avg) / len(avg) * 10.0
             
         self.IAS_trend += (new_trend - self.IAS_trend) * 0.10
+        #Limit trending to 50 knots.
+        if self.IAS_trend>50: self.IAS_trend = 50
+        elif self.IAS_trend<-50: self.IAS_trend = -50
             
             
     def load_batch(self):
@@ -230,6 +267,7 @@ class gauge_c(gauge_parent):
             
     def speedbugind_draw(self, x=0,y=0):
         
+            common.color.set(common.color.purple)
             glPushMatrix()
             glTranslatef(x,y,0)
             self.speedbug_shape.draw()
@@ -247,6 +285,11 @@ class gauge_c(gauge_parent):
         common.color.set(common.color.cyan)
         for speed in self.Vspeed_l:
             speed.draw(loc, self.airspeed, self.knot_unit)
+            
+    def Vspeed_selected(self, loc):
+        
+        common.color.set(common.color.cyan)
+        self.Vspeed_l[self.VSpeed_Selected.value].draw_selected(loc)
                     
     def tick_marks(self, x=0, y=0):
 
@@ -260,7 +303,7 @@ class gauge_c(gauge_parent):
             self.a+=0.1
             #airspeed = self.a
             
-            glColor3f(1.0, 1.0, 1.0) #White
+            common.color.set(common.color.white) #White
             #glLineWidth(2.0)
             start_tick_ten = (int(airspeed) / 10) - 4
             tick_ten = start_tick_ten
@@ -370,6 +413,17 @@ class gauge_c(gauge_parent):
         y = self.calc_show(220, False)
         barberpole(y,1)
         
+    def airspeed_mach_text(self, value, x=0, y=0): # Text on top
+
+            common.color.set(common.color.white)
+            #Draw Text Part
+            glPushMatrix()
+            glTranslatef(x, y, 0.0)
+            glScalef(0.13,0.13,1.0)
+            text.write("M", 100)
+            text.write(("%3.3f" %value)[1:], 90)
+            glPopMatrix()
+        
         
     def calc_show(self, speed, return_none = True):
         #Calculate on speed tape if item should be visible and where.
@@ -391,6 +445,7 @@ class gauge_c(gauge_parent):
         #self.glLineWidth(2.0)
         #Limit Airspeed
         self.airspeed = self.indicated_IAS()
+        
         self.comp()
         glLineWidth(2.0)
         
@@ -399,8 +454,11 @@ class gauge_c(gauge_parent):
         self.speedbug_draw()
         self.Vspeeds(start_loc, start_tick_ten)
         self.speed_cues()
-        self.airspeed_diff(self.IAS_trend)
+        #Airspeed pink trending line, only draw if inflight.
+        if not self.OnGround.value: self.airspeed_diff(self.IAS_trend)
         self.arrow_shape.draw()
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
         self.speedbugind_draw(-40,-170)
+        self.Vspeed_selected(-200)
+        if self.Mach_visible: self.airspeed_mach_text(self.Mach.value, -38, 170)

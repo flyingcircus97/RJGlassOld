@@ -1,0 +1,84 @@
+<variables>
+  <var>
+	<addr>1100</addr>
+	<name>V1</name>
+	<type>int</type>
+	<unit>knots</unit>
+	<initial>90</initial>
+	<format>d</format>
+	<desc>V1 Value</desc>
+</var>
+  <var>
+	<addr>1101</addr>
+	<name>V1_VISIBLE</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<initial>1</initial>
+	<desc>V1 Visible</desc>
+</var>
+<var>
+	<addr>1102</addr>
+	<name>VR</name>
+	<type>int</type>
+	<unit>knots</unit>
+	<format>d</format>
+	<initial>90</initial>
+	<desc>VR Value</desc>
+</var>
+  <var>
+	<addr>1103</addr>
+	<name>VR_VISIBLE</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<initial>1</initial>
+	<desc>VR Visible</desc>
+</var>
+<var>
+	<addr>1104</addr>
+	<name>V2</name>
+	<type>int</type>
+	<unit>knots</unit>
+	<format>d</format>
+	<initial>90</initial>
+	<desc>V2 Value</desc>
+</var>
+  <var>
+	<addr>1105</addr>
+	<name>V2_VISIBLE</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<initial>1</initial>
+	<desc>V2 Visible</desc>
+</var>
+<var>
+	<addr>1106</addr>
+	<name>VT</name>
+	<type>int</type>
+	<unit>knots</unit>
+	<format>d</format>
+	<initial>90</initial>
+	<desc>VT Value</desc>
+</var>
+  <var>
+	<addr>1107</addr>
+	<name>VT_VISIBLE</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<initial>1</initial>
+	<desc>VT Visible</desc>
+</var>
+  <var>
+	<addr>1108</addr>
+	<name>VSPD_SELECTED</name>
+	<type>int</type>
+	<unit>value</unit>
+	<format>d</format>
+	<initial>0</initial>
+	<desc>VSpeed Selected 0=V1 1=VR 2=V2 3=VT</desc>
+</var>
+
+</variables>

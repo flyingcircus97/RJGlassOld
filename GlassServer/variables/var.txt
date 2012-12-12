@@ -59,3 +59,12 @@
 0470,MARKERS,i,Markers (1=IM,2=MM,3=OM),Enum
 01001,MSTRWARN_IND,i,Master Warning Indication,onoff
 01002,MSTRCAUT_IND,i,Master Caution Indication,onoff
+01100,V1,i,V1 Value,knots
+01101,V1_VISIBLE,i,V1 Visible,onoff
+01102,VR,i,VR Value,knots
+01103,VR_VISIBLE,i,VR Visible,onoff
+01104,V2,i,V2 Value,knots
+01105,V2_VISIBLE,i,V2 Visible,onoff
+01106,VT,i,VT Value,knots
+01107,VT_VISIBLE,i,VT Visible,onoff
+01108,VSPD_SELECTED,i,VSpeed Selected 0=V1 1=VR 2=V2 3=VT,value
