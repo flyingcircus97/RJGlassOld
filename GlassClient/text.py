@@ -761,6 +761,22 @@ def draw_period():
     
     return batch
 
+def draw_dash():
+    x = 34
+    y_list = [-1,0,1]
+    m = []
+    
+    for y in y_list:
+        m.append([x,y,-x,y])
+       
+    
+    #points.append([-x,y,x,y])
+    batch = pyglet.graphics.Batch()
+    #v = batch.add(4, GL_LINES, None, ('v2f', (-w,h,0,-h,0,-h,w,h)))
+    v = add_batch(batch, GL_LINES, m)
+    
+    return batch
+
 
 dict = {}
 dict[' '] = None
@@ -801,6 +817,7 @@ dict['X'] = char_c(draw_X)
 dict['Y'] = char_c(draw_Y)
 dict['Z'] = char_c(draw_Z)
 dict['.'] = char_c(draw_period)
+dict['-'] = char_c(draw_dash)
 #v = char_c(draw_9)
 
 def write(s, spacing = 85):
