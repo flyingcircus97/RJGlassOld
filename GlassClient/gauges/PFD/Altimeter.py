@@ -9,6 +9,34 @@ import variable
 import math, time
 import text
         
+        
+class MDADH_c(object):
+    #Decision Heigth Class used for to house and compute DH data
+    
+    def __init__(self, bug, active):
+        self.bug = variable.variables.load(bug)
+        self.active = variable.variables.load(active)
+        self.notify = False #Set to true when below 
+        self.flash = 0 #Increments to cause flashing 1 second cycle if needed
+        self.flash_time = 0.0
+        
+    def comp(self, alt, OnGround, dt=0.0):
+        
+        if ((alt <= self.bug.value) and (not OnGround)):
+            self.notify = True
+            self.flash_time += dt
+            if self.flash_time >= 0.5:
+                self.flash +=1
+                self.flash_time -=0.5
+            
+        else:
+            self.notify = False
+            self.flash_time = 0.0
+            #self.flash = 0
+            
+
+    
+    
 class gauge_c(gauge_parent):
         
     def __init__(self, *args, **kwds):
@@ -29,7 +57,13 @@ class gauge_c(gauge_parent):
         #Init Variables
         self.ind_alt = variable.variables.load(0x110)
         self.rad_alt = variable.variables.load(0x112)
+        self.alt_setting = variable.variables.load(0x113,'4F')
+        self.OnGround = variable.variables.load(0x127)
+        self.DH = MDADH_c(0x1120,0x1121)
+        self.MDA = MDADH_c(0x1128,0x1129)
+        
         self.count = 0
+        self.dt = 0.0
     
         
     def load_batch(self):
@@ -44,6 +78,42 @@ class gauge_c(gauge_parent):
         self.blackbox_shape = self.blackbox_b()
         self.altitudebug_shape = self.altitudebug_b()
         self.altitudethoubug_shape = self.altitudebug_b(True)
+        self.DHbug_shape = self.DH_b()
+        self.MDAbug_shape = self.MDA_b()
+     
+    def DH_b(self):
+        w1,w2 = 5,20
+        h = 10
+        rect = common.vertex.lines()
+        rect.add([0,h,w1,h,w1,-h,0,-h])
+        
+        line = common.vertex.lines()
+        line.add([w1,0,w2,0])
+        
+        batch = pyglet.graphics.Batch()
+        top = pyglet.graphics.OrderedGroup(0)
+        bottom = pyglet.graphics.OrderedGroup(1)
+        
+        b1 = batch.add(rect.num_points, GL_POLYGON, top, ('v2f', rect.points),('c3f',common.color.cyan*rect.num_points))
+        b2 = batch.add(line.num_points, GL_LINES, bottom, ('v2f', line.points),('c3f',common.color.cyan*line.num_points))
+        
+        return batch
+    
+    def MDA_b(self):
+        w1,w2 = -8,40
+        h = 14
+                
+        line = common.vertex.lines()
+        line.add([0,0,w1,-h,w1,h,0,0])
+        line.add([w2,0])
+        
+        
+        batch = pyglet.graphics.Batch()
+        
+        b1 = batch.add(line.num_points, GL_LINES, None, ('v2f', line.points),('c3f',common.color.cyan*line.num_points))
+        
+        return batch
+        
         
     def rollingblack_b(self, half=False, small=False):
         #Used to conver up rolling digits and thousands tick marks as they go through center.
@@ -455,10 +525,11 @@ class gauge_c(gauge_parent):
                 tick = int(start_tick) - 1 #Makes sure tick is integer for glText1 command below
                 w = 6
                 fifty_offset = 50 * self.pixel_per_foot #The fifty foot offset
-                #if DH.notify:#If DH notifer is on, change color to yellow, insted of default green
-                #    glColor(yellow)
-                #else: glColor(green)
-                common.color.set(common.color.green)
+                if self.DH.notify:#If DH notifer is on, change color to yellow, insted of default green
+                    common.color.set(common.color.yellow)
+                else: 
+                    common.color.set(common.color.green)
+                    
                 glLineWidth(2.0)
                 fifty_flag=True
                 loc -= fifty_offset
@@ -503,31 +574,21 @@ class gauge_c(gauge_parent):
                     loc -= 13.0
                 glEnd()
                 
-#            def DH_bug(diff, pixel_per_foot, y_cent, RA_scale_visible):
-#                loc = y_cent - ((diff) * pixel_per_foot)
-#                glColor(cyan)
-#                glLineWidth(2.0)
-#                w1,w2 = 5,20
-#                h = 10
-#                #Move to correct position depedning on weather RA_scale is enabled or not
-#                x =0
-#                if not RA_scale_visible:
-#                    x = 45 #offset to right to put bug on altitude tape instead of RA scale.
-#                glPushMatrix()
-#                glTranslatef(x,loc,0)
-#                #Draw Rectangle
-#                glBegin(GL_QUADS)
-#                glVertex2f(0,h)
-#                glVertex2f(w1,h)
-#                glVertex2f(w1, -h)
-#                glVertex2f(0, -h)
-#                glEnd()
-#                #Draw Line
-#                glBegin(GL_LINES)
-#                glVertex2f(w1,0)
-#                glVertex2f(w2,0)
-#                glEnd()
-#                glPopMatrix()
+            def DH_bug_draw(diff):
+                loc = - diff * self.pixel_per_foot
+            #    common.color.set(common.color.cyan)
+                #glLineWidth(2.0)
+                glPushMatrix()
+                glTranslatef(0,loc,0)
+                self.DHbug_shape.draw()
+                glPopMatrix()
+                
+            def MDA_bug_draw(diff):
+                loc = - diff * self.pixel_per_foot
+                glPushMatrix()
+                glTranslatef(54,loc,0)
+                self.MDAbug_shape.draw()
+                glPopMatrix()
 #                
 #            def DH_Notifier(x,y):
 #                glDisable(GL_SCISSOR_TEST)
@@ -545,14 +606,19 @@ class gauge_c(gauge_parent):
                     radar_scale(aag)
                     if aag<=230:
                         ground_mark(aag)
+                
                 foreground(aag)
-            #DH.notify = False #Reset to false, will turn true is meets condition below
-            #if DH.visible:
-            #    diff = aag-DH.bug
-            #    DH_bug(diff, pixel_per_foot, y_cent, config.RA_scale)
-            #    if (diff<=0) & (aag>0): #Turn on DH notifier if under DH and not on ground
-            #     DH_Notifier(-80,y_cent+ 35)
-            #      DH.notify = True
+            #Draw DH if active and within 250 ft of RA
+            if self.DH.active.value:
+                diff = self.rad_alt.value-self.DH.bug.value
+                if abs(diff)<250: DH_bug_draw(diff)
+            #Flash MDA if 
+            if self.MDA.active.value:
+                diff = self.ind_alt.value -self.MDA.bug.value
+                if (self.MDA.flash %2==0):
+                    if abs(diff)<300: MDA_bug_draw(diff)
+                        
+            
 
     def alt_bug_text(self, bug):
             common.color.set(common.color.purple)
@@ -591,24 +657,30 @@ class gauge_c(gauge_parent):
                 text.write("HPA",90)
                 
             glPopMatrix()
-    
+            
+    def comp(self):
+        self.DH.comp(self.rad_alt.value, self.OnGround.value)
+        self.MDA.comp(self.alt, self.OnGround.value, self.dt)
+        
+        
     def draw(self):
         common.color.set(common.color.white)
         glPushMatrix()
-        alt = self.ind_alt.value
+        self.alt = self.ind_alt.value
+        #Compute Necessary Data
+        self.comp()
         
-        #print "ALT", alt
         #self.glLineWidth(2.0)
         glLineWidth(2.5)
         glTranslatef(-50.0,0,0)
-        self.tick_marks(alt)
-        self.thousand_tick_marks(alt)
-        self.altitude_disp(alt)
+        self.tick_marks(self.alt)
+        self.thousand_tick_marks(self.alt)
+        self.altitude_disp(self.alt)
         
-        self.alt_bug(alt, 3000)
+        self.alt_bug(self.alt, 3000)
         
         self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
         self.alt_bug_text(3000)
-        self.alt_setting_disp(29.92)
+        self.alt_setting_disp(self.alt_setting.value)
         glPopMatrix()

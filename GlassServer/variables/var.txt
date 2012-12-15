@@ -68,3 +68,7 @@
 01106,VT,i,VT Value,knots
 01107,VT_VISIBLE,i,VT Visible,onoff
 01108,VSPD_SELECTED,i,VSpeed Selected 0=V1 1=VR 2=V2 3=VT,value
+01120,DH_BUG,i,Decision Height Value,feet
+01121,DH_ACTIVE,i,Decision Height Active/Visible,onoff
+01128,MDA_BUG,i,Min Decision Altitude Value,feet
+01129,MDA_ACTIVE,i,Min Decision Altitude Active/Visible,onoff

@@ -1,0 +1,39 @@
+<variables>
+  <var>
+	<addr>1120</addr>
+	<name>DH_BUG</name>
+	<type>int</type>
+	<unit>feet</unit>
+	<initial>200</initial>
+	<format>d</format>
+	<desc>Decision Height Value</desc>
+</var>
+  <var>
+	<addr>1121</addr>
+	<name>DH_ACTIVE</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<initial>1</initial>
+	<desc>Decision Height Active/Visible</desc>
+</var>
+<var>
+	<addr>1128</addr>
+	<name>MDA_BUG</name>
+	<type>int</type>
+	<unit>feet</unit>
+	<format>d</format>
+	<initial>200</initial>
+	<desc>Min Decision Altitude Value</desc>
+</var>
+  <var>
+	<addr>1129</addr>
+	<name>MDA_ACTIVE</name>
+	<type>int</type>
+	<unit>onoff</unit>
+	<format>d</format>
+	<initial>1</initial>
+	<desc>Min Decision Altitude Active/Visible</desc>
+</var>
+
+</variables>
