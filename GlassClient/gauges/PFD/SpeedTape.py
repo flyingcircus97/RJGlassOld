@@ -146,7 +146,7 @@ class gauge_c(gauge_parent):
         else:
             new_trend = sum(avg) / len(avg) * 10.0
             
-        self.IAS_trend += (new_trend - self.IAS_trend) * 0.10
+        self.IAS_trend += (new_trend - self.IAS_trend) * 0.10 #Limit change to 10% for smoothing
         #Limit trending to 50 knots.
         if self.IAS_trend>50: self.IAS_trend = 50
         elif self.IAS_trend<-50: self.IAS_trend = -50
