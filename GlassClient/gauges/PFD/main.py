@@ -26,6 +26,7 @@ class gauge(gauge_parent):
         self.SpeedTape = SpeedTape.gauge_c((150,500),(-325,0), parent= self)
         self.Altimeter = Altimeter.gauge_c((185,500),(345,0), parent = self)
         #Init Variables
+        self.DH_notify = False
         #Set up timing
         self.prev_time = time.time()
         
@@ -42,6 +43,7 @@ class gauge(gauge_parent):
             #self.draw_border()
             dt = self.calc_dt()
             self.Altimeter.dt = dt
+            self.AHorizon.dt = dt
             self.AHorizon.on_draw()
             self.SpeedTape.on_draw()
             self.Altimeter.on_draw()

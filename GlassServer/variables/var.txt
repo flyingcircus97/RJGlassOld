@@ -15,6 +15,7 @@
 0125,PLANE_BANK,f,Aircarft Bank,deg
 0126,PLANE_PITCH,f,Aircarft Pitch,deg
 0127,ON_GROUND,i,Aircraft on the ground,1=True
+0128,SLIP_IND,i,Slip Indicator / Turn Cordinator,Position
 0130,MAG_HEAD_IND,f,Aircraft Indicated Magnetic Heading,deg
 0131,MAG_VARIATION,f,Magnetic Varitation at Aircarft Location,deg
 0132,MAG_TRACK,f,Magnetic Track,deg
@@ -72,3 +73,5 @@
 01121,DH_ACTIVE,i,Decision Height Active/Visible,onoff
 01128,MDA_BUG,i,Min Decision Altitude Value,feet
 01129,MDA_ACTIVE,i,Min Decision Altitude Active/Visible,onoff
+0F000,INT_A,i,Development Integer Variable A,unkown
+0F001,INT_B,i,Development Integer Variable B,unkown

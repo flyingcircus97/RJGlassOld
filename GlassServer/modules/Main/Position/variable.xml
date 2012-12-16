@@ -64,6 +64,14 @@
 	<format>d</format>
 	<desc>Aircraft on the ground</desc>
 </var>
+<var>
+	<addr>0128</addr>
+	<name>SLIP_IND</name>
+	<type>int</type>
+	<unit>Position</unit>
+	<format>d</format>
+	<desc>Slip Indicator / Turn Cordinator</desc>
+</var>
 
 
 

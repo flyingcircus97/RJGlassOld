@@ -1,0 +1,21 @@
+<variables>
+  <var>
+	<addr>F000</addr>
+	<name>INT_A</name>
+	<type>int</type>
+	<unit>unkown</unit>
+	<initial>0</initial>
+	<format>d</format>
+	<desc>Development Integer Variable A</desc>
+</var>
+  <var>
+	<addr>F001</addr>
+	<name>INT_B</name>
+	<type>int</type>
+	<unit>unkown</unit>
+	<format>d</format>
+	<initial>0</initial>
+	<desc>Development Integer Variable B</desc>
+</var>
+
+</variables>

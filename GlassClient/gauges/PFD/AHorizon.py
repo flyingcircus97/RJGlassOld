@@ -6,7 +6,55 @@ import variable
 import math, time
 import text
 
-
+class marker_c(object):
+    #Sets up the Markers
+    def __init__(self, var):
+        #Constants
+        self.IM = 1
+        self.MM = 2
+        self.OM = 3
+        self.color = common.color.white
+        
+        self.marker_var = var
+        self.visible = False
+        
+        self.flash = 0
+        self.dt_count = 0.0
+        
+    def comp(self, dt):
+        #Determine flash rate
+        value = self.marker_var.value
+        if value: #If not 0 No Markers
+            self.dt_count += dt
+            if value == self.IM:
+                period = 0.2
+                self.color = common.color.white
+                self.text = "IM"
+            elif value == self.MM:
+                period = 0.3
+                self.color = common.color.yellow
+                self.text = "MM"
+            else: #Outer Marker
+                period = 0.5
+                self.color = common.color.cyan
+                self.text = "OM"
+            #Determine Flash
+            if self.dt_count > period:
+                self.dt_count -= period
+                self.flash += 1
+            
+            if (self.flash%2==0):
+                self.visible = True
+            else:
+                self.visible = False
+                
+        else:
+            self.flash = 0
+            self.dt_count = 0.0
+            self.visible = False
+            
+        
+        
 class gauge_c(gauge_parent):
     
     def __init__(self, *args, **kwds):
@@ -23,16 +71,18 @@ class gauge_c(gauge_parent):
         
         self.load_batch()
         
+        
         #Init Variables
         self.a = 0.0
+        self.dt = 0.0 #Used for frame time
         self.pitch = variable.variables.load(0x126,'4F')
         self.roll = variable.variables.load(0x125, '4F')
-        
-        #self.pitch = 8.5
-        #pyglet.clock.schedule_interval(self.fade_in, .03) 
-        #print self.pitch2.hex
-        #pyglet.clock.schedule_interval(self.update, 1.0/30.0)
-        #pyglet.clock.set_fps_limit(30.0)
+        self.slip_ind = variable.variables.load(0x128)
+        self.rad_alt = variable.variables.load(0x112)
+        self.markers = marker_c(variable.variables.load(0x470)) #1=IM,2=MM,3=OM
+      
+        self.dev_x = variable.variables.load(0xF000)
+        self.dev_y = variable.variables.load(0xF001)
         
         
     def load_batch(self):
@@ -190,32 +240,7 @@ class gauge_c(gauge_parent):
         return batch
     
     
-    def update(self, dt):
-        pass
-        #self.pitch += 0.01
-        #self.a = 45.0
-        #if self.a>180.0:
-        #    self.a=-180.0
-        #if self.a == -3.0:
-        #    self.pitch +=1
-        #self.a = 0.0
-        #self.pitch = -10.0
     
-    def draw(self):
-        slope = self.draw_horizon(-self.roll.value,self.pitch.value)
-        self.pitch_marks(-self.roll.value, self.pitch.value, 1.5*self.scale_lw)
-        
-        glLineWidth(1.5*self.scale_lw)
-        self.bV_shape.draw()
-        self.static_triangle_shape.draw()
-        #time.sleep(0.03)
-        #self.draw_border()
-        #self.pitch.value += 0.2
-        #self.roll.value += 0.8
-        #if self.pitch.value > 30.0:
-        #    self.pitch.value = -30.0
-        #if self.roll.value >180.0:
-        #    self.roll.value = -180.0
         
             
     def pitch_marks(self, roll, pitch, line_width):
@@ -274,16 +299,18 @@ class gauge_c(gauge_parent):
                 y_center += 2.5
             pyglet.graphics.draw(len(point_l)/2, pyglet.gl.GL_LINES,
                 ('v2f', point_l ))    
-            if abs(roll)> 30.0:
-                self.yellow_triangle.draw()
+            #Acording to Jeff, doesn't turn yellow    
+            #if abs(roll)> 30.0:
+            #    self.yellow_triangle.draw()
                 #Translation for slip indicator
-                glTranslatef(2,0,0)
-                self.yellow_slip.draw()
-            else:
-                self.white_triangle.draw()
-                #Translation for slip indicator
-                glTranslatef(0,0,0)
-                self.white_slip.draw()
+            #    self.yellow_slip.draw()
+            #else:
+            x = self.slip_ind.value * 0.125
+            
+            self.white_triangle.draw()
+            #Translation for slip indicator
+            glTranslatef(x,0,0)
+            self.white_slip.draw()
                        
             glPopMatrix()
     
@@ -428,4 +455,138 @@ class gauge_c(gauge_parent):
        
         return slope    
         #self.a+=0.01
+        
+    def radar_disp(self, aag, notify):
+            
+            if (aag < 2500): #If its above 2500 then don't display
+                #Determine number to print on atitude display.
+                num = aag
+                if num >=1000: #Then do multiples of 50
+                    #round  to multiples of 50.
+                    num = (num + 25) // 50 * 50
+                elif num>=200: # Do multiples of 10
+                    num = (num + 5) // 10 * 10
+                else: #Do multiples of  5 (less than 200')
+                    num = (num + 2.5) // 5 * 5
+                #Display radar altitude
+                if notify: #If DH notify is on then change color to yellow else green (default color)
+                    common.color.set(common.color.yellow)
+                else:
+                    common.color.set(common.color.green)
+                glLineWidth(2.0)
+                glPushMatrix()
+                glTranslatef(70, -160, 0.0) #Move to start of digits
+                #Draw Numbers
+                glPushMatrix()
+                glScalef(0.16,0.16,1.0)
+                text.write("%4d" %num, 90)
+                glPopMatrix() #scale3f
+                # Draw FT
+                glPushMatrix()
+                glTranslatef(65.0, -1.0, 0.0)
+                glScalef(0.12,0.12,1.0)
+                text.write("FT")
+                glPopMatrix() #translate
+                glPopMatrix() #translate
+                
+    def markers_draw(self, marker, x, y):
+            #if attitude.marker
+            def draw_box(t):
+                #Draw Rectangle
+                glBegin(GL_LINE_LOOP)
+                glVertex2f(-16,-10)
+                glVertex2f(16,-10)
+                glVertex2f(16,10)
+                glVertex2f(-16,10)
+                glEnd()
+                #Draw Text
+                glTranslatef(-7,0,0) #Move for text
+                glScalef(0.13,0.13,1)
+                text.write(t,105)
+                
+            if marker.visible:
+                glPushMatrix()
+                glTranslatef(x,y,0)
+            #glLineWidth(2.0)
+            
+                common.color.set(marker.color)
+                draw_box(marker.text)
+                            
+                glPopMatrix()
+                
+    def mda_text(self, MDA, x,y):
+           
+            if MDA.active.value:
+                glPushMatrix()
+                glTranslatef(x, y, 0.0) #Move to start of digits
+                #Draw MDA (character only)
+                glPushMatrix()
+                glScalef(0.14,0.14,1.0)
+                text.write("MDA", 100)
+                glPopMatrix() #scale3f
+                # Draw Thousands digit
+                glPushMatrix()
+                glTranslatef(70.0, 0.0, 0.0)
+                glScalef(0.14,0.14,1.0)
+                text.write("%d" %(MDA.bug.value // 1000), 120)
+                glScalef(0.85,0.85,1.0) #Scale digits 85%
+                glTranslatef(0,-10,0)
+                text.write("%03d" %(MDA.bug.value % 1000), 90)
+                glPopMatrix() #translate
+                glPopMatrix()
+                
+    def dh_text(self, DH, x,y):
+           
+            if DH.active.value:
+                glPushMatrix()
+                glTranslatef(x, y, 0.0) #Move to start of digits
+                #Draw DH (character only)
+                glPushMatrix()
+                glScalef(0.14,0.14,1.0)
+                text.write(" DH", 100)
+                glPopMatrix() #scale3f
+                # Draw Thousands digit
+                glPushMatrix()
+                glTranslatef(70.0, 0.0, 0.0)
+                glScalef(0.14,0.14,1.0)
+                text.write("%d" %(DH.bug.value), 100)
+                glPopMatrix() #translate
+                glPopMatrix()
+                
+    def MDADH_Notifier(self, visible, text_s, x,y):
+
+            if visible:
+                glPushMatrix()
+                glTranslatef(x,y, 0)
+                common.color.set(common.color.yellow)
+                glScalef(0.2,0.2, 1.0)
+                #glLineWidth(2.0)
+                text.write(text_s, 100)
+                glPopMatrix()
+                
+    
+
+            
+            
+    def comp(self):
+        self.markers.comp(self.dt)
+                
+    def draw(self):
+        self.comp()
+        DH = self.parent.Altimeter.DH
+        MDA = self.parent.Altimeter.MDA
+        
+        slope = self.draw_horizon(-self.roll.value,self.pitch.value)
+        self.pitch_marks(-self.roll.value, self.pitch.value, 1.5*self.scale_lw)
+        
+        glLineWidth(1.5*self.scale_lw)
+        self.bV_shape.draw()
+        self.static_triangle_shape.draw()
+        self.radar_disp(self.rad_alt.value, DH.notify)
+        self.markers_draw(self.markers, 130,163)
+        common.color.set(common.color.cyan)
+        self.mda_text(MDA, 35,185)
+        self.dh_text(DH, 35,205)
+        self.MDADH_Notifier(DH.notify, 'DH' , 84,48)
+        self.MDADH_Notifier(MDA.visible, 'MDA', 84,22)
         

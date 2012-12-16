@@ -19,20 +19,28 @@ class MDADH_c(object):
         self.notify = False #Set to true when below 
         self.flash = 0 #Increments to cause flashing 1 second cycle if needed
         self.flash_time = 0.0
+        self.visible = False
         
     def comp(self, alt, OnGround, dt=0.0):
         
-        if ((alt <= self.bug.value) and (not OnGround)):
+        if ((self.active.value) and (alt <= self.bug.value) and (not OnGround)):
             self.notify = True
             self.flash_time += dt
             if self.flash_time >= 0.5:
                 self.flash +=1
                 self.flash_time -=0.5
+                if self.flash>20: self.flash = 20 #Causes to only flash for 10 seconds
+                if self.flash%2==0: #Visible used only for MDA with flashing
+                    self.visible = True
+                else:
+                    self.visible = False
             
         else:
             self.notify = False
+            self.visible = False
             self.flash_time = 0.0
-            #self.flash = 0
+            self.flash = 0
+            
             
 
     
@@ -661,7 +669,7 @@ class gauge_c(gauge_parent):
     def comp(self):
         self.DH.comp(self.rad_alt.value, self.OnGround.value)
         self.MDA.comp(self.alt, self.OnGround.value, self.dt)
-        
+        self.parent.DH_notify = self.DH.notify
         
     def draw(self):
         common.color.set(common.color.white)

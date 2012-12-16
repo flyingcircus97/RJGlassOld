@@ -16,6 +16,7 @@ class gauge_parent(object):
         self.size = size
         self.size_div2 = map(lambda x: x/2, self.size)
         self.pos = pos
+        self.parent = parent
         
         self.native_size = None
         self.scale_x = 1.0
