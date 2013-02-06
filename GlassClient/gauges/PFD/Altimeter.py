@@ -632,7 +632,7 @@ class gauge_c(gauge_parent):
             common.color.set(common.color.purple)
             #glLineWidth(2.0)
             glPushMatrix()
-            glTranslatef(25, 200, 0.0) #Move to start of digits
+            glTranslatef(36, 200, 0.0) #Move to start of digits
             glScalef(0.16,0.16,1.0)
             text.write("%2d" %(bug // 1000))
             glScalef(0.80,0.80,1.0) #Scale digits 85%
@@ -689,6 +689,6 @@ class gauge_c(gauge_parent):
         
         self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
-        self.alt_bug_text(3000)
+        self.alt_bug_text(30000)
         self.alt_setting_disp(self.alt_setting.value)
         glPopMatrix()

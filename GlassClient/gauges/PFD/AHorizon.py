@@ -229,11 +229,15 @@ class gauge_c(gauge_parent):
         rects.reset()
         rects.add(Rect(1))
         
-        fg = pyglet.graphics.OrderedGroup(1)
-        fg2= pyglet.graphics.OrderedGroup(2)
+        fg = pyglet.graphics.OrderedGroup(3)
+        fg2= pyglet.graphics.OrderedGroup(4)
         poly = pyglet.graphics.OrderedGroup(0)
+        l_rect = pyglet.graphics.OrderedGroup(1)
+        r_rect = pyglet.graphics.OrderedGroup(2)
         batch = pyglet.graphics.Batch()
         v2 = batch.add(8, GL_POLYGON, poly, ('v2f', v_list),('c3B',(0,0,0)*8))
+        v4 = batch.add(5, GL_POLYGON, l_rect, ('v2f', Rect(-1)), ('c3B',(0,0,0)*(5)))
+        v5 = batch.add(5, GL_POLYGON, r_rect, ('v2f', Rect(1)), ('c3B',(0,0,0)*(5)))
         v1 = batch.add(len(v_points)//2, GL_LINES, fg, ('v2f', v_points),('c3B',(255,255,255)*(len(v_points)//2)))
         v3 = batch.add(len(rects.points)//2, GL_LINES, fg, ('v2f', rects.points),('c3B',(255,255,255)*(len(rects.points)//2)))
         
