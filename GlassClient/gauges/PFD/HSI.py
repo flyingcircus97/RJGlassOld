@@ -45,8 +45,47 @@ class gauge_c(gauge_parent):
     def load_batch(self):
         self.plane_shape = self.plane_figure_b()
         self.ticks_shape = self.ticks_b()
+        self.triangle_marks = self.marks_b()
         
-    
+    def marks_b(self):
+        
+            def triangle_l(radius, w, h, angle):
+                def rot(xy, angle):
+                    rad = math.radians(-angle)
+                    s = math.sin(rad)
+                    c = math.cos(rad)
+                    return [xy[0]*c-xy[1]*s, xy[0]*s+xy[1]*c]
+                #Radius traingle is away from center, width, heigth, rotation angle
+                #Returns list of points for batch
+                l = []
+                l.extend(rot([0,radius], angle))
+                l.extend(rot([w,radius+h], angle))
+                l.extend(rot([w,radius+h], angle))
+                l.extend(rot([-w,radius+h], angle))
+                l.extend(rot([-w,radius+h], angle))
+                l.extend(rot([0,radius], angle))
+                
+                return l
+            
+            radius = 150
+            
+            
+            v1 = common.vertex.lines()
+            v1.add(triangle_l(radius - 2, 9, 15,0.0))
+            v1.reset()
+            v1.add(triangle_l(radius + 2, 5, 8, 45))
+            v1.reset()
+            v1.add(triangle_l(radius + 2, 5, 8, -45))
+            v1.reset()
+            v1.add([radius+5, 0, radius+20, 0]) #Right line
+            v1.reset()
+            v1.add([-(radius+5), 0, -(radius+20), 0]) #Left line
+            
+            batch = pyglet.graphics.Batch()
+            b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.white*v1.num_points))
+            
+            return batch
+            
     def plane_figure_b(self):
         
             
@@ -114,6 +153,7 @@ class gauge_c(gauge_parent):
                 glPushMatrix()
                 glRotatef(heading %10, 0.0, 0.0, 1.0)
                 glLineWidth(2.0)
+                common.color.set(common.color.white)
                
                 self.ticks_shape.draw()
                 #Draw Numbers / Letters
@@ -145,7 +185,8 @@ class gauge_c(gauge_parent):
         glTranslatef(0,-30,0)
         self.plane_shape.draw()
         self.heading_ticks(145,self.a)
+        self.triangle_marks.draw()
         glPopMatrix()
-        self.a+=1.0
+        #self.a+=1.0
         
         
