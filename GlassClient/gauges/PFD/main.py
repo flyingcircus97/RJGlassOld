@@ -47,6 +47,7 @@ class gauge(gauge_parent):
             dt = self.calc_dt()
             self.Altimeter.dt = dt
             self.AHorizon.dt = dt
+            self.HSI.dt = dt
             self.AHorizon.on_draw()
             self.SpeedTape.on_draw()
             self.Altimeter.on_draw()

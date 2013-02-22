@@ -32,12 +32,15 @@ class gauge_c(gauge_parent):
         
         #Init Variables
         self.a = 0
+        self.dt_count = 0
         
       
         
         
-    def comp(self):
-            self.time = time.time()
+    def comp(self, dt):
+            self.dt_count += dt
+            self.hdgbug_timer = 5 #5 second delay to show hdg bug value and dashed line
+            
             
             
             
@@ -46,6 +49,27 @@ class gauge_c(gauge_parent):
         self.plane_shape = self.plane_figure_b()
         self.ticks_shape = self.ticks_b()
         self.triangle_marks = self.marks_b()
+        self.hdgbug_shape = self.hdgbug_b()
+        self.hdgbugline_shape = [self.hdgbugline_b(6), self.hdgbugline_b(5)]
+        self.bottom_polygon = self.bottom_b()
+        
+    def bottom_b(self):
+        #Bottom black polygon for scissoring
+        w = 150
+       
+        y2 = (self.y/-2)
+        y1 = y2 + 50
+        
+        v1 = common.vertex.lines()
+        v1.add([-w,y1,w,y1,w,y2,-w,y2,-w,y1])
+        
+        batch = pyglet.graphics.Batch()
+        b1 = batch.add(v1.num_points, GL_POLYGON, None, ('v2f', v1.points),('c3f',common.color.black*v1.num_points))
+            
+        return batch
+            
+        
+            
         
     def marks_b(self):
         
@@ -104,13 +128,42 @@ class gauge_c(gauge_parent):
          
             return batch
         
+    def hdgbug_b(self):
+        
+                   
+            v1 = common.vertex.lines()
+            v1.add([0,0,10,8,10,15,0,15,0,-15,10,-15,10,-8,0,0])
+            
+            batch = pyglet.graphics.Batch()
+            b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.purple*v1.num_points))
+            
+            return batch
+    
+    def hdgbugline_b(self, dashes):
+            v1 = common.vertex.lines()
+            #Calculate line dashes
+            start = 15.0
+            step = (145-start) / 12
+            for i in range(dashes):
+                v1.add([start, 0.0])
+                start += step
+                v1.add([start, 0.0])
+                start += step
+                v1.reset()
+                        
+            batch = pyglet.graphics.Batch()
+            b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.purple*v1.num_points))
+            
+            return batch
+    
+        
     def ticks_b(self):
         
             radius = 145
             sm_tick = 15
             lg_tick = 20
             v1 = common.vertex.lines()
-            deg = -150
+            deg = -130
             end_deg = deg*-1
             count = 0
             while deg <= end_deg:
@@ -175,10 +228,48 @@ class gauge_c(gauge_parent):
                     if start == 36:start =0
                 glPopMatrix()    
         
+    def heading_bug(self, mag, bug):
+            #radius = radius of guage, mag = mag heading of plane bug = heading bug value
+            #draw_line True if you want purple line drawn from center to bug, (Used when bug's value is changed)
+               
+                def bug_text(x,y, bug):
+                    glPushMatrix()
+                    glTranslatef(x,y,0)
+                    glScalef(0.15,0.15,1)
+                    text.write("HDG %03d" %bug, 90)
+                    glPopMatrix()
+                
+                common.color.set(common.color.purple)
+                radius = 145
+                diff = mag - bug
+                if diff <0: diff+=360 #Make sure diff is between 0 and 360
+                glPushMatrix()
+                glRotatef(diff + 90, 0, 0, 1) #90 degree offset is since bug_polygon above is rotated
+                #Check for 5 second delay
+                if (self.hdgbug_timer <= self.dt_count): #Enable drawing of line
+                    draw_line=False
+                else:
+                    draw_line=True
+                
+                #Draw dotted line from center to heading bug
+                if (draw_line) or (120 < diff < 240): 
+                    if (150 <diff < 210):
+                        self.hdgbugline_shape[1].draw()
+                    else:
+                        self.hdgbugline_shape[0].draw()
+                        
+                #Draw bug_polygon
+                glLineWidth(2.0)
+                glTranslatef(radius, 0.0, 0.0)
+                if not (138< diff < 222): self.hdgbug_shape.draw()
+                glPopMatrix()
+                if draw_line: bug_text(-150,157,bug)
+        
+        
       
     def draw(self):
         
-        self.comp()
+        self.comp(self.dt)
         glLineWidth(2.0)
         #Move down
         glPushMatrix()
@@ -186,7 +277,12 @@ class gauge_c(gauge_parent):
         self.plane_shape.draw()
         self.heading_ticks(145,self.a)
         self.triangle_marks.draw()
+        self.heading_bug(self.a,100)
+        
         glPopMatrix()
-        #self.a+=1.0
+        self.bottom_polygon.draw() #Used to cut off bottom of HSI
+        self.a+=0.3
+        if self.a>=360: self.a-=360
+        #self.a = 317
         
         
