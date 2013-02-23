@@ -828,7 +828,7 @@ def write(s, spacing = 85):
         if dict[c]:
             dict[c].draw()
             if c=='.':
-                space = 10
+                space -= 75
         #count+=1
         #if count != len_s: #Move to next character if not last one.
         glTranslatef(space,0,0)
