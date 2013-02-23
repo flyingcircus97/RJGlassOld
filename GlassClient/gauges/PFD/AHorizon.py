@@ -479,16 +479,16 @@ class gauge_c(gauge_parent):
                     common.color.set(common.color.green)
                 glLineWidth(2.0)
                 glPushMatrix()
-                glTranslatef(70, -160, 0.0) #Move to start of digits
+                glTranslatef(67, -163, 0.0) #Move to start of digits
                 #Draw Numbers
                 glPushMatrix()
-                glScalef(0.16,0.16,1.0)
+                glScalef(0.18,0.18,1.0)
                 text.write("%4d" %num, 90)
                 glPopMatrix() #scale3f
                 # Draw FT
                 glPushMatrix()
-                glTranslatef(65.0, -1.0, 0.0)
-                glScalef(0.12,0.12,1.0)
+                glTranslatef(68.0, -2.0, 0.0)
+                glScalef(0.13,0.13,1.0)
                 text.write("FT")
                 glPopMatrix() #translate
                 glPopMatrix() #translate
