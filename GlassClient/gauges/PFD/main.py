@@ -13,6 +13,7 @@ import AHorizon
 import SpeedTape
 import Altimeter
 import HSI
+import VSI
 import time
 
 class gauge(gauge_parent):
@@ -28,6 +29,7 @@ class gauge(gauge_parent):
         self.SpeedTape = SpeedTape.gauge_c((150,500),(-325,y), parent= self)
         self.Altimeter = Altimeter.gauge_c((185,500),(345,y), parent = self)
         self.HSI = HSI.gauge_c((800,500),(0,y2), parent=self)
+        self.VSI = VSI.gauge_c((170,300),(335,y2-5), parent=self)
         #Init Variables
         self.DH_notify = False
         #Set up timing
@@ -51,7 +53,8 @@ class gauge(gauge_parent):
             self.AHorizon.on_draw()
             self.SpeedTape.on_draw()
             self.Altimeter.on_draw()
-            self.HSI.on_draw(True)
+            self.HSI.on_draw()
+            self.VSI.on_draw()
             #self.SpeedTape.draw_border()
             self.end_gauge()
             
