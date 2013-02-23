@@ -97,13 +97,13 @@ class gauge_c(gauge_parent):
             v1 = common.vertex.lines()
             v1.add(triangle_l(radius - 2, 9, 15,0.0))
             v1.reset()
-            v1.add(triangle_l(radius + 2, 5, 8, 45))
+            v1.add(triangle_l(radius , 5, 8, 45))
             v1.reset()
-            v1.add(triangle_l(radius + 2, 5, 8, -45))
+            v1.add(triangle_l(radius , 5, 8, -45))
             v1.reset()
-            v1.add([radius+5, 0, radius+20, 0]) #Right line
+            v1.add([radius-2, 0, radius+15, 0]) #Right line
             v1.reset()
-            v1.add([-(radius+5), 0, -(radius+20), 0]) #Left line
+            v1.add([-(radius-2), 0, -(radius+15), 0]) #Left line
             
             batch = pyglet.graphics.Batch()
             b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.white*v1.num_points))
@@ -283,6 +283,5 @@ class gauge_c(gauge_parent):
         self.bottom_polygon.draw() #Used to cut off bottom of HSI
         self.a+=0.3
         if self.a>=360: self.a-=360
-        #self.a = 317
-        
+        self.a = 317
         
