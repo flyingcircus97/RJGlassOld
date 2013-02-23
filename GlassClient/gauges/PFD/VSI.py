@@ -33,6 +33,9 @@ class gauge_c(gauge_parent):
         #Init Variables
         self.a = 0
         self.dt_count = 0
+        #Init Sim Variables
+        self.vs = variable.variables.load(0x115,'4F')
+        
         
         self.load_batch()
       
@@ -178,7 +181,7 @@ class gauge_c(gauge_parent):
         
          
     def draw(self):
-        
+        vs = int(self.vs.value)
         #self.comp(self.dt)
         glLineWidth(2.0)
         common.color.set(common.color.white)
@@ -187,11 +190,7 @@ class gauge_c(gauge_parent):
         self.marks_shape.draw()
         self.draw_nums()
         common.color.set(common.color.green)
-        self.draw_value(-100)
-        self.draw_pointer(-100)
+        self.draw_value(vs)
+        self.draw_pointer(vs)
         glPopMatrix()
-        
-        self.a+=0.3
-        if self.a>=360: self.a-=360
-        self.a = 327
-        
+      

@@ -33,6 +33,8 @@ class gauge_c(gauge_parent):
         #Init Variables
         self.a = 0
         self.dt_count = 0
+        #Init Sim Variables
+        self.hdgmag = variable.variables.load(0x130,'4F')
         
       
         
@@ -275,13 +277,11 @@ class gauge_c(gauge_parent):
         glPushMatrix()
         glTranslatef(0,-30,0)
         self.plane_shape.draw()
-        self.heading_ticks(145,self.a)
+        self.heading_ticks(145,self.hdgmag.value)
         self.triangle_marks.draw()
-        self.heading_bug(self.a,100)
+        self.heading_bug(self.hdgmag.value,100)
         
         glPopMatrix()
         self.bottom_polygon.draw() #Used to cut off bottom of HSI
-        self.a+=0.3
-        if self.a>=360: self.a-=360
-        self.a = 317
+        
         
