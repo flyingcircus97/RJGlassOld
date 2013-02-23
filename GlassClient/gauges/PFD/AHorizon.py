@@ -581,9 +581,10 @@ class gauge_c(gauge_parent):
         MDA = self.parent.Altimeter.MDA
         
         slope = self.draw_horizon(-self.roll.value,self.pitch.value)
-        self.pitch_marks(-self.roll.value, self.pitch.value, 1.5*self.scale_lw)
+        self.pitch_marks(-self.roll.value, self.pitch.value, 2.0*self.scale_lw)
         
-        glLineWidth(1.5*self.scale_lw)
+        #glLineWidth(1.5*self.scale_lw)
+        glLineWidth(2.0)
         self.bV_shape.draw()
         self.static_triangle_shape.draw()
         self.radar_disp(self.rad_alt.value, DH.notify)
