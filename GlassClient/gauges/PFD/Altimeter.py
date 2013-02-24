@@ -67,6 +67,7 @@ class gauge_c(gauge_parent):
         self.rad_alt = variable.variables.load(0x112)
         self.alt_setting = variable.variables.load(0x113,'4F')
         self.OnGround = variable.variables.load(0x127)
+        self.alt_bug_var = variable.variables.load(0x150)
         self.DH = MDADH_c(0x1120,0x1121)
         self.MDA = MDADH_c(0x1128,0x1129)
         
@@ -685,10 +686,10 @@ class gauge_c(gauge_parent):
         self.thousand_tick_marks(self.alt)
         self.altitude_disp(self.alt)
         
-        self.alt_bug(self.alt, 3000)
+        self.alt_bug(self.alt, self.alt_bug_var.value)
         
         self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
-        self.alt_bug_text(30000)
+        self.alt_bug_text(self.alt_bug_var.value)
         self.alt_setting_disp(self.alt_setting.value)
         glPopMatrix()

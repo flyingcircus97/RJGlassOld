@@ -20,6 +20,8 @@
 0131,MAG_VARIATION,f,Magnetic Varitation at Aircarft Location,deg
 0132,MAG_TRACK,f,Magnetic Track,deg
 0133,TURN_CORD,i,Turn Coordinator Position,pos
+0150,ALT_BUG,i,AP Altitude Bug,Feet
+0151,HDG_BUG,i,AP Heading Bug,Degrees
 0400,COM1_ACTIVE,f,Com Radio 1 Active Freq,MHZ
 0401,COM1_STANDBY,f,Com Radio 1 Standby Freq,MHZ
 0410,COM2_ACTIVE,f,Com Radio 2 Active Freq,MHZ
