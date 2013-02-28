@@ -21,9 +21,13 @@ class gauge(gauge_parent):
     def __init__(self, *args, **kwds):
         
         super(gauge, self).__init__(*args, **kwds)
-        self.set_native_size(1000,1000)
-        y = 100
-        y2 = -400
+        self.set_native_size(900,1100)
+        y = 150
+        
+        y2 = -350
+        
+        
+        self.side = side #Used to set either CPT or FO side
         #Init Parts
         self.AHorizon = AHorizon.gauge_c((500,500),(0,y), parent = self)
         self.SpeedTape = SpeedTape.gauge_c((150,500),(-325,y), parent= self)
@@ -34,6 +38,8 @@ class gauge(gauge_parent):
         self.DH_notify = False
         #Set up timing
         self.prev_time = time.time()
+        #self.brightness = 0.3
+        
         
     def calc_dt(self):
         t = time.time()
@@ -45,7 +51,7 @@ class gauge(gauge_parent):
     def on_draw(self):
             
             self.init_gauge()
-            #self.draw_border()
+           
             dt = self.calc_dt()
             self.Altimeter.dt = dt
             self.AHorizon.dt = dt
@@ -56,5 +62,9 @@ class gauge(gauge_parent):
             self.HSI.on_draw()
             self.VSI.on_draw()
             #self.SpeedTape.draw_border()
+            self.darken() #Used to change brightness of gauge
+            self.draw_border()
             self.end_gauge()
             
+#Default side of PFD to Captain side        
+side = 'CPT'

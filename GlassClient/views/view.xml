@@ -6,9 +6,9 @@
     <view>
         <name>View1</name>
         <gauge>
-            <name>PFD</name>
+            <name>PFD_CPT</name>
             <folder>PFD</folder>
-            <size>600,600</size>
+            <size>540,660</size>
             <pos>512,400</pos>
         </gauge>
     </view>

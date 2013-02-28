@@ -690,6 +690,7 @@ class gauge_c(gauge_parent):
         
         self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
+        glLineWidth(2.5)
         self.alt_bug_text(self.alt_bug_var.value)
         self.alt_setting_disp(self.alt_setting.value)
         glPopMatrix()
