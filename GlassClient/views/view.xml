@@ -9,7 +9,13 @@
             <name>PFD_CPT</name>
             <folder>PFD</folder>
             <size>540,660</size>
-            <pos>512,400</pos>
+            <pos>250,400</pos>
+        </gauge>
+        <gauge>
+            <name>PFD_FO</name>
+            <folder>PFD</folder>
+            <size>540,660</size>
+            <pos>774,400</pos>
         </gauge>
     </view>
 </screen>

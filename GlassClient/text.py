@@ -777,6 +777,22 @@ def draw_dash():
     
     return batch
 
+def draw_underscore():
+    x = 34
+    y_list = [-36,-35,-34]
+    m = []
+    
+    for y in y_list:
+        m.append([x,y,-x,y])
+       
+    
+    #points.append([-x,y,x,y])
+    batch = pyglet.graphics.Batch()
+    #v = batch.add(4, GL_LINES, None, ('v2f', (-w,h,0,-h,0,-h,w,h)))
+    v = add_batch(batch, GL_LINES, m)
+    
+    return batch
+
 
 dict = {}
 dict[' '] = None
@@ -818,6 +834,7 @@ dict['Y'] = char_c(draw_Y)
 dict['Z'] = char_c(draw_Z)
 dict['.'] = char_c(draw_period)
 dict['-'] = char_c(draw_dash)
+dict['_'] = char_c(draw_underscore)
 #v = char_c(draw_9)
 
 def write(s, spacing = 85):

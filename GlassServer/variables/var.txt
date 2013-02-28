@@ -62,6 +62,10 @@
 0470,MARKERS,i,Markers (1=IM,2=MM,3=OM),Enum
 01001,MSTRWARN_IND,i,Master Warning Indication,onoff
 01002,MSTRCAUT_IND,i,Master Caution Indication,onoff
+010A0,PFD_CPT_BRIGHTNESS,i,Brightness of Captains PFD,0-255
+010A1,PFD_CPT_MAX_BRIGHTNESS,i,Max Brightness of Captains PFD,0-255
+010A2,PFD_FO_BRIGHTNESS,i,Brightness of First Officers PFD,0-255
+010A3,PFD_FO_MAX_BRIGHTNESS,i,Max Brightness of First Officers PFD,0-255
 01100,V1,i,V1 Value,knots
 01101,V1_VISIBLE,i,V1 Visible,onoff
 01102,VR,i,VR Value,knots

@@ -36,6 +36,11 @@ class gauge(gauge_parent):
         self.VSI = VSI.gauge_c((170,300),(335,y2-5), parent=self)
         #Init Variables
         self.DH_notify = False
+        #Setup Server Variables
+        if self.side == 'CPT':
+            self.brightness = variable.variables.load(0x10A0, init_value=255)
+        else: #self.side == 'FO'
+            self.brightness = variable.variables.load(0x10A2, init_value=255)
         #Set up timing
         self.prev_time = time.time()
         #self.brightness = 0.3
@@ -62,7 +67,7 @@ class gauge(gauge_parent):
             self.HSI.on_draw()
             self.VSI.on_draw()
             #self.SpeedTape.draw_border()
-            self.darken() #Used to change brightness of gauge
+            self.darken(self.brightness.value) #Used to change brightness of gauge
             self.draw_border()
             self.end_gauge()
             
