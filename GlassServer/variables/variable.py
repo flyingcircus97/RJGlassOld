@@ -329,7 +329,7 @@ class variable_c(object):
                         w = False
                     else:
                         w = True
-                    out_list.append([w, hex(i.addr), i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
+                    out_list.append([w, hex(i.addr).upper()[2:], i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
                 #print "***I", i
         if len(out_list) > 0:
                 out_list.insert(0,[name])
