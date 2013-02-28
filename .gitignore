@@ -7,3 +7,4 @@ GlassServer/default.idx
 *.zip
 *.komodoproject
 *.log
+*.pyo
