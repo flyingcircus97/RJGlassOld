@@ -1,39 +1,75 @@
 <variables>
   <var>
 	<addr>1120</addr>
-	<name>DH_BUG</name>
+	<name>DH_BUG_CPT</name>
 	<type>int</type>
 	<unit>feet</unit>
 	<initial>200</initial>
 	<format>d</format>
-	<desc>Decision Height Value</desc>
+	<desc>Decision Height Value CPT</desc>
 </var>
   <var>
 	<addr>1121</addr>
-	<name>DH_ACTIVE</name>
+	<name>DH_ACTIVE_CPT</name>
 	<type>int</type>
 	<unit>onoff</unit>
 	<format>d</format>
 	<initial>1</initial>
-	<desc>Decision Height Active/Visible</desc>
+	<desc>Decision Height Active/Visible CPT</desc>
+</var>
+  <var>
+    <addr>1122</addr>
+    <name>DH_BUG_FO</name>
+    <type>int</type>
+    <unit>feet</unit>
+    <initial>200</initial>
+    <format>d</format>
+    <desc>Decision Height Value FO</desc>
+</var>
+  <var>
+    <addr>1123</addr>
+    <name>DH_ACTIVE_FO</name>
+    <type>int</type>
+    <unit>onoff</unit>
+    <format>d</format>
+    <initial>1</initial>
+    <desc>Decision Height Active/Visible FO</desc>
 </var>
 <var>
 	<addr>1128</addr>
-	<name>MDA_BUG</name>
+	<name>MDA_BUG_CPT</name>
 	<type>int</type>
 	<unit>feet</unit>
 	<format>d</format>
 	<initial>200</initial>
-	<desc>Min Decision Altitude Value</desc>
+	<desc>Min Decision Altitude Value CPT</desc>
 </var>
   <var>
 	<addr>1129</addr>
-	<name>MDA_ACTIVE</name>
+	<name>MDA_ACTIVE_CPT</name>
 	<type>int</type>
 	<unit>onoff</unit>
 	<format>d</format>
 	<initial>1</initial>
-	<desc>Min Decision Altitude Active/Visible</desc>
+	<desc>Min Decision Altitude Active/Visible CPT</desc>
+</var>
+<var>
+    <addr>112A</addr>
+    <name>MDA_BUG_FO</name>
+    <type>int</type>
+    <unit>feet</unit>
+    <format>d</format>
+    <initial>200</initial>
+    <desc>Min Decision Altitude Value FO</desc>
+</var>
+  <var>
+    <addr>112B</addr>
+    <name>MDA_ACTIVE_FO</name>
+    <type>int</type>
+    <unit>onoff</unit>
+    <format>d</format>
+    <initial>1</initial>
+    <desc>Min Decision Altitude Active/Visible FO</desc>
 </var>
 
 </variables>

@@ -74,10 +74,15 @@
 01105,V2_VISIBLE,i,V2 Visible,onoff
 01106,VT,i,VT Value,knots
 01107,VT_VISIBLE,i,VT Visible,onoff
-01108,VSPD_SELECTED,i,VSpeed Selected 0=V1 1=VR 2=V2 3=VT,value
-01120,DH_BUG,i,Decision Height Value,feet
-01121,DH_ACTIVE,i,Decision Height Active/Visible,onoff
-01128,MDA_BUG,i,Min Decision Altitude Value,feet
-01129,MDA_ACTIVE,i,Min Decision Altitude Active/Visible,onoff
+01108,VSPD_SELECTED_CPT,i,Captain VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT,value
+01109,VSPD_SELECTED_FO,i,First Officer VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT,value
+01120,DH_BUG_CPT,i,Decision Height Value CPT,feet
+01121,DH_ACTIVE_CPT,i,Decision Height Active/Visible CPT,onoff
+01122,DH_BUG_FO,i,Decision Height Value FO,feet
+01123,DH_ACTIVE_FO,i,Decision Height Active/Visible FO,onoff
+01128,MDA_BUG_CPT,i,Min Decision Altitude Value CPT,feet
+01129,MDA_ACTIVE_CPT,i,Min Decision Altitude Active/Visible CPT,onoff
+0112A,MDA_BUG_FO,i,Min Decision Altitude Value FO,feet
+0112B,MDA_ACTIVE_FO,i,Min Decision Altitude Active/Visible FO,onoff
 0F000,INT_A,i,Development Integer Variable A,unkown
 0F001,INT_B,i,Development Integer Variable B,unkown

@@ -103,8 +103,12 @@ class gauge_c(gauge_parent):
         self.V2_visible = variable.variables.load(0x1105)
         self.VT = variable.variables.load(0x1106)
         self.VT_visible = variable.variables.load(0x1107)
-        self.VSpeed_Selected = variable.variables.load(0x1108)
-        
+        #Cpt / FO Specific
+        if self.parent.side == 'CPT':
+            self.VSpeed_Selected = variable.variables.load(0x1108)
+        else: #parent.side =='FO'
+            self.VSpeed_Selected = variable.variables.load(0x1109)            
+            
         self.Vinput = 0 #Vspeed that is selected. (0-4) 0=V1 1=VR 2=V2 3=VT
         self.a = 0.0
         # Init Vspeeds  
@@ -288,8 +292,9 @@ class gauge_c(gauge_parent):
             
     def Vspeed_selected(self, loc):
         
-        common.color.set(common.color.cyan)
-        self.Vspeed_l[self.VSpeed_Selected.value].draw_selected(loc)
+        if self.VSpeed_Selected.value >0: #If 0 don't draw Vspeed window
+            common.color.set(common.color.cyan)
+            self.Vspeed_l[self.VSpeed_Selected.value-1].draw_selected(loc) #Subtract one to account for zero (No Vspeed selected)
                     
     def tick_marks(self, x=0, y=0):
 

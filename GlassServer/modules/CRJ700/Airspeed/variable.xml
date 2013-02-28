@@ -71,14 +71,23 @@
 	<initial>1</initial>
 	<desc>VT Visible</desc>
 </var>
-  <var>
+<var>
 	<addr>1108</addr>
-	<name>VSPD_SELECTED</name>
+	<name>VSPD_SELECTED_CPT</name>
 	<type>int</type>
 	<unit>value</unit>
 	<format>d</format>
 	<initial>0</initial>
-	<desc>VSpeed Selected 0=V1 1=VR 2=V2 3=VT</desc>
+	<desc>Captain VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT</desc>
+</var>
+<var>
+    <addr>1109</addr>
+    <name>VSPD_SELECTED_FO</name>
+    <type>int</type>
+    <unit>value</unit>
+    <format>d</format>
+    <initial>0</initial>
+    <desc>First Officer VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT</desc>
 </var>
 
 </variables>

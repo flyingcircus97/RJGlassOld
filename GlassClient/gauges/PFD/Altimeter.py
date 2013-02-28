@@ -68,9 +68,13 @@ class gauge_c(gauge_parent):
         self.alt_setting = variable.variables.load(0x113,'4F')
         self.OnGround = variable.variables.load(0x127)
         self.alt_bug_var = variable.variables.load(0x150)
-        self.DH = MDADH_c(0x1120,0x1121)
-        self.MDA = MDADH_c(0x1128,0x1129)
-        
+         #Cpt / FO Specific
+        if self.parent.side == 'CPT':
+            self.DH = MDADH_c(0x1120,0x1121)
+            self.MDA = MDADH_c(0x1128,0x1129)
+        else: #parent.side =='FO'
+            self.DH = MDADH_c(0x1122,0x1123)
+            self.MDA = MDADH_c(0x112A,0x112B)
         self.count = 0
         self.dt = 0.0
     
