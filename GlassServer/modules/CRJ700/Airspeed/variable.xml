@@ -89,5 +89,14 @@
     <initial>0</initial>
     <desc>First Officer VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT</desc>
 </var>
+<var>
+    <addr>1110</addr>
+    <name>MAX_CUE</name>
+    <type>int</type>
+    <unit>knots</unit>
+    <format>d</format>
+    <initial>500</initial>
+    <desc>Speed of Upper Barber Pole</desc>
+</var>
 
 </variables>

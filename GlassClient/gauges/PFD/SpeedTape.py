@@ -103,6 +103,7 @@ class gauge_c(gauge_parent):
         self.V2_visible = variable.variables.load(0x1105)
         self.VT = variable.variables.load(0x1106)
         self.VT_visible = variable.variables.load(0x1107)
+        self.MaxCue = variable.variables.load(0x1110)
         #Cpt / FO Specific
         if self.parent.side == 'CPT':
             self.VSpeed_Selected = variable.variables.load(0x1108)
@@ -415,7 +416,7 @@ class gauge_c(gauge_parent):
         y = self.calc_show(120, False)
         #barberpole(y,-1)  ##Disable Lower Barber Pole for now.
         #Barber Pole Upper
-        y = self.calc_show(220, False)
+        y = self.calc_show(self.MaxCue.value, False)
         barberpole(y,1)
         
     def airspeed_mach_text(self, value, x=0, y=0): # Text on top

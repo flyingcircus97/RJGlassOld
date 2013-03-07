@@ -11,6 +11,7 @@ import setup.altitude as altitude
 import setup.position as position
 import setup.heading as heading
 import setup.autopilot as autopilot
+import setup.fltcontrol as fltcontrol
 
 def setup(s, variables):
     
@@ -42,6 +43,8 @@ def setup(s, variables):
         heading.setup(add_var)
         #Autopilot
         autopilot.setup(add_var)
+        #Flight Controls
+        fltcontrol.setup(add_var)
 
 
 def setup_events(sevent, variables):        

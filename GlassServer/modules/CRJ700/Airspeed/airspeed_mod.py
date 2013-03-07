@@ -26,49 +26,53 @@
 
 import time
 import variables.valid_check as valid_check
-
-
+import config
 
 class airspeed_c(object):
-	
-		
-	def __init__(self,variable):
-				
-		pass
+    
+        
+    def __init__(self,variable):
+                
+        self.flap_speed = config.general.config['VSpeeds']['flap_speed']
+        self.max_speed = variable.byName('MAX_CUE')
+        self.flap_pos = variable.byName('FLAP_HANDLE')
+        
+    def test(self):
+        pass
+        
+    def comp(self):
+        #Computations per frame
+        try:
+            self.max_speed.data.value = int(self.flap_speed[self.flap_pos.getvalue()])
+        except:
+            pass
 
-	def test(self):
-		pass
-		
-	def comp(self):
-		#Computations per frame
-		pass
 
-
-	
+    
 class data(object):
 
-	
-	def __init__(self, variable):
-		
-		self.variable = variable
-				
-		self.airspeed = airspeed_c(variable)
-			
-			
-	def comp(self):
-		#Client is true, if RJGlass is in client or test mode.
-		#global_time = globaltime.value
-		#Computer delta_t = Time between last comp and this one
-					
-		self.airspeed.comp()
-		
-			
-	def comp_second(self):
-		
-		pass
-	
-			
-	def test(self):
+    
+    def __init__(self, variable):
+        
+        self.variable = variable
+                
+        self.airspeed = airspeed_c(variable)
+            
+            
+    def comp(self):
+        #Client is true, if RJGlass is in client or test mode.
+        #global_time = globaltime.value
+        #Computer delta_t = Time between last comp and this one
+                    
+        self.airspeed.comp()
+        
+            
+    def comp_second(self):
+        
+        print "SECOND"
+    
+            
+    def test(self):
 
-		pass
-		
+        pass
+        
