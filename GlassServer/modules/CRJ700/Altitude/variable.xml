@@ -71,5 +71,13 @@
     <initial>1</initial>
     <desc>Min Decision Altitude Active/Visible FO</desc>
 </var>
-
+<var>
+    <addr>112C</addr>
+    <name>ALT_SETTING_CPT</name>
+    <type>float</type>
+    <unit>inchHG</unit>
+    <format>f</format>
+    <initial>29.92</initial>
+    <desc>Altimeter Setting Captain</desc>
+</var>
 </variables>

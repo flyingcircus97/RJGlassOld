@@ -34,18 +34,36 @@ class airspeed_c(object):
     def __init__(self,variable):
                 
         self.flap_speed = config.general.config['VSpeeds']['flap_speed']
+        self.pusher_multi = config.general.config['Pusher']['flap_multi']
+        self.pusher_offset = config.general.config['Pusher']['flap_offset']
         self.max_speed = variable.byName('MAX_CUE')
+        self.min_speed = variable.byName('MIN_CUE')
         self.flap_pos = variable.byName('FLAP_HANDLE')
+        self.total_weight = variable.byName('TOTAL_WEIGHT')
+        self.on_ground = variable.byName('ON_GROUND')
+        self.min_cue_timer = 0.0
         
     def test(self):
         pass
         
-    def comp(self):
+    def comp(self,dt):
         #Computations per frame
-        try:
-            self.max_speed.data.value = int(self.flap_speed[self.flap_pos.getvalue()])
-        except:
-            pass
+        #try:
+        flap_pos = self.flap_pos.getvalue()
+        self.max_speed.data.value = int(self.flap_speed[flap_pos])
+        #Pusher speed is calculated by linear equation, using weight of plane and flap configuration ONLY
+        if self.on_ground.data.value:
+            self.min_cue_timer = 0.0
+            self.min_speed.data.value = 0 #Disable since on ground
+        else: #In Air
+            self.min_cue_timer += dt
+            if self.min_cue_timer >= 3.0:
+                pusher_speed = self.total_weight.data.value*float(self.pusher_multi[flap_pos])+float(self.pusher_offset[flap_pos])
+                self.min_speed.data.value = int(pusher_speed * 1.05)+1
+                self.min_cue_timer = 3.0 #So doesn't overflow
+            
+        #except:
+        #    pass
 
 
     
@@ -59,15 +77,15 @@ class data(object):
         self.airspeed = airspeed_c(variable)
             
             
-    def comp(self):
+    def comp(self,dt):
         #Client is true, if RJGlass is in client or test mode.
         #global_time = globaltime.value
         #Computer delta_t = Time between last comp and this one
                     
-        self.airspeed.comp()
+        self.airspeed.comp(dt)
         
             
-    def comp_second(self):
+    def comp_second(self,dt):
         
         print "SECOND"
     
