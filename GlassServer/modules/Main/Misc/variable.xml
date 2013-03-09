@@ -1,0 +1,11 @@
+<variables>
+<var>
+	<addr>0170</addr>
+	<name>TOTAL_WEIGHT</name>
+	<type>int</type>
+	<unit>Pounds</unit>
+	<format>d</format>
+	<desc>Total Weight of Aircraft</desc>
+</var>
+
+</variables>

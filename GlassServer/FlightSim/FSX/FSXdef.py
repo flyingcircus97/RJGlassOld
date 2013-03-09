@@ -12,6 +12,7 @@ import setup.position as position
 import setup.heading as heading
 import setup.autopilot as autopilot
 import setup.fltcontrol as fltcontrol
+import setup.misc as misc
 
 def setup(s, variables):
     
@@ -45,7 +46,8 @@ def setup(s, variables):
         autopilot.setup(add_var)
         #Flight Controls
         fltcontrol.setup(add_var)
-
+        #Misc
+        misc.setup(add_var)
 
 def setup_events(sevent, variables):        
     
