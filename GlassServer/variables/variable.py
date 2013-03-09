@@ -156,6 +156,17 @@ class variable_c(object):
                 r = var
         return r    
                 
+    def byAddr(self, addr):
+        '''
+        Returns variable object by name. (Should be unique so only one is returned.)
+        Returns None if not found.
+        '''
+        r = None
+        if addr in self.dict:
+            r = self.dict[addr]
+        
+        return r
+                
                     
     def exists(self, addr):
         #Will check if addr exists.

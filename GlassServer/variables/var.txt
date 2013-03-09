@@ -2,6 +2,7 @@
 0101,TAS,f,Indicated AirSpeed,Knots
 0102,GS,f,Ground Speed,Knots
 0103,MACH,f,Indicated Mach,None
+0104,STALL_WARNING,i,Stall Warning Indication,TrueFalse
 0110,IND_ALT,i,Indicated Altitude,Feet
 0111,PRESSURE_ALT,i,Pressure Altitude,Feet
 0112,RADAR_ALT,i,Radar Altitude (Altitude Above Ground),Feet
@@ -22,6 +23,7 @@
 0133,TURN_CORD,i,Turn Coordinator Position,pos
 0150,ALT_BUG,i,AP Altitude Bug,Feet
 0151,HDG_BUG,i,AP Heading Bug,Degrees
+0170,TOTAL_WEIGHT,i,Total Weight of Aircraft,Pounds
 0300,FLAP_HANDLE,i,Flap Handle Index,number
 0400,COM1_ACTIVE,f,Com Radio 1 Active Freq,MHZ
 0401,COM1_STANDBY,f,Com Radio 1 Standby Freq,MHZ
@@ -78,6 +80,7 @@
 01108,VSPD_SELECTED_CPT,i,Captain VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT,value
 01109,VSPD_SELECTED_FO,i,First Officer VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT,value
 01110,MAX_CUE,i,Speed of Upper Barber Pole,knots
+01111,MIN_CUE,i,Speed of Lower Barber Pole,knots
 01120,DH_BUG_CPT,i,Decision Height Value CPT,feet
 01121,DH_ACTIVE_CPT,i,Decision Height Active/Visible CPT,onoff
 01122,DH_BUG_FO,i,Decision Height Value FO,feet
