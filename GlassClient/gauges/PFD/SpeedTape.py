@@ -24,6 +24,9 @@ class Vspeed_c(object):
             self.y_pos = y_pos
             self.value = value
             self.visible = visible
+            self.disp = name[1]
+            if self.disp in ['1','2']:
+                self.disp = ' ' + self.disp
         
         def draw_indicator(self, loc):
             if self.y_pos + loc > -165:    
@@ -62,7 +65,7 @@ class Vspeed_c(object):
                     #Draw Text next to line 1,2,R,T
                     
                     glScalef(0.12,0.12,1.0)
-                    text.write(self.name[1]) #Only do 2nd character
+                    text.write(self.disp) #Only do 2nd character
                     glPopMatrix()
         
         def draw(self,loc, airspeed, knot_unit):
@@ -104,6 +107,7 @@ class gauge_c(gauge_parent):
         self.VT = variable.variables.load(0x1106)
         self.VT_visible = variable.variables.load(0x1107)
         self.MaxCue = variable.variables.load(0x1110)
+        self.MinCue = variable.variables.load(0x1111)
         #Cpt / FO Specific
         if self.parent.side == 'CPT':
             self.VSpeed_Selected = variable.variables.load(0x1108)
@@ -372,8 +376,8 @@ class gauge_c(gauge_parent):
     def speed_cues(self):
         
         def lowspeedcue(y):
-            x1 = -17.5
-            x2 = 22.5
+            x1 = -38.5
+            x2 = 10.5
             common.color.set(common.color.green)
             glLineWidth(2.0)
             glBegin(GL_LINES)
@@ -409,12 +413,14 @@ class gauge_c(gauge_parent):
                     glTranslatef(0,-24,0)
             glPopMatrix()
         
-        #Lowspeed cue
-        y = self.calc_show(60)
-        if y: lowspeedcue(y)
-        #Barber Pole Lower
-        y = self.calc_show(120, False)
-        #barberpole(y,-1)  ##Disable Lower Barber Pole for now.
+        
+            #Barber Pole Lower (If Min Cue set to 0, don't draw
+        if self.MinCue.value:
+            y = self.calc_show(self.MinCue.value, False)
+            barberpole(y,-1) 
+            #Lowspeed cue (Green line)
+            y = self.calc_show(int(self.MinCue.value * 1.2)+1)
+            if y: lowspeedcue(y)
         #Barber Pole Upper
         y = self.calc_show(self.MaxCue.value, False)
         barberpole(y,1)
@@ -457,14 +463,16 @@ class gauge_c(gauge_parent):
         
         start_loc, start_tick_ten = self.tick_marks()
         self.tick_numbers(start_loc, start_tick_ten)    
-        self.speedbug_draw()
-        self.Vspeeds(start_loc, start_tick_ten)
         self.speed_cues()
         #Airspeed pink trending line, only draw if inflight.
         if not self.OnGround.value: self.airspeed_diff(self.IAS_trend)
         self.arrow_shape.draw()
+        self.speedbug_draw()
+        self.Vspeeds(start_loc, start_tick_ten)
+        #Top and Bottom black boxes for scissoring
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
+        #Bottom Displays
         self.speedbugind_draw(-40,-170)
         self.Vspeed_selected(-200)
         if self.Mach_visible: self.airspeed_mach_text(self.Mach.value, -38, 170)
