@@ -28,6 +28,24 @@ import time
 import variables.valid_check as valid_check
 import config
 
+class vspeed_delay(object):
+    
+    def __init__(self, variable, vspeed_var, visible_var):
+        self.vspeed = variable.byName(vspeed_var)
+        self.visible = variable.byName(visible_var)
+        self.IAS = variable.byName('IAS')
+        self.delay_time = 0.0
+        
+    def calc(self, dt):
+        if self.visible.data.value: #If visible
+            if self.IAS.data.value > self.vspeed.data.value:
+                self.delay_time += dt
+                if self.delay_time > 7.5:
+                    self.delay_time = 0.0
+                    self.visible.data.value = 0 #Make vspeed invisible.
+                    
+    
+
 class airspeed_c(object):
     
         
@@ -42,6 +60,12 @@ class airspeed_c(object):
         self.total_weight = variable.byName('TOTAL_WEIGHT')
         self.on_ground = variable.byName('ON_GROUND')
         self.min_cue_timer = 0.0
+        #Vspeed calcs (Will disapear after 7.5 sec)
+        self.V1_delay = vspeed_delay(variable, 'V1', 'V1_VISIBLE')
+        self.V2_delay = vspeed_delay(variable, 'V2', 'V2_VISIBLE')
+        self.VR_delay = vspeed_delay(variable, 'VR', 'VR_VISIBLE')
+        
+        
         
     def test(self):
         pass
@@ -61,7 +85,12 @@ class airspeed_c(object):
                 pusher_speed = self.total_weight.data.value*float(self.pusher_multi[flap_pos])+float(self.pusher_offset[flap_pos])
                 self.min_speed.data.value = int(pusher_speed * 1.05)+1
                 self.min_cue_timer = 3.0 #So doesn't overflow
-            
+        
+        #Vspeed 7.5 sec delay
+        self.V1_delay.calc(dt)
+        self.V2_delay.calc(dt)
+        self.VR_delay.calc(dt)
+        
         #except:
         #    pass
 

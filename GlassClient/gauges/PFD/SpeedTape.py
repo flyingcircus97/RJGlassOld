@@ -68,8 +68,9 @@ class Vspeed_c(object):
                     text.write(self.disp) #Only do 2nd character
                     glPopMatrix()
         
-        def draw(self,loc, airspeed, knot_unit):
-            self.draw_indicator(loc)
+        def draw(self,loc, airspeed, knot_unit, onground):
+            
+            if onground: self.draw_indicator(loc)
             self.draw_bug(airspeed, knot_unit)
         
 class gauge_c(gauge_parent):
@@ -190,7 +191,8 @@ class gauge_c(gauge_parent):
     def speedbug_b(self):
         
         v1 = common.vertex.lines()
-        v1.add([0,0,10,8,10,15,0,15,0,-15,10,-15,10,-8,0,0])
+        h = 17
+        v1.add([0,0,10,8,10,h,0,h,0,-h,10,-h,10,-8,0,0])
         batch = pyglet.graphics.Batch()
         b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.purple*v1.num_points))
         
@@ -285,7 +287,7 @@ class gauge_c(gauge_parent):
             text.write("%3d" %(100))
             glPopMatrix()        
         
-    def Vspeeds(self, start_loc, start_tick_ten):
+    def Vspeeds(self, start_loc, start_tick_ten, onground):
         #Draw Vspeeds
         
                     
@@ -293,7 +295,7 @@ class gauge_c(gauge_parent):
         loc = start_loc - (start_tick_ten *10 * self.knot_unit)
         common.color.set(common.color.cyan)
         for speed in self.Vspeed_l:
-            speed.draw(loc, self.airspeed, self.knot_unit)
+            speed.draw(loc, self.airspeed, self.knot_unit, onground)
             
     def Vspeed_selected(self, loc):
         
@@ -468,7 +470,7 @@ class gauge_c(gauge_parent):
         if not self.OnGround.value: self.airspeed_diff(self.IAS_trend)
         self.arrow_shape.draw()
         self.speedbug_draw()
-        self.Vspeeds(start_loc, start_tick_ten)
+        self.Vspeeds(start_loc, start_tick_ten, self.OnGround.value)
         #Top and Bottom black boxes for scissoring
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
