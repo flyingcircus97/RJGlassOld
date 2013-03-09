@@ -55,7 +55,7 @@ class data(object):
 		self.dev = dev_c(variable)
 			
 			
-	def comp(self):
+	def comp(self,dt):
 		#Client is true, if RJGlass is in client or test mode.
 		#global_time = globaltime.value
 		#Computer delta_t = Time between last comp and this one
