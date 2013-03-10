@@ -73,11 +73,56 @@
 </var>
 <var>
     <addr>112C</addr>
-    <name>ALT_SETTING_CPT</name>
-    <type>float</type>
-    <unit>inchHG</unit>
-    <format>f</format>
-    <initial>29.92</initial>
-    <desc>Altimeter Setting Captain</desc>
+    <name>CPT_BARO</name>
+    <type>int</type>
+    <unit>inchHGorHPA</unit>
+    <format>d</format>
+    <initial>2992</initial>
+    <desc>Altimeter Setting Capt</desc>
+</var>
+<var>
+    <addr>112D</addr>
+    <name>CPT_BARO_UNIT</name>
+    <type>int</type>
+    <unit>bool</unit>
+    <format>d</format>
+    <initial>1</initial>
+    <desc>Altimeter Setting Unit Capt 0=hPA 1=inHG</desc>
+</var>
+<var>
+    <addr>112E</addr>
+    <name>FO_BARO</name>
+    <type>int</type>
+    <unit>inchHGorHPA</unit>
+    <format>d</format>
+    <initial>2992</initial>
+    <desc>Altimeter Setting FO</desc>
+</var>
+<var>
+    <addr>112F</addr>
+    <name>FO_BARO_UNIT</name>
+    <type>int</type>
+    <unit>bool</unit>
+    <format>d</format>
+    <initial>1</initial>
+    <desc>Altimeter Setting Unit FO 0=hPA 1=inHG</desc>
+</var>
+<var>
+    <addr>1130</addr>
+    <name>CPT_IND_ALT</name>
+    <type>int</type>
+    <unit>feet</unit>
+    <format>d</format>
+    <initial>0</initial>
+    <desc>Indicated Altiude Captain</desc>
+</var>
+<var>
+    <addr>1131</addr>
+    <name>FO_IND_ALT</name>
+    <type>int</type>
+    <unit>feet</unit>
+    <format>d</format>
+    <initial>0</initial>
+    <desc>Indicated Altiude FO</desc>
 </var>
 </variables>

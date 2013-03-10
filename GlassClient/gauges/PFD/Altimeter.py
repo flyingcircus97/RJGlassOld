@@ -63,16 +63,18 @@ class gauge_c(gauge_parent):
         self.pixel_per_foot = 13.0/20.0
         self.thoupixel_per_foot = 13.0/100.0
         #Init Variables
-        self.ind_alt = variable.variables.load(0x110)
         self.rad_alt = variable.variables.load(0x112)
-        self.alt_setting = variable.variables.load(0x113,'4F')
         self.OnGround = variable.variables.load(0x127)
         self.alt_bug_var = variable.variables.load(0x150)
          #Cpt / FO Specific
         if self.parent.side == 'CPT':
+            self.ind_alt = variable.variables.load(0x1130)
+            self.alt_setting = variable.variables.load(0x112C)
             self.DH = MDADH_c(0x1120,0x1121)
             self.MDA = MDADH_c(0x1128,0x1129)
         else: #parent.side =='FO'
+            self.ind_alt = variable.variables.load(0x1131)
+            self.alt_setting = variable.variables.load(0x112E)
             self.DH = MDADH_c(0x1122,0x1123)
             self.MDA = MDADH_c(0x112A,0x112B)
         self.count = 0
@@ -652,15 +654,14 @@ class gauge_c(gauge_parent):
             #Text out setting
             glPushMatrix()
             glScalef(0.14,0.15,0)
-            #value = round(setting,2) 
-            #value += 0.01
-            if setting <35: #Must be inches of HG if under 35
-                text.write("%5.2f" %setting, 90) #Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
+            
+            if setting >2000: #Must be inches of HG if under 35
+                text.write("%5.2f" %(setting/100.0), 90) #Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
             else:
                 text.write("%4d" %setting, 90)
             glPopMatrix() #Text 29.92
             #Display IN
-            if setting <35: #Must by HG if under 35 HPA if not.
+            if setting>2000: #Must by HG if under 35 HPA if not.
                 glTranslatef(58,-1,0) #move for In display
                 glScalef(0.12,0.12,0)
                 text.write("I N",40)
