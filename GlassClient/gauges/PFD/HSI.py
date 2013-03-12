@@ -35,6 +35,7 @@ class gauge_c(gauge_parent):
         self.dt_count = 0
         #Init Sim Variables
         self.hdgmag = variable.variables.load(0x130,'4F')
+        self.hdgbug = variable.variables.load(0x151)
         
       
         
@@ -279,7 +280,7 @@ class gauge_c(gauge_parent):
         self.plane_shape.draw()
         self.heading_ticks(145,self.hdgmag.value)
         self.triangle_marks.draw()
-        self.heading_bug(self.hdgmag.value,100)
+        self.heading_bug(self.hdgmag.value,self.hdgbug.value)
         
         glPopMatrix()
         self.bottom_polygon.draw() #Used to cut off bottom of HSI

@@ -15,5 +15,21 @@
 	<unit>Degrees</unit>
 	<desc>AP Heading Bug</desc>
 </var>
+<var>
+	<addr>0152</addr>
+	<name>IAS_BUG</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>Knots</unit>
+	<desc>AP IAS Bug</desc>
+</var>
+<var>
+	<addr>0153</addr>
+	<name>MACH_BUG</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>Mach Num *1000</unit>
+	<desc>AP Mach Bug</desc>
+</var>
 
 </variables>

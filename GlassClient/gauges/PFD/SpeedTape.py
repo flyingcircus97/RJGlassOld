@@ -109,6 +109,7 @@ class gauge_c(gauge_parent):
         self.VT_visible = variable.variables.load(0x1107)
         self.MaxCue = variable.variables.load(0x1110)
         self.MinCue = variable.variables.load(0x1111)
+        self.IASBug = variable.variables.load(0x0152)
         #Cpt / FO Specific
         if self.parent.side == 'CPT':
             self.VSpeed_Selected = variable.variables.load(0x1108)
@@ -276,7 +277,7 @@ class gauge_c(gauge_parent):
             self.speedbug_shape.draw()
             glPopMatrix()
             
-    def speedbugind_draw(self, x=0,y=0):
+    def speedbugind_draw(self, value, x=0,y=0):
         
             common.color.set(common.color.purple)
             glPushMatrix()
@@ -284,8 +285,8 @@ class gauge_c(gauge_parent):
             self.speedbug_shape.draw()
             glTranslatef(30,0,0)
             glScalef(0.15,0.15,1.0)
-            text.write("%3d" %(100))
-            glPopMatrix()        
+            text.write("%3d" %(value))
+            glPopMatrix()    
         
     def Vspeeds(self, start_loc, start_tick_ten, onground):
         #Draw Vspeeds
@@ -475,6 +476,6 @@ class gauge_c(gauge_parent):
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
         #Bottom Displays
-        self.speedbugind_draw(-40,-170)
+        self.speedbugind_draw(self.IASBug.value,-40,-170)
         self.Vspeed_selected(-200)
         if self.Mach_visible: self.airspeed_mach_text(self.Mach.value, -38, 170)
