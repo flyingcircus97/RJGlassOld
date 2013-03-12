@@ -23,6 +23,8 @@
 0133,TURN_CORD,i,Turn Coordinator Position,pos
 0150,ALT_BUG,i,AP Altitude Bug,Feet
 0151,HDG_BUG,i,AP Heading Bug,Degrees
+0152,IAS_BUG,i,AP IAS Bug,Knots
+0153,MACH_BUG,i,AP Mach Bug,Mach Num *1000
 0170,TOTAL_WEIGHT,i,Total Weight of Aircraft,Pounds
 0300,FLAP_HANDLE,i,Flap Handle Index,number
 0400,COM1_ACTIVE,f,Com Radio 1 Active Freq,MHZ
