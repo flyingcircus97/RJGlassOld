@@ -59,6 +59,7 @@ class airspeed_c(object):
         self.flap_pos = variable.byName('FLAP_HANDLE')
         self.total_weight = variable.byName('TOTAL_WEIGHT')
         self.on_ground = variable.byName('ON_GROUND')
+        self.pres_alt = variable.byName('PRESSURE_ALT')
         self.min_cue_timer = 0.0
         #Vspeed calcs (Will disapear after 7.5 sec)
         self.V1_delay = vspeed_delay(variable, 'V1', 'V1_VISIBLE')
@@ -69,12 +70,32 @@ class airspeed_c(object):
         
     def test(self):
         pass
+    
+    def calcVmo(self):
+        #Calculate Vmo from Chart 
+        p_alt = self.pres_alt.data.value
+        if p_alt >31500:
+            r = int(518.82 - 0.00647*p_alt)
+        elif p_alt > 28400:
+            r = 315
+        elif p_alt > 25400:
+            r = int(504.33 - 0.00666*p_alt)
+        elif p_alt > 8000:
+            r = 335
+        else:
+            r = 330
+            
+        return r
+            
         
     def comp(self,dt):
         #Computations per frame
         #try:
         flap_pos = self.flap_pos.getvalue()
-        self.max_speed.data.value = int(self.flap_speed[flap_pos])
+        if flap_pos == 0: #Flaps up calc Vmo
+            self.max_speed.data.value = self.calcVmo()
+        else:
+            self.max_speed.data.value = int(self.flap_speed[flap_pos])
         #Pusher speed is calculated by linear equation, using weight of plane and flap configuration ONLY
         if self.on_ground.data.value:
             self.min_cue_timer = 0.0

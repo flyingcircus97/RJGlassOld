@@ -96,6 +96,7 @@
     <unit>knots</unit>
     <format>d</format>
     <initial>500</initial>
+	<writeable>N</writeable>
     <desc>Speed of Upper Barber Pole</desc>
 </var>
 <var>
@@ -105,6 +106,7 @@
     <unit>knots</unit>
     <format>d</format>
     <initial>500</initial>
+	<writeable>N</writeable>
     <desc>Speed of Lower Barber Pole</desc>
 </var>
 
