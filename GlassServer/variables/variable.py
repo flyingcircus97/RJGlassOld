@@ -253,6 +253,7 @@ class variable_c(object):
             format = '5.2f'
             desc = None
             initial = None
+            writeable = None
             #Go through each child.
             for c in children:
                 tag = c.tag
@@ -272,11 +273,15 @@ class variable_c(object):
                     format = value
                 elif tag == 'initial':
                     initial = value
+                elif tag == 'writeable':
+                    writeable = value
                 #addr = int('0x'+data[0],16)
             #Add Variable to list
             new_var = self.add_var(addr, name, type, desc, unit, format)
             if initial != None:
                 new_var.setvalue_string(initial)
+            if writeable == 'N':
+                new_var.writeable = False
             ret_list.append(new_var)
             
                 

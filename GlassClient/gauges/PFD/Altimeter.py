@@ -26,10 +26,10 @@ class MDADH_c(object):
         if ((self.active.value) and (alt <= self.bug.value) and (not OnGround)):
             self.notify = True
             self.flash_time += dt
-            if self.flash_time >= 0.5:
+            if self.flash_time >= 0.4:
                 self.flash +=1
-                self.flash_time -=0.5
-                if self.flash>20: self.flash = 20 #Causes to only flash for 10 seconds
+                self.flash_time -=0.4
+                if self.flash>28: self.flash = 28 #Causes to only flash for 14 times for 11 seconds per Jeff
                 if self.flash%2==0: #Visible used only for MDA with flashing
                     self.visible = True
                 else:
@@ -626,7 +626,8 @@ class gauge_c(gauge_parent):
             #Draw DH if active and within 250 ft of RA
             if self.DH.active.value:
                 diff = self.rad_alt.value-self.DH.bug.value
-                if abs(diff)<250: DH_bug_draw(diff)
+                if (self.DH.flash %2==0):
+                    if abs(diff)<250: DH_bug_draw(diff)
             #Flash MDA if 
             if self.MDA.active.value:
                 diff = self.ind_alt.value -self.MDA.bug.value
@@ -673,7 +674,7 @@ class gauge_c(gauge_parent):
             glPopMatrix()
             
     def comp(self):
-        self.DH.comp(self.rad_alt.value, self.OnGround.value)
+        self.DH.comp(self.rad_alt.value, self.OnGround.value, self.dt)
         self.MDA.comp(self.alt, self.OnGround.value, self.dt)
         self.parent.DH_notify = self.DH.notify
         

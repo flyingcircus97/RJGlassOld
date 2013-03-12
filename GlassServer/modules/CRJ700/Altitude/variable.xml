@@ -115,6 +115,7 @@
     <format>d</format>
     <initial>0</initial>
     <desc>Indicated Altiude Captain</desc>
+	<writeable>N</writeable>
 </var>
 <var>
     <addr>1131</addr>
@@ -124,5 +125,6 @@
     <format>d</format>
     <initial>0</initial>
     <desc>Indicated Altiude FO</desc>
+	<writeable>N</writeable>
 </var>
 </variables>

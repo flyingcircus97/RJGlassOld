@@ -565,7 +565,7 @@ class gauge_c(gauge_parent):
                 common.color.set(common.color.yellow)
                 glScalef(0.2,0.2, 1.0)
                 #glLineWidth(2.0)
-                text.write(text_s, 100)
+                text.write(text_s, 90)
                 glPopMatrix()
                 
     
@@ -592,6 +592,6 @@ class gauge_c(gauge_parent):
         common.color.set(common.color.cyan)
         self.mda_text(MDA, 35,185)
         self.dh_text(DH, 35,205)
-        self.MDADH_Notifier(DH.notify, 'DH' , 84,48)
+        self.MDADH_Notifier(DH.visible, 'DH' , 84,48)
         self.MDADH_Notifier(MDA.visible, 'MDA', 84,22)
         
