@@ -36,6 +36,7 @@ class gauge_c(gauge_parent):
         #Init Sim Variables
         self.hdgmag = variable.variables.load(0x130,'4F')
         self.hdgbug = variable.variables.load(0x151)
+        self.magtrack = variable.variables.load(0x132,'4F')
         
       
         
@@ -55,6 +56,7 @@ class gauge_c(gauge_parent):
         self.hdgbug_shape = self.hdgbug_b()
         self.hdgbugline_shape = [self.hdgbugline_b(6), self.hdgbugline_b(5)]
         self.bottom_polygon = self.bottom_b()
+        self.mag_track_shape = self.mag_track_b()
         
     def bottom_b(self):
         #Bottom black polygon for scissoring
@@ -130,6 +132,16 @@ class gauge_c(gauge_parent):
             b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.white*v1.num_points))
          
             return batch
+        
+    def mag_track_b(self):
+            v1 = common.vertex.lines()
+            v1.add(common.draw.List_Circle(6,10))
+            
+            batch = pyglet.graphics.Batch()
+            b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.green*v1.num_points))
+            
+            return batch
+        
         
     def hdgbug_b(self):
         
@@ -267,6 +279,14 @@ class gauge_c(gauge_parent):
                 if not (138< diff < 222): self.hdgbug_shape.draw()
                 glPopMatrix()
                 if draw_line: bug_text(-150,157,bug)
+                
+    def magnetic_track(self, hdgmag, magtrack):
+                diff = hdgmag - magtrack
+                glPushMatrix()
+                glRotatef(diff,0,0,1.0)
+                glTranslatef(0,138,0)
+                self.mag_track_shape.draw()
+                glPopMatrix()
         
         
       
@@ -281,7 +301,7 @@ class gauge_c(gauge_parent):
         self.heading_ticks(145,self.hdgmag.value)
         self.triangle_marks.draw()
         self.heading_bug(self.hdgmag.value,self.hdgbug.value)
-        
+        self.magnetic_track(self.hdgmag.value, self.magtrack.value)
         glPopMatrix()
         self.bottom_polygon.draw() #Used to cut off bottom of HSI
         
