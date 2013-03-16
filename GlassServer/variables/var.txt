@@ -97,5 +97,6 @@
 0112F,FO_BARO_UNIT,i,Altimeter Setting Unit FO 0=hPA 1=inHG,bool
 01130,CPT_IND_ALT,i,Indicated Altiude Captain,feet
 01131,FO_IND_ALT,i,Indicated Altiude FO,feet
+0113F,METRIC_ALT_VISIBLE,i,Metric Altimeter Visible on PFD,onoff
 0F000,INT_A,i,Development Integer Variable A,unkown
 0F001,INT_B,i,Development Integer Variable B,unkown

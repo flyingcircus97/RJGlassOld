@@ -127,4 +127,13 @@
     <desc>Indicated Altiude FO</desc>
 	<writeable>N</writeable>
 </var>
+<var>
+    <addr>113F</addr>
+    <name>METRIC_ALT_VISIBLE</name>
+    <type>int</type>
+    <unit>onoff</unit>
+    <format>d</format>
+    <initial>0</initial>
+    <desc>Metric Altimeter Visible on PFD</desc>
+</var>
 </variables>
