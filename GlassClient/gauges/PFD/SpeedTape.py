@@ -267,9 +267,9 @@ class gauge_c(gauge_parent):
                 glVertex2f(x2, y1)
                 glEnd()
     
-    def speedbug_draw(self, x=0,y=0):
+    def speedbug_draw(self, value, x=0,y=0):
         
-        diff = 100 - self.indicated_IAS()
+        diff = value - self.indicated_IAS()
         diff = diff*self.knot_unit
         if abs(diff)<168:
             glPushMatrix()
@@ -470,7 +470,7 @@ class gauge_c(gauge_parent):
         #Airspeed pink trending line, only draw if inflight.
         if not self.OnGround.value: self.airspeed_diff(self.IAS_trend)
         self.arrow_shape.draw()
-        self.speedbug_draw()
+        self.speedbug_draw(self.IASBug.value)
         self.Vspeeds(start_loc, start_tick_ten, self.OnGround.value)
         #Top and Bottom black boxes for scissoring
         self.top_black_shape.draw()

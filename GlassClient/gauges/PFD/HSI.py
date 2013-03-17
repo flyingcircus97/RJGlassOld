@@ -33,18 +33,23 @@ class gauge_c(gauge_parent):
         #Init Variables
         self.a = 0
         self.dt_count = 0
+        self.prev_bug = 0
         #Init Sim Variables
         self.hdgmag = variable.variables.load(0x130,'4F')
         self.hdgbug = variable.variables.load(0x151)
         self.magtrack = variable.variables.load(0x132,'4F')
         
+        self.hdgbug_timer = 5 #5 second delay to show hdg bug value and dashed line
       
         
         
     def comp(self, dt):
             self.dt_count += dt
-            self.hdgbug_timer = 5 #5 second delay to show hdg bug value and dashed line
             
+            if self.prev_bug != self.hdgbug.value:
+                self.dt_count = 0
+                self.prev_bug = self.hdgbug.value
+                
             
             
             
@@ -266,8 +271,9 @@ class gauge_c(gauge_parent):
                 else:
                     draw_line=True
                 
+                draw_flag = (draw_line) or (120 < diff <240)
                 #Draw dotted line from center to heading bug
-                if (draw_line) or (120 < diff < 240): 
+                if draw_flag:
                     if (150 <diff < 210):
                         self.hdgbugline_shape[1].draw()
                     else:
@@ -278,7 +284,7 @@ class gauge_c(gauge_parent):
                 glTranslatef(radius, 0.0, 0.0)
                 if not (138< diff < 222): self.hdgbug_shape.draw()
                 glPopMatrix()
-                if draw_line: bug_text(-150,157,bug)
+                if draw_flag: bug_text(-150,157,bug)
                 
     def magnetic_track(self, hdgmag, magtrack):
                 diff = hdgmag - magtrack

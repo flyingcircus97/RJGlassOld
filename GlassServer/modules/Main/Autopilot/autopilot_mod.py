@@ -34,7 +34,7 @@ class autopilot_c(object):
         
     def __init__(self,variable):
 
-        pass
+        variable.add_test(valid_check.within(40,500), ['IAS_BUG'])
         
 
     def test(self):
