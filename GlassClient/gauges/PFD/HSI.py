@@ -62,13 +62,16 @@ class gauge_c(gauge_parent):
         self.hdgbugline_shape = [self.hdgbugline_b(6), self.hdgbugline_b(5)]
         self.bottom_polygon = self.bottom_b()
         self.mag_track_shape = self.mag_track_b()
+        self.obs_circle_shape = self.obs_circle_b()
+        self.nav_needle_shape = self.nav_needle_b()
         
     def bottom_b(self):
         #Bottom black polygon for scissoring
         w = 150
        
-        y2 = (self.y/-2)
-        y1 = y2 + 50
+        y2 = (self.y/-2) -10
+        
+        y1 = y2 + 60
         
         v1 = common.vertex.lines()
         v1.add([-w,y1,w,y1,w,y2,-w,y2,-w,y1])
@@ -79,7 +82,47 @@ class gauge_c(gauge_parent):
         return batch
             
         
+    def obs_circle_b(self):
+        
+        v1 = common.vertex.lines()
+        
+        #Draw 4 circles
+        x, r, seg = 33, 4, 9
+        for i in [-2*x,-x,x,2*x]:
+            v1.add(common.draw.List_Circle(r,seg,offset_x=i))
+            v1.reset()
+        #Done with 4 circles
+        batch = pyglet.graphics.Batch()
+        b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.white*v1.num_points))
+        
+        return batch
+        
+    def nav_needle_b(self):
+        #The top part with arrow, and bottom part. Line will be draw without batch.
+        v1 = common.vertex.lines()
+        
+        radius = 140
+        arrow_w = 10
+        h = 70
+        offset = 6
+        arrow_bot = radius - offset - h/2 - 5
+        #Draw Top arrow
+        v1.add([0,radius - offset,-arrow_w, arrow_bot, arrow_w, arrow_bot, 0,radius-offset])
+        v1.reset()
+        #Draw top line
+        v1.add([0,arrow_bot,0,radius-offset-h])
+        v1.reset()
+        #Draw bottom line
+        v1.add([0,-radius+offset, 0, -radius+offset+h])
+        
+        b_dic = {}
+        for c in [common.color.white, common.color.green, common.color.yellow, common.color.cyan]:
+            #Load needle for each color
+            batch = pyglet.graphics.Batch()
+            b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',c*v1.num_points))
+            b_dic[c] = batch
             
+        return b_dic
         
     def marks_b(self):
         
@@ -290,11 +333,48 @@ class gauge_c(gauge_parent):
                 diff = hdgmag - magtrack
                 glPushMatrix()
                 glRotatef(diff,0,0,1.0)
-                glTranslatef(0,138,0)
+                glTranslatef(0,135,0)
                 self.mag_track_shape.draw()
                 glPopMatrix()
-        
-        
+                
+    #NAV guage    
+    def nav(self, hdg):
+            #Draw OBS
+            diff = hdg - 0
+            if diff <0: diff+=360 #Make sure diff is between 0 and 360
+            glPushMatrix()
+            glRotatef(diff, 0,0, 1)
+            #Color
+            glLineWidth(2.0)
+            self.obs_circle_shape.draw()
+            #Draw Needle frame (Top and Bottom)
+            
+            c = common.color.white
+            self.nav_needle_shape[c].draw()
+
+         #   if NAV.hasNav.value:
+         #       #Draw CDI Line
+         #       cdi_x = NAV.CDI.value / 127.0 * (x* 2 + r) #x*2+r is max difflection = to outmost point of outer circle             
+         #       glBegin(GL_LINES)
+         #       glVertex2f(cdi_x, -h)
+         #       glVertex2f(cdi_x, h)
+         #       glEnd()
+         #       #Draw To/From Triangle
+         #       offset, w, h = 60, 7, 15
+         #       glBegin(GL_LINE_LOOP)
+         #       if NAV.ToFrom.value == NAV.ToFrom.TO:
+         #           #Draw To Arrow
+         #           glVertex2f(0, offset)
+         #           glVertex2f(-w, offset - h)
+         #           glVertex2f(w, offset -h)
+         #       elif NAV.ToFrom.value == NAV.ToFrom.FROM:
+         #           glVertex2f(0, offset - h)
+         #           glVertex2f(-w, offset )
+         #           glVertex2f(w,  offset)
+         #       glEnd()
+            
+            #---
+            glPopMatrix()
       
     def draw(self):
         
@@ -306,8 +386,9 @@ class gauge_c(gauge_parent):
         self.plane_shape.draw()
         self.heading_ticks(145,self.hdgmag.value)
         self.triangle_marks.draw()
-        self.heading_bug(self.hdgmag.value,self.hdgbug.value)
+        self.nav(self.hdgmag.value)
         self.magnetic_track(self.hdgmag.value, self.magtrack.value)
+        self.heading_bug(self.hdgmag.value,self.hdgbug.value)
         glPopMatrix()
         self.bottom_polygon.draw() #Used to cut off bottom of HSI
         
