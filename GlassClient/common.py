@@ -1,5 +1,6 @@
 #common.py
 # -- Common function used by all guages
+# Colors, Drawing func, 
 import math
 from pyglet.gl import glColor3f
 
