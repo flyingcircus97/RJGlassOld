@@ -115,15 +115,40 @@ class gauge_c(gauge_parent):
         #Draw bottom line
         v1.add([0,-radius+offset, 0, -radius+offset+h])
         
+        #Draw needle seprate batch so it can be moved.
+        gap = 3
+        v2 = common.vertex.lines()
+        v2.add([0,radius-offset-(h+gap),0,-radius+offset+(h+gap)])
+        
+        #To/From Indicator
+        v3 = common.vertex.lines() #top arrow
+        v4 = common.vertex.lines() #bottom arrow
+        
+        offset, w, h = 60, 7, 15
+        
+        #Draw To Arrow
+        v3.add([0,offset,-w,offset-h,w,offset-h,0,offset])
+        v4.add([0,offset-h, -w, offset,w,offset,0,offset-h])
+        
+                     
         b_dic = {}
+        
         for c in [common.color.white, common.color.green, common.color.yellow, common.color.cyan]:
             #Load needle for each color
             batch = pyglet.graphics.Batch()
             b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',c*v1.num_points))
-            b_dic[c] = batch
+            batch2 = pyglet.graphics.Batch()
+            b2 = batch2.add(v2.num_points, GL_LINES, None, ('v2f', v2.points),('c3f',c*v2.num_points))
+            to_batch = pyglet.graphics.Batch()
+            b1 = to_batch.add(v3.num_points, GL_LINES, None, ('v2f', v3.points),('c3f',c*v3.num_points))
+            from_batch = pyglet.graphics.Batch()
+            b2 = from_batch.add(v4.num_points, GL_LINES, None, ('v2f', v4.points),('c3f',c*v4.num_points))
+                        
+            b_dic[c] = {'arrow': batch, 'needle': batch2, 'to': to_batch, 'from':from_batch}
             
         return b_dic
-        
+    
+           
     def marks_b(self):
         
             def triangle_l(radius, w, h, angle):
@@ -340,40 +365,27 @@ class gauge_c(gauge_parent):
     #NAV guage    
     def nav(self, hdg):
             #Draw OBS
-            diff = hdg - 0
+            diff = hdg - 40
             if diff <0: diff+=360 #Make sure diff is between 0 and 360
             glPushMatrix()
             glRotatef(diff, 0,0, 1)
             #Color
             glLineWidth(2.0)
             self.obs_circle_shape.draw()
-            #Draw Needle frame (Top and Bottom)
+            #Draw Needle
+            c = common.color.green
+            #Top Arrow and Bottom line
+            self.nav_needle_shape[c]['arrow'].draw()
             
-            c = common.color.white
-            self.nav_needle_shape[c].draw()
-
-         #   if NAV.hasNav.value:
-         #       #Draw CDI Line
-         #       cdi_x = NAV.CDI.value / 127.0 * (x* 2 + r) #x*2+r is max difflection = to outmost point of outer circle             
-         #       glBegin(GL_LINES)
-         #       glVertex2f(cdi_x, -h)
-         #       glVertex2f(cdi_x, h)
-         #       glEnd()
-         #       #Draw To/From Triangle
-         #       offset, w, h = 60, 7, 15
-         #       glBegin(GL_LINE_LOOP)
-         #       if NAV.ToFrom.value == NAV.ToFrom.TO:
-         #           #Draw To Arrow
-         #           glVertex2f(0, offset)
-         #           glVertex2f(-w, offset - h)
-         #           glVertex2f(w, offset -h)
-         #       elif NAV.ToFrom.value == NAV.ToFrom.FROM:
-         #           glVertex2f(0, offset - h)
-         #           glVertex2f(-w, offset )
-         #           glVertex2f(w,  offset)
-         #       glEnd()
-            
-            #---
+         #   if NAV.hasNav.value:   
+            #To/From Indicator
+            self.nav_needle_shape[c]['from'].draw()
+            #Draw CDI Line
+            #cdi_x = NAV.CDI.value / 127.0 * (x* 2 + r) #x*2+r is max difflection = to outmost point of outer circle             
+            cdi_x = 10
+            glTranslatef(cdi_x,0,0)
+            self.nav_needle_shape[c]['needle'].draw()
+         
             glPopMatrix()
       
     def draw(self):
