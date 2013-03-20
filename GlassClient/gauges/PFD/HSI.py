@@ -64,6 +64,7 @@ class gauge_c(gauge_parent):
         self.mag_track_shape = self.mag_track_b()
         self.obs_circle_shape = self.obs_circle_b()
         self.nav_needle_shape = self.nav_needle_b()
+        self.bearing_shape = self.bearing_b()
         
     def bottom_b(self):
         #Bottom black polygon for scissoring
@@ -149,6 +150,62 @@ class gauge_c(gauge_parent):
         return b_dic
     
            
+    def bearing_b(self):
+        #ADF/NAV Bearing Needles 
+        
+        
+        def needle(num, color): 
+        
+            def double():
+                y3 = arrow_y-8
+                v1.add([w,y3,w,y2])
+                v1.reset()
+                v1.add([-w,y3,-w,y2])
+                v1.reset()
+                v1.add([0,arrow_y,0,y1])
+                v1.reset()
+            v1 = common.vertex.lines()
+            #Calculate batch for num of lines and color
+            radius = 145
+            w = 8
+            offset= 40 #Radius from center not to draw bearing line
+            arrow_point = 72 #Point at which to draw_arrow
+            arrow_w = 15
+            arrow_h = 15
+            
+            #Top Part
+            y1 = radius-10
+            y2 = offset
+            arrow_y = arrow_point+10
+            if num==1: #Single Line
+                v1.add([0,y1,0,y2])
+            else: #Double Line
+                double()
+            v1.reset()
+            v1.add([-15,arrow_y-15,0,arrow_y,15,arrow_y-15])
+            v1.reset()
+            #Bottom Part
+            y1 = -radius+10
+            y2 = -offset
+            arrow_y = -arrow_point
+            if num==1: #Single Line
+                v1.add([0,y1,0,y2])
+            else: #Double Line
+                double()
+            v1.reset()
+            v1.add([-15,arrow_y-15,0,arrow_y,15,arrow_y-15])
+                            
+            batch = pyglet.graphics.Batch()
+            b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',color*v1.num_points))
+            
+            return batch
+        
+        r_dict={}
+        r_dict[1]=needle(1,common.color.purple)
+        r_dict[2]=needle(1,common.color.cyan)
+            
+        return r_dict
+
     def marks_b(self):
         
             def triangle_l(radius, w, h, angle):
@@ -387,6 +444,18 @@ class gauge_c(gauge_parent):
             self.nav_needle_shape[c]['needle'].draw()
          
             glPopMatrix()
+            
+    def bearing(self, hdg):
+        diff = hdg-140
+        glPushMatrix()
+        glRotatef(diff, 0,0, 1)
+        #Color
+        glLineWidth(2.0)
+        
+        #Draw Needle
+        self.bearing_shape[1].draw()
+         
+        glPopMatrix()
       
     def draw(self):
         
@@ -399,8 +468,10 @@ class gauge_c(gauge_parent):
         self.heading_ticks(145,self.hdgmag.value)
         self.triangle_marks.draw()
         self.nav(self.hdgmag.value)
+        self.bearing(self.hdgmag.value)
         self.magnetic_track(self.hdgmag.value, self.magtrack.value)
         self.heading_bug(self.hdgmag.value,self.hdgbug.value)
+        
         glPopMatrix()
         self.bottom_polygon.draw() #Used to cut off bottom of HSI
         
