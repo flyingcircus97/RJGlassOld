@@ -1,0 +1,35 @@
+<variables>
+<var>
+	<addr>0150</addr>
+	<name>ALT_BUG</name>
+	<type>int</type>
+	<unit>Feet</unit>
+	<format>d</format>
+	<desc>AP Altitude Bug</desc>
+</var>
+<var>
+	<addr>0151</addr>
+	<name>HDG_BUG</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>Degrees</unit>
+	<desc>AP Heading Bug</desc>
+</var>
+<var>
+	<addr>0152</addr>
+	<name>IAS_BUG</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>Knots</unit>
+	<desc>AP IAS Bug</desc>
+</var>
+<var>
+	<addr>0153</addr>
+	<name>MACH_BUG</name>
+	<type>int</type>
+	<format>d</format>
+	<unit>Mach Num *1000</unit>
+	<desc>AP Mach Bug</desc>
+</var>
+
+</variables>

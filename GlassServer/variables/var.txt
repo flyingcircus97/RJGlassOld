@@ -2,6 +2,7 @@
 0101,TAS,f,Indicated AirSpeed,Knots
 0102,GS,f,Ground Speed,Knots
 0103,MACH,f,Indicated Mach,None
+0104,STALL_WARNING,i,Stall Warning Indication,TrueFalse
 0110,IND_ALT,i,Indicated Altitude,Feet
 0111,PRESSURE_ALT,i,Pressure Altitude,Feet
 0112,RADAR_ALT,i,Radar Altitude (Altitude Above Ground),Feet
@@ -20,6 +21,12 @@
 0131,MAG_VARIATION,f,Magnetic Varitation at Aircarft Location,deg
 0132,MAG_TRACK,f,Magnetic Track,deg
 0133,TURN_CORD,i,Turn Coordinator Position,pos
+0150,ALT_BUG,i,AP Altitude Bug,Feet
+0151,HDG_BUG,i,AP Heading Bug,Degrees
+0152,IAS_BUG,i,AP IAS Bug,Knots
+0153,MACH_BUG,i,AP Mach Bug,Mach Num *1000
+0170,TOTAL_WEIGHT,i,Total Weight of Aircraft,Pounds
+0300,FLAP_HANDLE,i,Flap Handle Index,number
 0400,COM1_ACTIVE,f,Com Radio 1 Active Freq,MHZ
 0401,COM1_STANDBY,f,Com Radio 1 Standby Freq,MHZ
 0410,COM2_ACTIVE,f,Com Radio 2 Active Freq,MHZ
@@ -60,6 +67,10 @@
 0470,MARKERS,i,Markers (1=IM,2=MM,3=OM),Enum
 01001,MSTRWARN_IND,i,Master Warning Indication,onoff
 01002,MSTRCAUT_IND,i,Master Caution Indication,onoff
+010A0,PFD_CPT_BRIGHTNESS,i,Brightness of Captains PFD,0-255
+010A1,PFD_CPT_MAX_BRIGHTNESS,i,Max Brightness of Captains PFD,0-255
+010A2,PFD_FO_BRIGHTNESS,i,Brightness of First Officers PFD,0-255
+010A3,PFD_FO_MAX_BRIGHTNESS,i,Max Brightness of First Officers PFD,0-255
 01100,V1,i,V1 Value,knots
 01101,V1_VISIBLE,i,V1 Visible,onoff
 01102,VR,i,VR Value,knots
@@ -68,10 +79,24 @@
 01105,V2_VISIBLE,i,V2 Visible,onoff
 01106,VT,i,VT Value,knots
 01107,VT_VISIBLE,i,VT Visible,onoff
-01108,VSPD_SELECTED,i,VSpeed Selected 0=V1 1=VR 2=V2 3=VT,value
-01120,DH_BUG,i,Decision Height Value,feet
-01121,DH_ACTIVE,i,Decision Height Active/Visible,onoff
-01128,MDA_BUG,i,Min Decision Altitude Value,feet
-01129,MDA_ACTIVE,i,Min Decision Altitude Active/Visible,onoff
+01108,VSPD_SELECTED_CPT,i,Captain VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT,value
+01109,VSPD_SELECTED_FO,i,First Officer VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT,value
+01110,MAX_CUE,i,Speed of Upper Barber Pole,knots
+01111,MIN_CUE,i,Speed of Lower Barber Pole,knots
+01120,DH_BUG_CPT,i,Decision Height Value CPT,feet
+01121,DH_ACTIVE_CPT,i,Decision Height Active/Visible CPT,onoff
+01122,DH_BUG_FO,i,Decision Height Value FO,feet
+01123,DH_ACTIVE_FO,i,Decision Height Active/Visible FO,onoff
+01128,MDA_BUG_CPT,i,Min Decision Altitude Value CPT,feet
+01129,MDA_ACTIVE_CPT,i,Min Decision Altitude Active/Visible CPT,onoff
+0112A,MDA_BUG_FO,i,Min Decision Altitude Value FO,feet
+0112B,MDA_ACTIVE_FO,i,Min Decision Altitude Active/Visible FO,onoff
+0112C,CPT_BARO,i,Altimeter Setting Capt,inchHGorHPA
+0112D,CPT_BARO_UNIT,i,Altimeter Setting Unit Capt 0=hPA 1=inHG,bool
+0112E,FO_BARO,i,Altimeter Setting FO,inchHGorHPA
+0112F,FO_BARO_UNIT,i,Altimeter Setting Unit FO 0=hPA 1=inHG,bool
+01130,CPT_IND_ALT,i,Indicated Altiude Captain,feet
+01131,FO_IND_ALT,i,Indicated Altiude FO,feet
+0113F,METRIC_ALT_VISIBLE,i,Metric Altimeter Visible on PFD,onoff
 0F000,INT_A,i,Development Integer Variable A,unkown
 0F001,INT_B,i,Development Integer Variable B,unkown

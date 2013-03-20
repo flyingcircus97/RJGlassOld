@@ -29,46 +29,45 @@ import variables.valid_check as valid_check
 
 
 
-class airspeed_c(object):
-    
-        
-    def __init__(self,variable):
-                
-        pass
-        
-    def test(self):
-        pass
-        
-    def comp(self):
-        #Computations per frame
-        pass
-        
+class brightness_c(object):
+	
+		
+	def __init__(self,variable):
+				
+		pass
 
-    
+	def test(self):
+		pass
+		
+	def comp(self):
+		#Computations per frame
+		pass
+
+	
 class data(object):
 
-    
-    def __init__(self, variable):
-        
-        self.variable = variable
-                
-        self.airspeed = airspeed_c(variable)
-            
-            
-    def comp(self, dt):
-        #Client is true, if RJGlass is in client or test mode.
-        #global_time = globaltime.value
-        #Computer delta_t = Time between last comp and this one
-                    
-        self.airspeed.comp()
-        
-            
-    def comp_second(self,dt):
-        
-        pass
-    
-            
-    def test(self):
+	
+	def __init__(self, variable):
+		
+		self.variable = variable
+				
+		self.brightness = brightness_c(variable)
+			
+			
+	def comp(self,dt):
+		#Client is true, if RJGlass is in client or test mode.
+		#global_time = globaltime.value
+		#Computer delta_t = Time between last comp and this one
+					
+		pass
+		
+			
+	def comp_second(self,dt):
+		
+		pass
+	
+			
+	def test(self):
 
-        pass
-        
+		pass
+		

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # ----------------------------------------------------------
-# aircraft_data MODULE for GlassCockpit procject RJGlass
+# position_mod MODULE for GlassCockpit procject RJGlass
 # ----------------------------------------------------------
 # This module handels and stores all aircraft data, and communicated via Simconnect to FSX
 #
@@ -29,46 +29,46 @@ import variables.valid_check as valid_check
 
 
 
-class airspeed_c(object):
-    
-        
-    def __init__(self,variable):
-                
-        pass
-        
-    def test(self):
-        pass
-        
-    def comp(self):
-        #Computations per frame
-        pass
-        
+class fltcontrol_c(object):
+	
+		
+	def __init__(self,variable):
+				
+		#variable.add_test(valid_check.within(28.0,32.0), ['ALT_SETTING'])
+		pass
 
-    
+	def test(self):
+		pass
+		
+	def comp(self):
+		#Computations per frame
+		pass
+
+	
 class data(object):
 
-    
-    def __init__(self, variable):
-        
-        self.variable = variable
-                
-        self.airspeed = airspeed_c(variable)
-            
-            
-    def comp(self, dt):
-        #Client is true, if RJGlass is in client or test mode.
-        #global_time = globaltime.value
-        #Computer delta_t = Time between last comp and this one
-                    
-        self.airspeed.comp()
-        
-            
-    def comp_second(self,dt):
-        
-        pass
-    
-            
-    def test(self):
+	
+	def __init__(self, variable):
+		
+		self.variable = variable
+				
+		self.fltcontrol = fltcontrol_c(variable)
+			
+			
+	def comp(self,dt):
+		#Client is true, if RJGlass is in client or test mode.
+		#global_time = globaltime.value
+		#Computer delta_t = Time between last comp and this one
+					
+		self.fltcontrol.comp()
+		
+			
+	def comp_second(self,dt):
+		
+		pass
+	
+			
+	def test(self):
 
-        pass
-        
+		pass
+		

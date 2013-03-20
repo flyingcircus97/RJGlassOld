@@ -71,14 +71,43 @@
 	<initial>1</initial>
 	<desc>VT Visible</desc>
 </var>
-  <var>
+<var>
 	<addr>1108</addr>
-	<name>VSPD_SELECTED</name>
+	<name>VSPD_SELECTED_CPT</name>
 	<type>int</type>
 	<unit>value</unit>
 	<format>d</format>
 	<initial>0</initial>
-	<desc>VSpeed Selected 0=V1 1=VR 2=V2 3=VT</desc>
+	<desc>Captain VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT</desc>
+</var>
+<var>
+    <addr>1109</addr>
+    <name>VSPD_SELECTED_FO</name>
+    <type>int</type>
+    <unit>value</unit>
+    <format>d</format>
+    <initial>0</initial>
+    <desc>First Officer VSpeed Selected 0=None 1=V1 2=VR 3=V2 4=VT</desc>
+</var>
+<var>
+    <addr>1110</addr>
+    <name>MAX_CUE</name>
+    <type>int</type>
+    <unit>knots</unit>
+    <format>d</format>
+    <initial>500</initial>
+	<writeable>N</writeable>
+    <desc>Speed of Upper Barber Pole</desc>
+</var>
+<var>
+    <addr>1111</addr>
+    <name>MIN_CUE</name>
+    <type>int</type>
+    <unit>knots</unit>
+    <format>d</format>
+    <initial>500</initial>
+	<writeable>N</writeable>
+    <desc>Speed of Lower Barber Pole</desc>
 </var>
 
 </variables>

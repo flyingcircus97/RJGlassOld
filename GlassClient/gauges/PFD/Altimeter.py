@@ -26,10 +26,10 @@ class MDADH_c(object):
         if ((self.active.value) and (alt <= self.bug.value) and (not OnGround)):
             self.notify = True
             self.flash_time += dt
-            if self.flash_time >= 0.5:
+            if self.flash_time >= 0.4:
                 self.flash +=1
-                self.flash_time -=0.5
-                if self.flash>20: self.flash = 20 #Causes to only flash for 10 seconds
+                self.flash_time -=0.4
+                if self.flash>28: self.flash = 28 #Causes to only flash for 14 times for 11 seconds per Jeff
                 if self.flash%2==0: #Visible used only for MDA with flashing
                     self.visible = True
                 else:
@@ -63,13 +63,21 @@ class gauge_c(gauge_parent):
         self.pixel_per_foot = 13.0/20.0
         self.thoupixel_per_foot = 13.0/100.0
         #Init Variables
-        self.ind_alt = variable.variables.load(0x110)
         self.rad_alt = variable.variables.load(0x112)
-        self.alt_setting = variable.variables.load(0x113,'4F')
         self.OnGround = variable.variables.load(0x127)
-        self.DH = MDADH_c(0x1120,0x1121)
-        self.MDA = MDADH_c(0x1128,0x1129)
-        
+        self.alt_bug_var = variable.variables.load(0x150)
+        self.metric_alt_var = variable.variables.load(0x113F)
+         #Cpt / FO Specific
+        if self.parent.side == 'CPT':
+            self.ind_alt = variable.variables.load(0x1130)
+            self.alt_setting = variable.variables.load(0x112C)
+            self.DH = MDADH_c(0x1120,0x1121)
+            self.MDA = MDADH_c(0x1128,0x1129)
+        else: #parent.side =='FO'
+            self.ind_alt = variable.variables.load(0x1131)
+            self.alt_setting = variable.variables.load(0x112E)
+            self.DH = MDADH_c(0x1122,0x1123)
+            self.MDA = MDADH_c(0x112A,0x112B)
         self.count = 0
         self.dt = 0.0
     
@@ -619,7 +627,8 @@ class gauge_c(gauge_parent):
             #Draw DH if active and within 250 ft of RA
             if self.DH.active.value:
                 diff = self.rad_alt.value-self.DH.bug.value
-                if abs(diff)<250: DH_bug_draw(diff)
+                if (self.DH.flash %2==0):
+                    if abs(diff)<250: DH_bug_draw(diff)
             #Flash MDA if 
             if self.MDA.active.value:
                 diff = self.ind_alt.value -self.MDA.bug.value
@@ -632,12 +641,35 @@ class gauge_c(gauge_parent):
             common.color.set(common.color.purple)
             #glLineWidth(2.0)
             glPushMatrix()
-            glTranslatef(25, 200, 0.0) #Move to start of digits
+            glTranslatef(36, 200, 0.0) #Move to start of digits
             glScalef(0.16,0.16,1.0)
             text.write("%2d" %(bug // 1000))
             glScalef(0.80,0.80,1.0) #Scale digits 85%
             glTranslatef(0,-13,0)
             text.write("%03d" %(bug % 1000))
+            glPopMatrix()
+            
+    def alt_text_metric(self, alt_ft, x,y):
+            #Draw Metric equivelent
+            glPushMatrix()
+            #Draw outter box
+            glTranslatef(x, y, 0.0) #Move to center of box
+            w=35
+            h=10
+            glBegin(GL_LINE_STRIP)
+            glVertex2f(-w,-h)
+            glVertex2f(-w,h)
+            glVertex2f(w,h)
+            glVertex2f(w,-h)
+            glVertex2f(-w,-h)
+            glEnd()
+            glTranslatef(-w+6,0,0)
+            glScalef(0.13,0.13,1.0)
+            bug = int(round(0.3048 * alt_ft))
+            text.write("%5dM" %(bug))
+            #glScalef(0.80,0.80,1.0) #Scale digits 85%
+            #glTranslatef(0,-13,0)
+            #text.write("%03d" %(bug % 1000))
             glPopMatrix()
             
     def alt_setting_disp(self, setting):
@@ -647,15 +679,14 @@ class gauge_c(gauge_parent):
             #Text out setting
             glPushMatrix()
             glScalef(0.14,0.15,0)
-            #value = round(setting,2) 
-            #value += 0.01
-            if setting <35: #Must be inches of HG if under 35
-                text.write("%5.2f" %setting, 90) #Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
+            
+            if setting >2000: #Must be inches of HG if under 35
+                text.write("%5.2f" %(setting/100.0), 90) #Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
             else:
                 text.write("%4d" %setting, 90)
             glPopMatrix() #Text 29.92
             #Display IN
-            if setting <35: #Must by HG if under 35 HPA if not.
+            if setting>2000: #Must by HG if under 35 HPA if not.
                 glTranslatef(58,-1,0) #move for In display
                 glScalef(0.12,0.12,0)
                 text.write("I N",40)
@@ -666,8 +697,18 @@ class gauge_c(gauge_parent):
                 
             glPopMatrix()
             
+    def metric_altitude(self, metric_flag):
+            #If metric altitude enabled draw alt bug, and ind alt in metric value inside boxes.
+            if metric_flag:
+               #Alt Bug 
+                common.color.set(common.color.purple)
+                self.alt_text_metric(self.alt_bug_var.value, 55, 178)      
+               #Altimeter 
+                common.color.set(common.color.white)
+                self.alt_text_metric(self.alt, 55, -188) 
+                
     def comp(self):
-        self.DH.comp(self.rad_alt.value, self.OnGround.value)
+        self.DH.comp(self.rad_alt.value, self.OnGround.value, self.dt)
         self.MDA.comp(self.alt, self.OnGround.value, self.dt)
         self.parent.DH_notify = self.DH.notify
         
@@ -685,10 +726,13 @@ class gauge_c(gauge_parent):
         self.thousand_tick_marks(self.alt)
         self.altitude_disp(self.alt)
         
-        self.alt_bug(self.alt, 3000)
+        self.alt_bug(self.alt, self.alt_bug_var.value)
         
         self.radar_alt(self.rad_alt.value)
         self.blackbox_shape.draw()
-        self.alt_bug_text(3000)
+        glLineWidth(2.5)
+        self.alt_bug_text(self.alt_bug_var.value)
         self.alt_setting_disp(self.alt_setting.value)
+        self.metric_altitude(self.metric_alt_var.value)
+        
         glPopMatrix()

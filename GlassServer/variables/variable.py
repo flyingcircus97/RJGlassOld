@@ -156,6 +156,17 @@ class variable_c(object):
                 r = var
         return r    
                 
+    def byAddr(self, addr):
+        '''
+        Returns variable object by name. (Should be unique so only one is returned.)
+        Returns None if not found.
+        '''
+        r = None
+        if addr in self.dict:
+            r = self.dict[addr]
+        
+        return r
+                
                     
     def exists(self, addr):
         #Will check if addr exists.
@@ -242,6 +253,7 @@ class variable_c(object):
             format = '5.2f'
             desc = None
             initial = None
+            writeable = None
             #Go through each child.
             for c in children:
                 tag = c.tag
@@ -261,11 +273,15 @@ class variable_c(object):
                     format = value
                 elif tag == 'initial':
                     initial = value
+                elif tag == 'writeable':
+                    writeable = value
                 #addr = int('0x'+data[0],16)
             #Add Variable to list
             new_var = self.add_var(addr, name, type, desc, unit, format)
             if initial != None:
                 new_var.setvalue_string(initial)
+            if writeable == 'N':
+                new_var.writeable = False
             ret_list.append(new_var)
             
                 
@@ -329,7 +345,7 @@ class variable_c(object):
                         w = False
                     else:
                         w = True
-                    out_list.append([w, hex(i.addr), i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
+                    out_list.append([w, hex(i.addr).upper()[2:], i.name, i.pack_format.upper(), value, check_none(i.unit), check_none(i.desc)])
                 #print "***I", i
         if len(out_list) > 0:
                 out_list.insert(0,[name])

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # ----------------------------------------------------------
-# aircraft_data MODULE for GlassCockpit procject RJGlass
+# misc_mod MODULE for GlassCockpit procject RJGlass
 # ----------------------------------------------------------
 # This module handels and stores all aircraft data, and communicated via Simconnect to FSX
 #
@@ -29,20 +29,20 @@ import variables.valid_check as valid_check
 
 
 
-class airspeed_c(object):
+class misc_c(object):
     
         
     def __init__(self,variable):
-                
+
         pass
         
+
     def test(self):
         pass
         
     def comp(self):
         #Computations per frame
         pass
-        
 
     
 class data(object):
@@ -52,15 +52,15 @@ class data(object):
         
         self.variable = variable
                 
-        self.airspeed = airspeed_c(variable)
+        self.misc = misc_c(variable)
             
             
-    def comp(self, dt):
+    def comp(self,dt):
         #Client is true, if RJGlass is in client or test mode.
         #global_time = globaltime.value
         #Computer delta_t = Time between last comp and this one
                     
-        self.airspeed.comp()
+        self.misc.comp()
         
             
     def comp_second(self,dt):

@@ -10,6 +10,9 @@ import setup.airspeed as airspeed
 import setup.altitude as altitude
 import setup.position as position
 import setup.heading as heading
+import setup.autopilot as autopilot
+import setup.fltcontrol as fltcontrol
+import setup.misc as misc
 
 def setup(s, variables):
     
@@ -39,7 +42,12 @@ def setup(s, variables):
         position.setup(add_var)
         #HEading
         heading.setup(add_var)
-
+        #Autopilot
+        autopilot.setup(add_var)
+        #Flight Controls
+        fltcontrol.setup(add_var)
+        #Misc
+        misc.setup(add_var)
 
 def setup_events(sevent, variables):        
     
@@ -58,3 +66,5 @@ def setup_events(sevent, variables):
         radios.setup_events(add_event)
         #Altitude Events
         altitude.setup_events(add_event)
+        #Autopilot
+        autopilot.setup_events(add_event)

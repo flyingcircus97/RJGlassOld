@@ -229,11 +229,15 @@ class gauge_c(gauge_parent):
         rects.reset()
         rects.add(Rect(1))
         
-        fg = pyglet.graphics.OrderedGroup(1)
-        fg2= pyglet.graphics.OrderedGroup(2)
+        fg = pyglet.graphics.OrderedGroup(3)
+        fg2= pyglet.graphics.OrderedGroup(4)
         poly = pyglet.graphics.OrderedGroup(0)
+        l_rect = pyglet.graphics.OrderedGroup(1)
+        r_rect = pyglet.graphics.OrderedGroup(2)
         batch = pyglet.graphics.Batch()
         v2 = batch.add(8, GL_POLYGON, poly, ('v2f', v_list),('c3B',(0,0,0)*8))
+        v4 = batch.add(5, GL_POLYGON, l_rect, ('v2f', Rect(-1)), ('c3B',(0,0,0)*(5)))
+        v5 = batch.add(5, GL_POLYGON, r_rect, ('v2f', Rect(1)), ('c3B',(0,0,0)*(5)))
         v1 = batch.add(len(v_points)//2, GL_LINES, fg, ('v2f', v_points),('c3B',(255,255,255)*(len(v_points)//2)))
         v3 = batch.add(len(rects.points)//2, GL_LINES, fg, ('v2f', rects.points),('c3B',(255,255,255)*(len(rects.points)//2)))
         
@@ -475,16 +479,16 @@ class gauge_c(gauge_parent):
                     common.color.set(common.color.green)
                 glLineWidth(2.0)
                 glPushMatrix()
-                glTranslatef(70, -160, 0.0) #Move to start of digits
+                glTranslatef(67, -163, 0.0) #Move to start of digits
                 #Draw Numbers
                 glPushMatrix()
-                glScalef(0.16,0.16,1.0)
+                glScalef(0.18,0.18,1.0)
                 text.write("%4d" %num, 90)
                 glPopMatrix() #scale3f
                 # Draw FT
                 glPushMatrix()
-                glTranslatef(65.0, -1.0, 0.0)
-                glScalef(0.12,0.12,1.0)
+                glTranslatef(68.0, -2.0, 0.0)
+                glScalef(0.13,0.13,1.0)
                 text.write("FT")
                 glPopMatrix() #translate
                 glPopMatrix() #translate
@@ -561,7 +565,7 @@ class gauge_c(gauge_parent):
                 common.color.set(common.color.yellow)
                 glScalef(0.2,0.2, 1.0)
                 #glLineWidth(2.0)
-                text.write(text_s, 100)
+                text.write(text_s, 90)
                 glPopMatrix()
                 
     
@@ -577,9 +581,10 @@ class gauge_c(gauge_parent):
         MDA = self.parent.Altimeter.MDA
         
         slope = self.draw_horizon(-self.roll.value,self.pitch.value)
-        self.pitch_marks(-self.roll.value, self.pitch.value, 1.5*self.scale_lw)
+        self.pitch_marks(-self.roll.value, self.pitch.value, 2.0*self.scale_lw)
         
-        glLineWidth(1.5*self.scale_lw)
+        #glLineWidth(1.5*self.scale_lw)
+        glLineWidth(2.0)
         self.bV_shape.draw()
         self.static_triangle_shape.draw()
         self.radar_disp(self.rad_alt.value, DH.notify)
@@ -587,6 +592,6 @@ class gauge_c(gauge_parent):
         common.color.set(common.color.cyan)
         self.mda_text(MDA, 35,185)
         self.dh_text(DH, 35,205)
-        self.MDADH_Notifier(DH.notify, 'DH' , 84,48)
+        self.MDADH_Notifier(DH.visible, 'DH' , 84,48)
         self.MDADH_Notifier(MDA.visible, 'MDA', 84,22)
         

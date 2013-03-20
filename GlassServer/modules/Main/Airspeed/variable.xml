@@ -31,6 +31,13 @@
 	<format>4.3f</format>
 	<desc>Indicated Mach</desc>
 </var>
-
+<var>
+	<addr>0104</addr>
+	<name>STALL_WARNING</name>
+	<type>int</type>
+	<unit>TrueFalse</unit>
+	<format>2d</format>
+	<desc>Stall Warning Indication</desc>
+</var>
 
 </variables>

@@ -1,0 +1,39 @@
+<variables>
+  <var>
+	<addr>10A0</addr>
+	<name>PFD_CPT_BRIGHTNESS</name>
+	<type>int</type>
+	<unit>0-255</unit>
+	<format>d</format>
+	<desc>Brightness of Captains PFD</desc>
+    <initial>255</initial>    
+</var>
+  <var>
+	<addr>10A1</addr>
+	<name>PFD_CPT_MAX_BRIGHTNESS</name>
+	<type>int</type>
+	<unit>0-255</unit>
+	<format>d</format>
+	<desc>Max Brightness of Captains PFD</desc>
+    <initial>255</initial>    
+</var>
+<var>
+    <addr>10A2</addr>
+    <name>PFD_FO_BRIGHTNESS</name>
+    <type>int</type>
+    <unit>0-255</unit>
+    <format>d</format>
+    <desc>Brightness of First Officers PFD</desc>
+    <initial>255</initial>
+</var>
+  <var>
+    <addr>10A3</addr>
+    <name>PFD_FO_MAX_BRIGHTNESS</name>
+    <type>int</type>
+    <unit>0-255</unit>
+    <format>d</format>
+    <desc>Max Brightness of First Officers PFD</desc>
+    <initial>255</initial>
+</var>
+
+</variables>

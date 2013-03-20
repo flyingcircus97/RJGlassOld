@@ -24,6 +24,9 @@ class Vspeed_c(object):
             self.y_pos = y_pos
             self.value = value
             self.visible = visible
+            self.disp = name[1]
+            if self.disp in ['1','2']:
+                self.disp = ' ' + self.disp
         
         def draw_indicator(self, loc):
             if self.y_pos + loc > -165:    
@@ -62,11 +65,12 @@ class Vspeed_c(object):
                     #Draw Text next to line 1,2,R,T
                     
                     glScalef(0.12,0.12,1.0)
-                    text.write(self.name[1]) #Only do 2nd character
+                    text.write(self.disp) #Only do 2nd character
                     glPopMatrix()
         
-        def draw(self,loc, airspeed, knot_unit):
-            self.draw_indicator(loc)
+        def draw(self,loc, airspeed, knot_unit, onground):
+            
+            if onground: self.draw_indicator(loc)
             self.draw_bug(airspeed, knot_unit)
         
 class gauge_c(gauge_parent):
@@ -103,8 +107,15 @@ class gauge_c(gauge_parent):
         self.V2_visible = variable.variables.load(0x1105)
         self.VT = variable.variables.load(0x1106)
         self.VT_visible = variable.variables.load(0x1107)
-        self.VSpeed_Selected = variable.variables.load(0x1108)
-        
+        self.MaxCue = variable.variables.load(0x1110)
+        self.MinCue = variable.variables.load(0x1111)
+        self.IASBug = variable.variables.load(0x0152)
+        #Cpt / FO Specific
+        if self.parent.side == 'CPT':
+            self.VSpeed_Selected = variable.variables.load(0x1108)
+        else: #parent.side =='FO'
+            self.VSpeed_Selected = variable.variables.load(0x1109)            
+            
         self.Vinput = 0 #Vspeed that is selected. (0-4) 0=V1 1=VR 2=V2 3=VT
         self.a = 0.0
         # Init Vspeeds  
@@ -181,7 +192,8 @@ class gauge_c(gauge_parent):
     def speedbug_b(self):
         
         v1 = common.vertex.lines()
-        v1.add([0,0,10,8,10,15,0,15,0,-15,10,-15,10,-8,0,0])
+        h = 17
+        v1.add([0,0,10,8,10,h,0,h,0,-h,10,-h,10,-8,0,0])
         batch = pyglet.graphics.Batch()
         b1 = batch.add(v1.num_points, GL_LINES, None, ('v2f', v1.points),('c3f',common.color.purple*v1.num_points))
         
@@ -255,9 +267,9 @@ class gauge_c(gauge_parent):
                 glVertex2f(x2, y1)
                 glEnd()
     
-    def speedbug_draw(self, x=0,y=0):
+    def speedbug_draw(self, value, x=0,y=0):
         
-        diff = 100 - self.indicated_IAS()
+        diff = value - self.indicated_IAS()
         diff = diff*self.knot_unit
         if abs(diff)<168:
             glPushMatrix()
@@ -265,7 +277,7 @@ class gauge_c(gauge_parent):
             self.speedbug_shape.draw()
             glPopMatrix()
             
-    def speedbugind_draw(self, x=0,y=0):
+    def speedbugind_draw(self, value, x=0,y=0):
         
             common.color.set(common.color.purple)
             glPushMatrix()
@@ -273,10 +285,10 @@ class gauge_c(gauge_parent):
             self.speedbug_shape.draw()
             glTranslatef(30,0,0)
             glScalef(0.15,0.15,1.0)
-            text.write("%3d" %(100))
-            glPopMatrix()        
+            text.write("%3d" %(value))
+            glPopMatrix()    
         
-    def Vspeeds(self, start_loc, start_tick_ten):
+    def Vspeeds(self, start_loc, start_tick_ten, onground):
         #Draw Vspeeds
         
                     
@@ -284,12 +296,13 @@ class gauge_c(gauge_parent):
         loc = start_loc - (start_tick_ten *10 * self.knot_unit)
         common.color.set(common.color.cyan)
         for speed in self.Vspeed_l:
-            speed.draw(loc, self.airspeed, self.knot_unit)
+            speed.draw(loc, self.airspeed, self.knot_unit, onground)
             
     def Vspeed_selected(self, loc):
         
-        common.color.set(common.color.cyan)
-        self.Vspeed_l[self.VSpeed_Selected.value].draw_selected(loc)
+        if self.VSpeed_Selected.value >0: #If 0 don't draw Vspeed window
+            common.color.set(common.color.cyan)
+            self.Vspeed_l[self.VSpeed_Selected.value-1].draw_selected(loc) #Subtract one to account for zero (No Vspeed selected)
                     
     def tick_marks(self, x=0, y=0):
 
@@ -366,8 +379,8 @@ class gauge_c(gauge_parent):
     def speed_cues(self):
         
         def lowspeedcue(y):
-            x1 = -17.5
-            x2 = 22.5
+            x1 = -38.5
+            x2 = 10.5
             common.color.set(common.color.green)
             glLineWidth(2.0)
             glBegin(GL_LINES)
@@ -403,14 +416,16 @@ class gauge_c(gauge_parent):
                     glTranslatef(0,-24,0)
             glPopMatrix()
         
-        #Lowspeed cue
-        y = self.calc_show(60)
-        if y: lowspeedcue(y)
-        #Barber Pole Lower
-        y = self.calc_show(120, False)
-        #barberpole(y,-1)  ##Disable Lower Barber Pole for now.
+        
+            #Barber Pole Lower (If Min Cue set to 0, don't draw
+        if self.MinCue.value:
+            y = self.calc_show(self.MinCue.value, False)
+            barberpole(y,-1) 
+            #Lowspeed cue (Green line)
+            y = self.calc_show(int(self.MinCue.value * 1.2)+1)
+            if y: lowspeedcue(y)
         #Barber Pole Upper
-        y = self.calc_show(220, False)
+        y = self.calc_show(self.MaxCue.value, False)
         barberpole(y,1)
         
     def airspeed_mach_text(self, value, x=0, y=0): # Text on top
@@ -445,20 +460,26 @@ class gauge_c(gauge_parent):
         #self.glLineWidth(2.0)
         #Limit Airspeed
         self.airspeed = self.indicated_IAS()
-        
+        if self.IASBug.value<40:
+            self.IAS_Bug = 40
+        else:
+            self.IAS_Bug = self.IASBug.value
+            
         self.comp()
         glLineWidth(2.0)
         
         start_loc, start_tick_ten = self.tick_marks()
         self.tick_numbers(start_loc, start_tick_ten)    
-        self.speedbug_draw()
-        self.Vspeeds(start_loc, start_tick_ten)
         self.speed_cues()
         #Airspeed pink trending line, only draw if inflight.
         if not self.OnGround.value: self.airspeed_diff(self.IAS_trend)
         self.arrow_shape.draw()
+        self.speedbug_draw(self.IAS_Bug)
+        self.Vspeeds(start_loc, start_tick_ten, self.OnGround.value)
+        #Top and Bottom black boxes for scissoring
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
-        self.speedbugind_draw(-40,-170)
+        #Bottom Displays
+        self.speedbugind_draw(self.IAS_Bug,-40,-170)
         self.Vspeed_selected(-200)
         if self.Mach_visible: self.airspeed_mach_text(self.Mach.value, -38, 170)

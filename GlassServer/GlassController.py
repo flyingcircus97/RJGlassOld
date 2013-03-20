@@ -328,6 +328,9 @@ class mod_data_c(object):
         for mod in mod_list:
             self.mod_data.append(mod.data(variables))
             
+        #Timer
+        self.timer = time.time()
+            
     def test(self):    
         #print "MOD DATA TEST"
         for mod_data in self.mod_data:
@@ -335,8 +338,12 @@ class mod_data_c(object):
     
     def comp(self):
         #print "MOD DATA COMP"
+        #Calculate dt
+        dt = time.time() - self.timer
+        self.timer += dt
+        
         for mod_data in self.mod_data:
-            mod_data.comp()
+            mod_data.comp(dt)
 
 class Glass_Connections_c(object):
     def __init__(self):

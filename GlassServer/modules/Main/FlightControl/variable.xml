@@ -1,0 +1,10 @@
+<variables>
+<var>
+	<addr>0300</addr>
+	<name>FLAP_HANDLE</name>
+	<type>int</type>
+	<unit>number</unit>
+	<format>6d</format>
+	<desc>Flap Handle Index</desc>
+</var>
+</variables>

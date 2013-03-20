@@ -16,14 +16,11 @@ STRING256 = 9
     
 
 def setup(add_var):
-        #Airspeed
-        add_var("Airspeed Indicated", "knots", FLOAT32, 'IAS', send = True)
-        add_var("Airspeed True", "knots", FLOAT32, 'TAS', send = True)
-        add_var("GROUND VELOCITY", "knots", FLOAT32, 'GS')
-        add_var("Airspeed Mach", "mach", FLOAT32, 'MACH')
-        add_var("Stall Warning", "", INT32, 'STALL_WARNING')
+        #Flap Index Handle
+        add_var("FLAPS HANDLE INDEX","number", INT32, 'FLAP_HANDLE', send=True)
+        
         
 def setup_events(add_event):        
     
-        
         pass
+        

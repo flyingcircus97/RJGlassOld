@@ -5,6 +5,9 @@
 GlassServer/dat/*
 GlassServer/preferences.dat
 GlassServer/default.idx
+GlassServer/variables/var.txt
 *.zip
 *.komodoproject
 *.log
+*.pyo
+
