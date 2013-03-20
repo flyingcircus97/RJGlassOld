@@ -460,7 +460,11 @@ class gauge_c(gauge_parent):
         #self.glLineWidth(2.0)
         #Limit Airspeed
         self.airspeed = self.indicated_IAS()
-        
+        if self.IASBug.value<40:
+            self.IAS_Bug = 40
+        else:
+            self.IAS_Bug = self.IASBug.value
+            
         self.comp()
         glLineWidth(2.0)
         
@@ -470,12 +474,12 @@ class gauge_c(gauge_parent):
         #Airspeed pink trending line, only draw if inflight.
         if not self.OnGround.value: self.airspeed_diff(self.IAS_trend)
         self.arrow_shape.draw()
-        self.speedbug_draw(self.IASBug.value)
+        self.speedbug_draw(self.IAS_Bug)
         self.Vspeeds(start_loc, start_tick_ten, self.OnGround.value)
         #Top and Bottom black boxes for scissoring
         self.top_black_shape.draw()
         self.bottom_black_shape.draw()
         #Bottom Displays
-        self.speedbugind_draw(self.IASBug.value,-40,-170)
+        self.speedbugind_draw(self.IAS_Bug,-40,-170)
         self.Vspeed_selected(-200)
         if self.Mach_visible: self.airspeed_mach_text(self.Mach.value, -38, 170)
